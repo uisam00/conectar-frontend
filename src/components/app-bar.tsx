@@ -1,7 +1,6 @@
 import {
   AppBar,
   Toolbar,
-  Typography,
   Button,
   Box,
   IconButton,
@@ -9,12 +8,11 @@ import {
   MenuItem,
   Avatar,
 } from '@mui/material';
-import { AccountCircle } from '@mui/icons-material';
+import { AccountCircle, Help, Notifications } from '@mui/icons-material';
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth, useAuthActions } from '@/services/auth';
 import { useLanguage } from '@/services/i18n';
-import SwitchThemeButton from './switch-theme-button';
 
 export default function ResponsiveAppBar() {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -47,29 +45,55 @@ export default function ResponsiveAppBar() {
   }
 
   return (
-    <AppBar position="static">
+    <AppBar 
+      position="static" 
+      sx={{ 
+        backgroundColor: '#19AF78',
+        boxShadow: 'none'
+      }}
+    >
       <Toolbar>
-        <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-          <Link to="/" style={{ color: 'inherit', textDecoration: 'none' }}>
-            {t('app-name')}
-          </Link>
-        </Typography>
-
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, flexGrow: 1 }}>
+          <img 
+            src="/logo.png" 
+            alt="Conectar" 
+            style={{ height: '32px', width: 'auto' }} 
+          />
+          {user && (
+            <Button 
+              color="inherit" 
+              component={Link} 
+              to="/clients"
+              sx={{ 
+                color: 'white',
+                fontWeight: 'bold',
+                backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                borderRadius: 1,
+                px: 2,
+                py: 1
+              }}
+            >
+              Clientes
+            </Button>
+          )}
+        </Box>
+        
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-          <SwitchThemeButton />
-          
           {user ? (
             <>
-              <Button color="inherit" component={Link} to="/users">
-                {t('navigation.users')}
-              </Button>
+              <IconButton sx={{ color: 'white' }}>
+                <Help />
+              </IconButton>
+              <IconButton sx={{ color: 'white' }}>
+                <Notifications />
+              </IconButton>
               <IconButton
                 size="large"
                 aria-label="account of current user"
                 aria-controls="menu-appbar"
                 aria-haspopup="true"
                 onClick={handleMenu}
-                color="inherit"
+                sx={{ color: 'white' }}
               >
                 {user.photo ? (
                   <Avatar src={user.photo.path} alt={user.firstName} />
@@ -101,7 +125,12 @@ export default function ResponsiveAppBar() {
               </Menu>
             </>
           ) : (
-            <Button color="inherit" component={Link} to="/sign-in">
+            <Button 
+              color="inherit" 
+              component={Link} 
+              to="/sign-in"
+              sx={{ color: 'white' }}
+            >
               {t('navigation.signIn')}
             </Button>
           )}

@@ -14,6 +14,7 @@ import SignInPage from '@/pages/sign-in';
 // import SignUpPage from '@/pages/sign-up';
 import SimpleProfilePage from '@/pages/simple-profile';
 import ForgotPasswordPage from '@/pages/forgot-password';
+import ClientsPage from '@/pages/clients';
 
 // Initialize i18n
 import '@/services/i18n/client';
@@ -27,7 +28,7 @@ function AppContent() {
 
   return (
     <Router>
-      <ResponsiveAppBar />
+      {user && <ResponsiveAppBar />}
       <Routes>
         <Route 
           path="/" 
@@ -48,6 +49,10 @@ function AppContent() {
         <Route 
           path="/profile" 
           element={user ? <SimpleProfilePage /> : <Navigate to="/sign-in" replace />} 
+        />
+        <Route 
+          path="/clients" 
+          element={user ? <ClientsPage /> : <Navigate to="/sign-in" replace />} 
         />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>

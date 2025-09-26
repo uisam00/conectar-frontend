@@ -1,13 +1,14 @@
 import { useState } from 'react';
 import {
-  Container,
   Paper,
-  Typography,
   Box,
   Button,
   TextField,
   Link as MuiLink,
+  IconButton,
+  Typography,
 } from '@mui/material';
+import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { Link, useNavigate } from 'react-router-dom';
 import { useLanguage } from '@/services/i18n';
 import { useAuthActions, useAuthTokens } from '@/services/auth';
@@ -23,6 +24,7 @@ export default function SignInPage() {
   const navigate = useNavigate();
   const { handleApiError } = useErrorHandler();
   const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -66,64 +68,159 @@ export default function SignInPage() {
   };
 
   return (
-    <Container component="main" maxWidth="sm">
-      <Box
+    <Box
+      sx={{
+        minHeight: '100vh',
+        background: 'linear-gradient(135deg, #19AF78 0%, #0F7A5A 100%)',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: 2,
+      }}
+    >
+      <Box sx={{ mb: 4 }}>
+        <img
+          src="/logo.png"
+          alt="Conectar"
+          style={{
+            height: '80px',
+            width: 'auto',
+            filter: 'brightness(0) invert(1)'
+          }}
+        />
+      </Box>
+
+      <Paper
+        elevation={8}
         sx={{
-          marginTop: 8,
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
+          padding: 3,
+          width: '100%',
+          maxWidth: 450,
+          borderRadius: 2,
+          backgroundColor: 'white'
         }}
       >
-        <Paper elevation={3} sx={{ padding: 4, width: '100%' }}>
-          <Typography component="h1" variant="h4" align="center" gutterBottom>
-            {t('title')}
-          </Typography>
-
-          <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1 }}>
+        <Box component="form" onSubmit={handleSubmit}>
+          <Box sx={{ mb: 2 }}>
+            <Typography variant="body2" sx={{ mb: 0.5,  color: '#333' }}>
+              {t('inputs.email.label')}
+            </Typography>
             <TextField
               name="email"
-              label={t('inputs.email.label')}
               type="email"
               autoComplete="email"
+              id="email"
               autoFocus
               fullWidth
-              margin="normal"
               value={formData.email}
               onChange={handleChange}
               required
+              sx={{
+                '& .MuiOutlinedInput-root': {
+                  borderRadius: 3,
+                  height: 48,
+                },
+              }}
             />
+          </Box>
 
-            <TextField
-              name="password"
-              label={t('inputs.password.label')}
-              type="password"
-              autoComplete="current-password"
-              fullWidth
-              margin="normal"
-              value={formData.password}
-              onChange={handleChange}
-              required
-            />
-
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              sx={{ mt: 3, mb: 2 }}
-              disabled={isLoading}
-            >
-              {isLoading ? t('loading') : t('actions.submit')}
-            </Button>
-
-            <Box textAlign="center">
-              <MuiLink component={Link} to="/forgot-password" variant="body2">
-                {t('actions.forgotPassword')}
-              </MuiLink>
+          <Box sx={{ mb: 2 }}>
+            <Typography variant="body2" sx={{ mb: 0.5, color: '#333' }}>
+              {t('inputs.password.label')}
+            </Typography>
+            <Box sx={{ display: 'flex', alignItems: 'stretch', gap: 0, width: '100%' }}>
+              <TextField
+                name="password"
+                type={showPassword ? 'text' : 'password'}
+                autoComplete="current-password"
+                id="password"
+                fullWidth
+                value={formData.password}
+                onChange={handleChange}
+                required
+                sx={{
+                  '& .MuiOutlinedInput-root': {
+                    borderRadius: 3,
+                    borderTopRightRadius: 0,
+                    borderBottomRightRadius: 0,
+                    height: 48,
+                    '& fieldset': {
+                      borderRight: 'none',
+                    },
+                    '&:hover fieldset': {
+                      borderRight: 'none',
+                    },
+                    '&.Mui-focused fieldset': {
+                      borderRight: 'none',
+                    },
+                  },
+                }}
+              />
+              <IconButton
+                aria-label="toggle password visibility"
+                onClick={() => setShowPassword(!showPassword)}
+                sx={{
+                  color: '#19AF78',
+                  backgroundColor: '#8CD7B9',
+                  borderRadius: 3,
+                  borderTopLeftRadius: 0,
+                  borderBottomLeftRadius: 0,
+                  height: 48,
+                  width: 48,
+                  minWidth: 48,
+                  alignSelf: 'stretch',
+                  '&:hover': {
+                    backgroundColor: '#7BC4A8',
+                  }
+                }}
+              >
+                {showPassword ? <VisibilityOff /> : <Visibility />}
+              </IconButton>
             </Box>
           </Box>
-        </Paper>
-      </Box>
-    </Container>
+
+          <Button
+            type="submit"
+            fullWidth
+            variant="contained"
+            sx={{
+              mt: 2,
+              mb: 2,
+              backgroundColor: '#19AF78',
+              color: 'white',
+              '&:hover': {
+                backgroundColor: '#0F7A5A',
+              },
+              borderRadius: 3,
+              py: 1.5,
+              fontSize: '1rem',
+              fontWeight: 'bold'
+            }}
+            disabled={isLoading}
+          >
+            {isLoading ? t('loading') : t('actions.submit')}
+          </Button>
+
+          <Box textAlign="center" sx={{ mt: 1 }}>
+            <MuiLink
+              component={Link}
+              to="/forgot-password"
+              variant="body2"
+              sx={{
+                color: '#666',
+                textDecoration: 'none',
+                fontSize: '0.9rem',
+                '&:hover': {
+                  textDecoration: 'underline'
+                }
+              }}
+            >
+              {t('actions.forgotPassword')}
+            </MuiLink>
+          </Box>
+        </Box>
+      </Paper>
+    </Box>
   );
 }

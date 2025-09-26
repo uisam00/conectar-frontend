@@ -30,10 +30,42 @@ export default function ThemeProvider({ children }: PropsWithChildren) {
         palette: {
           mode,
           primary: {
-            main: '#1976d2',
+            main: '#19AF78',
+            dark: '#0F7A5A',
+            light: '#4ECB8A',
           },
           secondary: {
             main: '#dc004e',
+          },
+        },
+        components: {
+          MuiButton: {
+            styleOverrides: {
+              root: {
+                textTransform: 'none',
+              },
+            },
+          },
+          MuiTextField: {
+            styleOverrides: {
+              root: {
+                '& .MuiOutlinedInput-root': {
+                  borderRadius: 2,
+                  '& fieldset': {
+                    borderColor: '#E0E0E0',
+                  },
+                  '&:hover fieldset': {
+                    borderColor: '#19AF78',
+                  },
+                  '&.Mui-focused fieldset': {
+                    borderColor: '#19AF78',
+                  },
+                },
+                '& .MuiInputLabel-root.Mui-focused': {
+                  color: '#19AF78',
+                },
+              },
+            },
           },
         },
       }),
