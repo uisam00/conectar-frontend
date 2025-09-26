@@ -1,0 +1,23 @@
+{
+  "title": "Perfil",
+  "actions": {
+    "submit": "Salvar"
+  },
+  "inputs": {
+    "firstName": {
+      "label": "Nome"
+    },
+    "lastName": {
+      "label": "Sobrenome"
+    },
+    "email": {
+      "label": "E-mail"
+    },
+    "password": {
+      "label": "Nova Senha"
+    },
+    "oldPassword": {
+      "label": "Senha Atual"
+    }
+  }
+}

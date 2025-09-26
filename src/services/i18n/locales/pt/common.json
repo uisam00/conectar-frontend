@@ -1,0 +1,49 @@
+{
+  "app-name": "Conectar",
+  "loading": "Carregando...",
+  "navigation": {
+    "home": "Início",
+    "signIn": "Entrar",
+    "signUp": "Cadastrar",
+    "profile": "Perfil",
+    "users": "Usuários",
+    "logout": "Sair"
+  },
+  "formInputs": {
+    "avatarInput": {
+      "dropzoneText": "Solte a imagem aqui...",
+      "dragAndDrop": "Ou arraste e solte uma imagem aqui",
+      "selectFile": "Selecionar uma imagem"
+    },
+    "multipleImageInput": {
+      "dropzoneText": "Solte a imagem aqui...",
+      "dragAndDrop": "Ou arraste e solte algumas imagens aqui",
+      "selectFile": "Selecionar uma imagem"
+    },
+    "singleImageInput": {
+      "dropzoneText": "Solte a imagem aqui...",
+      "dragAndDrop": "Ou arraste e solte algumas imagens aqui",
+      "selectFile": "Selecionar uma imagem"
+    }
+  },
+  "leavePage": {
+    "title": "Sair desta página?",
+    "message": "As alterações que você fez podem não ser salvas",
+    "stay": "Ficar na Página",
+    "leave": "Sair da Página"
+  },
+  "auth": {
+    "facebook": {
+      "action": "Entrar com Facebook"
+    }
+  },
+  "errors": {
+    "userNotFound": "Usuário não encontrado",
+    "invalidCredentials": "Credenciais inválidas",
+    "unauthorized": "Não autorizado",
+    "forbidden": "Acesso negado",
+    "serverError": "Erro interno do servidor",
+    "networkError": "Erro de conexão",
+    "generic": "Ocorreu um erro inesperado"
+  }
+}
