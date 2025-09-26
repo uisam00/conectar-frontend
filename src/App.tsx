@@ -11,7 +11,7 @@ import { useAuth } from '@/services/auth';
 // Pages
 import HomePage from '@/pages/home';
 import SignInPage from '@/pages/sign-in';
-import SignUpPage from '@/pages/sign-up';
+// import SignUpPage from '@/pages/sign-up';
 import SimpleProfilePage from '@/pages/simple-profile';
 import ForgotPasswordPage from '@/pages/forgot-password';
 
@@ -37,10 +37,10 @@ function AppContent() {
           path="/sign-in" 
           element={user ? <Navigate to="/" replace /> : <SignInPage />} 
         />
-        <Route 
+        {/* <Route 
           path="/sign-up" 
           element={user ? <Navigate to="/" replace /> : <SignUpPage />} 
-        />
+        /> */}
         <Route 
           path="/forgot-password" 
           element={user ? <Navigate to="/" replace /> : <ForgotPasswordPage />} 

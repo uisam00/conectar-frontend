@@ -7,7 +7,6 @@ import {
   Button,
   TextField,
   Link as MuiLink,
-  Divider,
 } from '@mui/material';
 import { Link, useNavigate } from 'react-router-dom';
 import { useLanguage } from '@/services/i18n';
@@ -120,18 +119,6 @@ export default function SignInPage() {
             <Box textAlign="center">
               <MuiLink component={Link} to="/forgot-password" variant="body2">
                 {t('actions.forgotPassword')}
-              </MuiLink>
-            </Box>
-
-            <Divider sx={{ my: 2 }}>
-              <Typography variant="body2" color="text.secondary">
-                {t('or')}
-              </Typography>
-            </Divider>
-
-            <Box textAlign="center">
-              <MuiLink component={Link} to="/sign-up" variant="body2">
-                {t('actions.createAccount')}
               </MuiLink>
             </Box>
           </Box>

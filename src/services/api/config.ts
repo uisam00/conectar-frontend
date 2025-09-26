@@ -26,3 +26,4 @@ export const HTTP_CODES = {
 } as const;
 
 export type HTTP_CODES_ENUM = typeof HTTP_CODES[keyof typeof HTTP_CODES];
+

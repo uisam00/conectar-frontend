@@ -101,14 +101,9 @@ export default function ResponsiveAppBar() {
               </Menu>
             </>
           ) : (
-            <>
-              <Button color="inherit" component={Link} to="/sign-in">
-                {t('navigation.signIn')}
-              </Button>
-              <Button color="inherit" component={Link} to="/sign-up">
-                {t('navigation.signUp')}
-              </Button>
-            </>
+            <Button color="inherit" component={Link} to="/sign-in">
+              {t('navigation.signIn')}
+            </Button>
           )}
         </Box>
       </Toolbar>

@@ -8,3 +8,4 @@ export default async function wrapperFetchJsonResponse<T>(
   const data = await response.json();
   return data;
 }
+
