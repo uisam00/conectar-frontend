@@ -18,6 +18,7 @@ export interface ClientsResponse {
 export interface ClientsFilters {
   search?: string;
   name?: string;
+  cnpj?: string;
   statusId?: number;
   planId?: number;
   isSpecial?: boolean;
@@ -34,6 +35,7 @@ export async function getClients(filters: ClientsFilters = {}): Promise<ClientsR
   
   if (filters.search) queryParams.append("search", filters.search.trim());
   if (filters.name) queryParams.append("name", filters.name.trim());
+  if (filters.cnpj) queryParams.append("cnpj", filters.cnpj.trim());
   if (filters.statusId) queryParams.append("statusId", filters.statusId.toString());
   if (filters.planId) queryParams.append("planId", filters.planId.toString());
   if (filters.isSpecial !== undefined) queryParams.append("isSpecial", filters.isSpecial.toString());

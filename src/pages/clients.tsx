@@ -1,4 +1,5 @@
 import { useState, useMemo } from "react";
+import { useSearchParams } from "react-router-dom";
 import {
   Box,
   Typography,
@@ -27,35 +28,65 @@ import { Search, ExpandLess, ExpandMore } from "@mui/icons-material";
 import AdminPageLayout from "@/components/layout/admin-page-layout";
 import { useClients } from "@/hooks/use-clients-query";
 
-type Order = 'asc' | 'desc';
-
+type Order = "asc" | "desc";
 
 export default function ClientsPage() {
+  const [searchParams, setSearchParams] = useSearchParams();
+
   const [activeTab, setActiveTab] = useState(0);
   const [filtersExpanded, setFiltersExpanded] = useState(true);
   const [filters, setFilters] = useState({
-    name: "",
-    cnpj: "",
-    status: "",
-    conectarPlus: "",
+    name: searchParams.get("name") || "",
+    cnpj: searchParams.get("cnpj") || "",
+    status: searchParams.get("status") || "",
+    conectarPlus: searchParams.get("conectarPlus") || "",
   });
   const [appliedFilters, setAppliedFilters] = useState({
-    name: "",
-    cnpj: "",
-    status: "",
-    conectarPlus: "",
+    name: searchParams.get("name") || "",
+    cnpj: searchParams.get("cnpj") || "",
+    status: searchParams.get("status") || "",
+    conectarPlus: searchParams.get("conectarPlus") || "",
   });
   const [hasSearched, setHasSearched] = useState(true);
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
-  const [order, setOrder] = useState<Order>('asc');
-  const [orderBy, setOrderBy] = useState<string>('');
+  const [page, setPage] = useState(parseInt(searchParams.get("page") || "0"));
+  const [rowsPerPage, setRowsPerPage] = useState(
+    parseInt(searchParams.get("limit") || "10")
+  );
+  const [order, setOrder] = useState<Order>(
+    (searchParams.get("order") as Order) || "asc"
+  );
+  const [orderBy, setOrderBy] = useState<string>(
+    searchParams.get("sortBy") || ""
+  );
+
+  // Função para atualizar a URL com os parâmetros atuais
+  const updateURL = (
+    newFilters: typeof appliedFilters,
+    newPage: number,
+    newRowsPerPage: number,
+    newOrder: Order,
+    newOrderBy: string
+  ) => {
+    const params = new URLSearchParams();
+
+    if (newFilters.name) params.set("name", newFilters.name);
+    if (newFilters.cnpj) params.set("cnpj", newFilters.cnpj);
+    if (newFilters.status) params.set("status", newFilters.status);
+    if (newFilters.conectarPlus)
+      params.set("conectarPlus", newFilters.conectarPlus);
+    if (newPage > 0) params.set("page", newPage.toString());
+    if (newRowsPerPage !== 10) params.set("limit", newRowsPerPage.toString());
+    if (newOrderBy) params.set("sortBy", newOrderBy);
+    if (newOrder !== "asc") params.set("order", newOrder);
+
+    setSearchParams(params);
+  };
 
   // Mapear filtros da UI para filtros da API
   const apiFilters = useMemo(
     () => ({
-      search: appliedFilters.name || appliedFilters.cnpj,
-      name: appliedFilters.name,
+      search: appliedFilters.name,
+      cnpj: appliedFilters.cnpj,
       statusId: appliedFilters.status
         ? parseInt(appliedFilters.status)
         : undefined,
@@ -68,7 +99,11 @@ export default function ClientsPage() {
       page: page + 1, // API usa página baseada em 1
       limit: rowsPerPage,
       sortBy: orderBy || undefined,
-      sortOrder: orderBy ? (order === 'asc' ? 'ASC' as const : 'DESC' as const) : undefined,
+      sortOrder: orderBy
+        ? order === "asc"
+          ? ("ASC" as const)
+          : ("DESC" as const)
+        : undefined,
     }),
     [appliedFilters, page, rowsPerPage, orderBy, order]
   );
@@ -88,6 +123,8 @@ export default function ClientsPage() {
   const applyFilters = () => {
     setAppliedFilters(filters);
     setHasSearched(true);
+    setPage(0);
+    updateURL(filters, 0, rowsPerPage, order, orderBy);
   };
 
   const clearFilters = () => {
@@ -99,18 +136,23 @@ export default function ClientsPage() {
     };
     setFilters(emptyFilters);
     setAppliedFilters(emptyFilters);
+    setPage(0);
     setHasSearched(true); // Aplicar busca vazia para limpar resultados
+    updateURL(emptyFilters, 0, rowsPerPage, order, orderBy);
   };
 
   const handleChangePage = (_event: unknown, newPage: number) => {
     setPage(newPage);
+    updateURL(appliedFilters, newPage, rowsPerPage, order, orderBy);
   };
 
   const handleChangeRowsPerPage = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
+    const newRowsPerPage = parseInt(event.target.value, 10);
+    setRowsPerPage(newRowsPerPage);
     setPage(0);
+    updateURL(appliedFilters, 0, newRowsPerPage, order, orderBy);
   };
 
   const getStatusLabel = (statusId: number) => {
@@ -141,12 +183,14 @@ export default function ClientsPage() {
 
   const handleRequestSort = (
     _event: React.MouseEvent<unknown>,
-    property: string,
+    property: string
   ) => {
-    const isAsc = orderBy === property && order === 'asc';
-    setOrder(isAsc ? 'desc' : 'asc');
+    const isAsc = orderBy === property && order === "asc";
+    const newOrder = isAsc ? "desc" : "asc";
+    setOrder(newOrder);
     setOrderBy(property);
     setPage(0);
+    updateURL(appliedFilters, 0, rowsPerPage, newOrder, property);
   };
 
   // Definir colunas da tabela
@@ -232,9 +276,9 @@ export default function ClientsPage() {
                 gap: 1,
                 flexDirection: { xs: "column", sm: "row" },
               }}
-          >
-            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-              <Search sx={{ color: "#666" }} />
+            >
+              <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                <Search sx={{ color: "#666" }} />
                 <Typography
                   variant="h6"
                   sx={{
@@ -242,8 +286,8 @@ export default function ClientsPage() {
                     fontSize: { xs: "1rem", sm: "1.25rem" },
                   }}
                 >
-                Filtros
-              </Typography>
+                  Filtros
+                </Typography>
               </Box>
               <Typography
                 variant="body2"
@@ -400,7 +444,7 @@ export default function ClientsPage() {
               aria-label="sticky table"
               sx={{ minWidth: 600 }}
             >
-            <TableHead>
+              <TableHead>
                 <TableRow>
                   {columns.map((column) => (
                     <TableCell
@@ -417,30 +461,30 @@ export default function ClientsPage() {
                     >
                       <TableSortLabel
                         active={orderBy === column.id}
-                        direction={orderBy === column.id ? order : 'asc'}
+                        direction={orderBy === column.id ? order : "asc"}
                         onClick={(event) => handleRequestSort(event, column.id)}
                         sx={{
-                          '&.MuiTableSortLabel-root': {
-                            color: 'inherit',
-                            '&:hover': {
-                              color: 'inherit',
+                          "&.MuiTableSortLabel-root": {
+                            color: "inherit",
+                            "&:hover": {
+                              color: "inherit",
                             },
-                            '&.Mui-active': {
-                              color: 'inherit',
+                            "&.Mui-active": {
+                              color: "inherit",
                             },
                           },
-                          '&.MuiTableSortLabel-icon': {
-                            color: 'inherit !important',
+                          "&.MuiTableSortLabel-icon": {
+                            color: "inherit !important",
                           },
                         }}
                       >
                         {column.label}
                       </TableSortLabel>
-                </TableCell>
+                    </TableCell>
                   ))}
-              </TableRow>
-            </TableHead>
-            <TableBody>
+                </TableRow>
+              </TableHead>
+              <TableBody>
                 {loading ? (
                   <TableRow>
                     <TableCell
@@ -481,11 +525,11 @@ export default function ClientsPage() {
                               }}
                             >
                               {column.id === "statusId" ? (
-                    <Chip
+                                <Chip
                                   label={getStatusLabel(value as number)}
-                      size="small"
+                                  size="small"
                                   color={getStatusColor(value as number) as any}
-                      variant="outlined"
+                                  variant="outlined"
                                   sx={{
                                     fontSize: { xs: "0.7rem", sm: "0.75rem" },
                                   }}
@@ -499,15 +543,15 @@ export default function ClientsPage() {
                               ) : (
                                 value
                               )}
-                  </TableCell>
+                            </TableCell>
                           );
                         })}
-                </TableRow>
+                      </TableRow>
                     ))
                 )}
-            </TableBody>
-          </Table>
-        </TableContainer>
+              </TableBody>
+            </Table>
+          </TableContainer>
           <TablePagination
             rowsPerPageOptions={[5, 10, 25, 50, 100]}
             component="div"
