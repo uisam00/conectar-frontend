@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import useFetch from "@/services/api/use-fetch";
+import axiosInstance from "@/services/api/axios-instance";
 
 export interface Client {
   id: number;
@@ -34,8 +34,6 @@ export function useClients(filters: ClientsFilters = {}) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const fetch = useFetch();
-
   const fetchClients = async () => {
     setLoading(true);
     setError(null);
@@ -54,13 +52,14 @@ export function useClients(filters: ClientsFilters = {}) {
       const queryString = queryParams.toString();
       const url = `/v1/clients${queryString ? `?${queryString}` : ""}`;
 
-      const response = await fetch(url);
+      const language = localStorage.getItem("i18nextLng") || "en";
+      const response = await axiosInstance.get(url, {
+        headers: {
+          "x-custom-lang": language,
+        },
+      });
 
-      if (!response.ok) {
-        throw new Error(`Erro ao buscar clientes: ${response.status}`);
-      }
-
-      const data: ClientsResponse = await response.json();
+      const data: ClientsResponse = response.data;
       setClients(data.data);
       setTotal(data.total);
     } catch (err) {

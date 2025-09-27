@@ -1,5 +1,5 @@
 import { useState } from "react";
-import useFetch from "@/services/api/use-fetch";
+import axiosInstance from "@/services/api/axios-instance";
 import { FILES_UPLOAD_URL } from "@/services/api/config";
 import useSnackbar from "./use-snackbar";
 
@@ -14,15 +14,14 @@ export function useFileUpload(options: FileUploadOptions = {}) {
   const { maxSize = 5 * 1024 * 1024, allowedTypes = ["image/"], onSuccess, onError } = options;
   const [uploading, setUploading] = useState(false);
   const [preview, setPreview] = useState<string | null>(null);
-  const fetchBase = useFetch();
-  const { showSnackbar } = useSnackbar();
+  const { showError: showSnackbar } = useSnackbar();
 
   const uploadFile = async (file: File) => {
     // Validate file type
     if (allowedTypes.length > 0 && !allowedTypes.some(type => file.type.startsWith(type))) {
       const error = "Tipo de arquivo não permitido";
       onError?.(error);
-      showSnackbar(error, "error");
+      showSnackbar(error);
       return null;
     }
 
@@ -30,7 +29,7 @@ export function useFileUpload(options: FileUploadOptions = {}) {
     if (file.size > maxSize) {
       const error = `O arquivo deve ter no máximo ${Math.round(maxSize / 1024 / 1024)}MB`;
       onError?.(error);
-      showSnackbar(error, "error");
+      showSnackbar(error);
       return null;
     }
 
@@ -41,25 +40,20 @@ export function useFileUpload(options: FileUploadOptions = {}) {
       const formData = new FormData();
       formData.append("file", file);
 
-      const response = await fetchBase(FILES_UPLOAD_URL, {
-        method: "POST",
-        body: formData,
+      const response = await axiosInstance.post(FILES_UPLOAD_URL, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
       });
 
-      if (response.ok) {
-        const data = await response.json();
-        showSnackbar("Arquivo enviado com sucesso!", "success");
-        onSuccess?.(data.file);
-        return data.file;
-      } else {
-        const errorData = await response.json().catch(() => ({ message: "Erro desconhecido" }));
-        throw new Error(errorData.message || `Erro ${response.status}: ${response.statusText}`);
-      }
+      showSnackbar("Arquivo enviado com sucesso!");
+      onSuccess?.(response.data.file);
+      return response.data.file;
     } catch (error) {
       console.error("File upload error:", error);
       const errorMessage = error instanceof Error ? error.message : "Erro ao enviar arquivo. Tente novamente.";
       onError?.(errorMessage);
-      showSnackbar(errorMessage, "error");
+      showSnackbar(errorMessage);
       return null;
     } finally {
       setUploading(false);

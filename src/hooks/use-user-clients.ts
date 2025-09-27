@@ -1,4 +1,4 @@
-import useFetch from "@/services/api/use-fetch";
+import axiosInstance from "@/services/api/axios-instance";
 
 export interface Client {
   id: number;
@@ -18,16 +18,15 @@ export interface UserClientsResponse {
 }
 
 export function useUserClients() {
-  const fetch = useFetch();
-
   const fetchUserClients = async (): Promise<UserClientsResponse> => {
-    const response = await fetch("/v1/users/clients/me");
+    const language = localStorage.getItem("i18nextLng") || "en";
+    const response = await axiosInstance.get("/v1/users/clients/me", {
+      headers: {
+        "x-custom-lang": language,
+      },
+    });
     
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    
-    return response.json();
+    return response.data;
   };
 
   return {

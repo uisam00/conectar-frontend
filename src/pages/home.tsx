@@ -14,11 +14,7 @@ export default function HomePage() {
   };
 
   return (
-    <PageLayout title="Bem-vindo ao Conectar!" showBreadcrumb={false}>
-      <Typography variant="h6" color="text.secondary" sx={{ mb: 4 }}>
-        Olá, {user?.firstName} {user?.lastName}! 👋
-      </Typography>
-
+    <PageLayout title={`Bem-vindo, ${user?.firstName}!`} showBreadcrumb={false}>
       <Box sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
         <Box sx={{ display: "flex", gap: 3, flexWrap: "wrap" }}>
           <Box sx={{ flex: 1, minWidth: 300 }}>

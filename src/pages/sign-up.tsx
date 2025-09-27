@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Paper, Box, Link as MuiLink, Button } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
 import { useLanguage } from "@/services/i18n";
-import useFetch from "@/services/api/use-fetch";
+import axiosInstance from "@/services/api/axios-instance";
 import { AUTH_REGISTER_URL } from "@/services/api/config";
 import { useErrorHandler } from "@/hooks";
 import useSnackbar from "@/hooks/use-snackbar";
@@ -10,7 +10,6 @@ import LabelInput from "@/components/form/label-input";
 
 export default function SignUpPage() {
   const { t } = useLanguage("sign-up");
-  const fetchBase = useFetch();
   const navigate = useNavigate();
   const { showSuccess } = useSnackbar();
   const { handleApiError } = useErrorHandler();
@@ -33,21 +32,12 @@ export default function SignUpPage() {
     e.preventDefault();
     setIsLoading(true);
     try {
-      const response = await fetchBase(AUTH_REGISTER_URL, {
-        method: "POST",
-        body: JSON.stringify(formData),
-      });
+      await axiosInstance.post(AUTH_REGISTER_URL, formData);
 
-      if (response.ok) {
-        showSuccess(
-          "Registration successful! Please check your email to confirm your account."
-        );
-        navigate("/sign-in");
-      } else {
-        const errorData = await response.json();
-        const errors = errorData.errors || errorData;
-        handleApiError(errors);
-      }
+      showSuccess(
+        "Registration successful! Please check your email to confirm your account."
+      );
+      navigate("/sign-in");
     } catch (error) {
       handleApiError(error);
     } finally {

@@ -2,14 +2,13 @@ import { useState } from "react";
 import { Paper, Box, Typography, Link as MuiLink, Button } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
 import { useLanguage } from "@/services/i18n";
-import useFetch from "@/services/api/use-fetch";
+import axiosInstance from "@/services/api/axios-instance";
 import { AUTH_FORGOT_PASSWORD_URL } from "@/services/api/config";
 import { useSnackbar, useErrorHandler } from "@/hooks";
 import LabelInput from "@/components/form/label-input";
 
 export default function ForgotPasswordPage() {
   const { t } = useLanguage("forgot-password");
-  const fetchBase = useFetch();
   const navigate = useNavigate();
   const { showSuccess } = useSnackbar();
   const { handleApiError } = useErrorHandler();
@@ -20,19 +19,10 @@ export default function ForgotPasswordPage() {
     e.preventDefault();
     setIsLoading(true);
     try {
-      const response = await fetchBase(AUTH_FORGOT_PASSWORD_URL, {
-        method: "POST",
-        body: JSON.stringify({ email }),
-      });
+      await axiosInstance.post(AUTH_FORGOT_PASSWORD_URL, { email });
 
-      if (response.ok) {
-        showSuccess(t("messages.success"));
-        navigate("/sign-in");
-      } else {
-        const errorData = await response.json();
-        const errors = errorData.errors || errorData;
-        handleApiError(errors);
-      }
+      showSuccess(t("messages.success"));
+      navigate("/sign-in");
     } catch (error) {
       handleApiError(error);
     } finally {

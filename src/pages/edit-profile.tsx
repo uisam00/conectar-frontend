@@ -19,7 +19,7 @@ import { useAuth, useAuthActions } from "@/services/auth";
 import { useLanguage } from "@/services/i18n";
 import { useSnackbar } from "@/hooks";
 import { FILES_UPLOAD_URL, AUTH_ME_URL } from "@/services/api/config";
-import useFetch from "@/services/api/use-fetch";
+import axiosInstance from "@/services/api/axios-instance";
 import {
   ClearOutlined,
   DeleteOutline,
@@ -153,23 +153,17 @@ const useValidationChangePasswordSchema = () => {
 
 // Serviço de Upload de Arquivos
 function useFileUploadService() {
-  const fetchBase = useFetch();
-
   return async (file: File) => {
     const formData = new FormData();
     formData.append("file", file);
 
-    const response = await fetchBase(FILES_UPLOAD_URL, {
-      method: "POST",
-      body: formData,
+    const response = await axiosInstance.post(FILES_UPLOAD_URL, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
     });
 
-    if (response.ok) {
-      const data = await response.json();
-      return { status: response.status, data };
-    } else {
-      throw new Error(`Upload failed: ${response.status}`);
-    }
+    return { status: response.status, data: response.data };
   };
 }
 
@@ -322,7 +316,6 @@ function FormBasicInfo() {
   const { setUser } = useAuthActions();
   const { t } = useLanguage("edit-profile");
   const { showSuccess, showError } = useSnackbar();
-  const fetchBase = useFetch();
   const validationSchema = useValidationBasicInfoSchema();
   const [deleteCurrentPhoto, setDeleteCurrentPhoto] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
@@ -336,7 +329,7 @@ function FormBasicInfo() {
     },
   });
 
-  const { handleSubmit, setError, reset, watch, setValue } = methods;
+  const { handleSubmit, reset, watch, setValue } = methods;
   const photo = watch("photo");
 
   const onSubmit = handleSubmit(async formData => {
@@ -356,34 +349,17 @@ function FormBasicInfo() {
         updateData.photo = null;
       }
 
-      const response = await fetchBase(AUTH_ME_URL, {
-        method: "PATCH",
-        body: JSON.stringify(updateData),
-      });
+      const response = await axiosInstance.patch(AUTH_ME_URL, updateData);
 
-      if (response.ok) {
-        const updatedUser = await response.json();
-        setUser(updatedUser);
-        showSuccess(t("success.profile"));
-        reset({
-          firstName: updatedUser.firstName,
-          lastName: updatedUser.lastName,
-          photo: null,
-        });
-        setDeleteCurrentPhoto(false);
-      } else {
-        const errorData = await response.json();
-        if (errorData.errors) {
-          Object.keys(errorData.errors).forEach(key => {
-            setError(key as keyof EditProfileBasicInfoFormData, {
-              type: "manual",
-              message: errorData.errors[key],
-            });
-          });
-        } else {
-          showError(errorData.message || t("error.generic"));
-        }
-      }
+      const updatedUser = response.data;
+      setUser(updatedUser);
+      showSuccess(t("success.profile"));
+      reset({
+        firstName: updatedUser.firstName,
+        lastName: updatedUser.lastName,
+        photo: null,
+      });
+      setDeleteCurrentPhoto(false);
     } catch {
       showError(t("error.generic"));
     }
@@ -475,7 +451,6 @@ function FormBasicInfo() {
 function FormChangePassword() {
   const { t } = useLanguage("edit-profile");
   const { showSuccess, showError } = useSnackbar();
-  const fetchBase = useFetch();
   const validationSchema = useValidationChangePasswordSchema();
   const [isOpen, setIsOpen] = useState(false);
 
@@ -488,36 +463,19 @@ function FormChangePassword() {
     },
   });
 
-  const { handleSubmit, setError, reset, watch } = methods;
+  const { handleSubmit, reset, watch } = methods;
   const password = watch("password");
   const passwordConfirmation = watch("passwordConfirmation");
 
   const onSubmit = handleSubmit(async formData => {
     try {
-      const response = await fetchBase(AUTH_ME_URL, {
-        method: "PATCH",
-        body: JSON.stringify({
-          password: formData.password,
-          oldPassword: formData.oldPassword,
-        }),
+      await axiosInstance.patch(AUTH_ME_URL, {
+        password: formData.password,
+        oldPassword: formData.oldPassword,
       });
 
-      if (response.ok) {
-        showSuccess(t("success.password"));
-        reset();
-      } else {
-        const errorData = await response.json();
-        if (errorData.errors) {
-          Object.keys(errorData.errors).forEach(key => {
-            setError(key as keyof EditProfileChangePasswordFormData, {
-              type: "manual",
-              message: errorData.errors[key],
-            });
-          });
-        } else {
-          showError(errorData.message || t("error.generic"));
-        }
-      }
+      showSuccess(t("success.password"));
+      reset();
     } catch {
       showError(t("error.generic"));
     }

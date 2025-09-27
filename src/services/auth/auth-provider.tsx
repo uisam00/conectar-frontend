@@ -9,7 +9,7 @@ import {
   AuthTokensContext,
   type TokensInfo,
 } from "./auth-context";
-import useFetch from "@/services/api/use-fetch";
+import axiosInstance from "@/services/api/axios-instance";
 import { AUTH_LOGOUT_URL, AUTH_ME_URL } from "@/services/api/config";
 import { HTTP_CODES } from "@/services/api/config";
 import {
@@ -22,7 +22,6 @@ import { useSessionPersistence } from "@/hooks";
 function AuthProvider(props: PropsWithChildren) {
   const [isLoaded, setIsLoaded] = useState(false);
   const [user, setUser] = useState<User | null>(null);
-  const fetchBase = useFetch();
 
   // Hook para gerenciar persistência de sessão
   useSessionPersistence();
@@ -40,9 +39,7 @@ function AuthProvider(props: PropsWithChildren) {
 
     if (tokens?.token) {
       try {
-        await fetchBase(AUTH_LOGOUT_URL, {
-          method: "POST",
-        });
+        await axiosInstance.post(AUTH_LOGOUT_URL);
       } catch (error) {
         console.error("Logout error:", error);
       }
@@ -51,33 +48,28 @@ function AuthProvider(props: PropsWithChildren) {
     // Clear tokens and user data
     clearTokensInfo();
     setUser(null);
-  }, [fetchBase]);
+  }, []);
 
   const loadData = useCallback(async () => {
     const tokens = getTokensInfo();
 
     try {
       if (tokens?.token) {
-        const response = await fetchBase(AUTH_ME_URL, {
-          method: "GET",
-        });
+        const response = await axiosInstance.get(AUTH_ME_URL);
 
         if (response.status === HTTP_CODES.UNAUTHORIZED) {
           logOut();
           return;
         }
 
-        if (response.ok) {
-          const data = await response.json();
-          setUser(data);
-        }
+        setUser(response.data);
       }
     } catch (error) {
       console.error("Auth load data error:", error);
     } finally {
       setIsLoaded(true);
     }
-  }, [fetchBase, logOut]);
+  }, [logOut]);
 
   useEffect(() => {
     loadData();

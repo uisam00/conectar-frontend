@@ -25,8 +25,7 @@ export interface ClientsFilters {
   limit?: number;
 }
 
-import { getTokensInfo } from "../auth/auth-tokens-info";
-import { API_URL } from "./config";
+import axiosInstance from "./axios-instance";
 
 export async function getClients(filters: ClientsFilters = {}): Promise<ClientsResponse> {
   const queryParams = new URLSearchParams();
@@ -42,23 +41,13 @@ export async function getClients(filters: ClientsFilters = {}): Promise<ClientsR
   const queryString = queryParams.toString();
   const url = `/v1/clients${queryString ? `?${queryString}` : ""}`;
 
-  const tokens = getTokensInfo();
   const language = localStorage.getItem("i18nextLng") || "en";
 
-  const response = await fetch(`${API_URL}${url}`, {
-    method: "GET",
+  const response = await axiosInstance.get(url, {
     headers: {
-      "Content-Type": "application/json",
       "x-custom-lang": language,
-      ...(tokens?.token && {
-        Authorization: `Bearer ${tokens.token}`,
-      }),
     },
   });
 
-  if (!response.ok) {
-    throw new Error(`Erro ao buscar clientes: ${response.status}`);
-  }
-
-  return response.json();
+  return response.data;
 }

@@ -12,7 +12,7 @@ import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { Link, useNavigate } from "react-router-dom";
 import { useLanguage } from "@/services/i18n";
 import { useAuthActions, useAuthTokens } from "@/services/auth";
-import useFetch from "@/services/api/use-fetch";
+import axiosInstance from "@/services/api/axios-instance";
 import { AUTH_LOGIN_URL } from "@/services/api/config";
 import { useErrorHandler } from "@/hooks";
 import LabelInput from "@/components/form/label-input";
@@ -21,7 +21,6 @@ export default function SignInPage() {
   const { t } = useLanguage("sign-in");
   const { setTokensInfo } = useAuthTokens();
   const { setUser } = useAuthActions();
-  const fetchBase = useFetch();
   const navigate = useNavigate();
   const { handleApiError } = useErrorHandler();
   const [isLoading, setIsLoading] = useState(false);
@@ -42,25 +41,15 @@ export default function SignInPage() {
     e.preventDefault();
     setIsLoading(true);
     try {
-      const response = await fetchBase(AUTH_LOGIN_URL, {
-        method: "POST",
-        body: JSON.stringify(formData),
-      });
+      const response = await axiosInstance.post(AUTH_LOGIN_URL, formData);
 
-      if (response.ok) {
-        const result = await response.json();
-        setTokensInfo({
-          token: result.token,
-          refreshToken: result.refreshToken,
-          tokenExpires: result.tokenExpires,
-        });
-        setUser(result.user);
-        navigate("/");
-      } else {
-        const errorData = await response.json();
-        const errors = errorData.errors || errorData;
-        handleApiError(errors);
-      }
+      setTokensInfo({
+        token: response.data.token,
+        refreshToken: response.data.refreshToken,
+        tokenExpires: response.data.tokenExpires,
+      });
+      setUser(response.data.user);
+      navigate("/");
     } catch (error) {
       handleApiError(error);
     } finally {
