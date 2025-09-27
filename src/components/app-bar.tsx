@@ -8,11 +8,13 @@ import {
   MenuItem,
   Avatar,
 } from "@mui/material";
-import { Help, Notifications } from "@mui/icons-material";
+import { Help, Notifications, Menu as MenuIcon } from "@mui/icons-material";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth, useAuthActions } from "@/services/auth";
 import { useLanguage } from "@/services/i18n";
+import SideDrawer from "@/components/drawer/side-drawer";
+import useDrawer from "@/hooks/use-drawer";
 
 export default function ResponsiveAppBar() {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -20,6 +22,7 @@ export default function ResponsiveAppBar() {
   const { logOut } = useAuthActions();
   const { t } = useLanguage("common");
   const navigate = useNavigate();
+  const { isOpen, toggleDrawer } = useDrawer();
 
   const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -45,27 +48,41 @@ export default function ResponsiveAppBar() {
   }
 
   return (
-    <AppBar
-      position="static"
-      sx={{
-        backgroundColor: "primary.main",
-        boxShadow: "none",
-      }}
-    >
-      <Toolbar>
-        <Box
-          sx={{ display: "flex", alignItems: "center", gap: 2, flexGrow: 1 }}
-        >
-          <img
-            src="/logo.png"
-            alt="Conectar"
-            style={{ height: "32px", width: "auto" }}
-          />
-          {user && (
+    <>
+      <AppBar
+        position="static"
+        sx={{
+          backgroundColor: "primary.main",
+          boxShadow: "none",
+        }}
+      >
+        <Toolbar>
+          <Box
+            sx={{ display: "flex", alignItems: "center", gap: 2, flexGrow: 1 }}
+          >
+            {user && (
+              <IconButton
+                edge="start"
+                color="inherit"
+                aria-label="menu"
+                onClick={toggleDrawer}
+                sx={{ mr: 1 }}
+              >
+                <MenuIcon />
+              </IconButton>
+            )}
+            <Link to="/" style={{ textDecoration: "none" }}>
+              <img
+                src="/logo.png"
+                alt="Conectar"
+                style={{ height: "32px", width: "auto", cursor: "pointer" }}
+              />
+            </Link>
+          {user && user.role?.name?.toLowerCase() === "admin" && (
             <Button
               color="inherit"
               component={Link}
-              to="/clients"
+              to="/admin"
               sx={{
                 color: "white",
                 fontWeight: "bold",
@@ -75,7 +92,7 @@ export default function ResponsiveAppBar() {
                 py: 1,
               }}
             >
-              Clientes
+              Admin
             </Button>
           )}
         </Box>
@@ -139,5 +156,7 @@ export default function ResponsiveAppBar() {
         </Box>
       </Toolbar>
     </AppBar>
+    {user && <SideDrawer open={isOpen} onToggle={toggleDrawer} />}
+    </>
   );
 }

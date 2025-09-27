@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import {
-  Container,
   Typography,
   Button,
   Box,
@@ -32,6 +31,7 @@ import {
 } from "@mui/icons-material";
 import { useDropzone } from "react-dropzone";
 import type { FileType } from "@/types/api";
+import PageLayout from "@/components/layout/page-layout";
 
 // Componente para mostrar critérios de senha
 function PasswordCriteria({
@@ -404,69 +404,67 @@ function FormBasicInfo() {
 
   return (
     <FormProvider {...methods}>
-      <Container maxWidth="md">
-        <Card sx={{ mb: 3 }}>
-          <CardHeader
-            avatar={<Person sx={{ color: "primary.main" }} />}
-            title={t("title1")}
-            titleTypographyProps={{
-              variant: "h6",
-              fontWeight: "bold",
-              color: "primary.main",
-            }}
-          />
-          <Divider />
-          <CardContent>
-            <form onSubmit={onSubmit}>
-              <Box
-                sx={{
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: 3,
-                  alignItems: "center",
-                }}
-              >
-                <AvatarInput
-                  value={photo}
-                  onChange={file => setValue("photo", file)}
-                  onDeleteCurrent={handleDeleteCurrentPhoto}
-                  deleteCurrentPhoto={deleteCurrentPhoto}
-                  onLoadingChange={setIsUploading}
+      <Card sx={{ mb: 3 }}>
+        <CardHeader
+          avatar={<Person sx={{ color: "primary.main" }} />}
+          title={t("title1")}
+          titleTypographyProps={{
+            variant: "h6",
+            fontWeight: "bold",
+            color: "primary.main",
+          }}
+        />
+        <Divider />
+        <CardContent>
+          <form onSubmit={onSubmit}>
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                gap: 3,
+                alignItems: "center",
+              }}
+            >
+              <AvatarInput
+                value={photo}
+                onChange={file => setValue("photo", file)}
+                onDeleteCurrent={handleDeleteCurrentPhoto}
+                deleteCurrentPhoto={deleteCurrentPhoto}
+                onLoadingChange={setIsUploading}
+              />
+
+              <Box sx={{ width: "100%", display: "flex", gap: 2 }}>
+                <TextField
+                  {...methods.register("firstName")}
+                  label={t("firstName")}
+                  fullWidth
+                  error={!!methods.formState.errors.firstName}
+                  helperText={methods.formState.errors.firstName?.message}
                 />
 
-                <Box sx={{ width: "100%", display: "flex", gap: 2 }}>
-                  <TextField
-                    {...methods.register("firstName")}
-                    label={t("firstName")}
-                    fullWidth
-                    error={!!methods.formState.errors.firstName}
-                    helperText={methods.formState.errors.firstName?.message}
-                  />
-
-                  <TextField
-                    {...methods.register("lastName")}
-                    label={t("lastName")}
-                    fullWidth
-                    error={!!methods.formState.errors.lastName}
-                    helperText={methods.formState.errors.lastName?.message}
-                  />
-                </Box>
-
-                <Button
-                  type="submit"
-                  variant="contained"
+                <TextField
+                  {...methods.register("lastName")}
+                  label={t("lastName")}
                   fullWidth
-                  startIcon={<Edit />}
-                  disabled={isUploading}
-                  sx={{ maxWidth: 300 }}
-                >
-                  {isUploading ? "Enviando..." : t("save")}
-                </Button>
+                  error={!!methods.formState.errors.lastName}
+                  helperText={methods.formState.errors.lastName?.message}
+                />
               </Box>
-            </form>
-          </CardContent>
-        </Card>
-      </Container>
+
+              <Button
+                type="submit"
+                variant="contained"
+                fullWidth
+                startIcon={<Edit />}
+                disabled={isUploading}
+                sx={{ maxWidth: 300 }}
+              >
+                {isUploading ? "Enviando..." : t("save")}
+              </Button>
+            </Box>
+          </form>
+        </CardContent>
+      </Card>
     </FormProvider>
   );
 }
@@ -524,109 +522,97 @@ function FormChangePassword() {
   });
 
   return (
-    <Container maxWidth="md">
-      <Card>
-        <CardHeader
-          avatar={<Lock sx={{ color: "primary.main" }} />}
-          title={t("title3")}
-          titleTypographyProps={{
-            variant: "h6",
-            fontWeight: "bold",
-            color: "primary.main",
-          }}
-          action={
-            <Button
-              variant="outlined"
-              startIcon={<Lock />}
-              onClick={() => setIsOpen(!isOpen)}
-              sx={{ mr: 1 }}
-            >
-              {isOpen ? "Fechar" : "Alterar Senha"}
-            </Button>
-          }
-        />
-        <Divider />
-        <Collapse in={isOpen}>
-          <CardContent>
-            <FormProvider {...methods}>
-              <form onSubmit={onSubmit}>
-                <Box sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
-                  <Box
-                    sx={{
-                      display: "flex",
-                      gap: 2,
-                      flexDirection: { xs: "column", md: "row" },
-                    }}
-                  >
-                    <TextField
-                      {...methods.register("oldPassword")}
-                      label={t("oldPassword")}
-                      type="password"
-                      fullWidth
-                      error={!!methods.formState.errors.oldPassword}
-                      helperText={methods.formState.errors.oldPassword?.message}
-                    />
-                    <TextField
-                      {...methods.register("password")}
-                      label={t("newPassword")}
-                      type="password"
-                      fullWidth
-                      error={!!methods.formState.errors.password}
-                      helperText={methods.formState.errors.password?.message}
-                    />
-
-                    <TextField
-                      {...methods.register("passwordConfirmation")}
-                      label={t("passwordConfirmation")}
-                      type="password"
-                      fullWidth
-                      error={!!methods.formState.errors.passwordConfirmation}
-                      helperText={
-                        methods.formState.errors.passwordConfirmation?.message
-                      }
-                    />
-                  </Box>
-                  <PasswordCriteria
-                    password={password || ""}
-                    passwordConfirmation={passwordConfirmation || ""}
+    <Card>
+      <CardHeader
+        avatar={<Lock sx={{ color: "primary.main" }} />}
+        title={t("title3")}
+        titleTypographyProps={{
+          variant: "h6",
+          fontWeight: "bold",
+          color: "primary.main",
+        }}
+        action={
+          <Button
+            variant="outlined"
+            startIcon={<Lock />}
+            onClick={() => setIsOpen(!isOpen)}
+            sx={{ mr: 1 }}
+          >
+            {isOpen ? "Fechar" : "Alterar Senha"}
+          </Button>
+        }
+      />
+      <Divider />
+      <Collapse in={isOpen}>
+        <CardContent>
+          <FormProvider {...methods}>
+            <form onSubmit={onSubmit}>
+              <Box sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
+                <Box
+                  sx={{
+                    display: "flex",
+                    gap: 2,
+                    flexDirection: { xs: "column", md: "row" },
+                  }}
+                >
+                  <TextField
+                    {...methods.register("oldPassword")}
+                    label={t("oldPassword")}
+                    type="password"
+                    fullWidth
+                    error={!!methods.formState.errors.oldPassword}
+                    helperText={methods.formState.errors.oldPassword?.message}
+                  />
+                  <TextField
+                    {...methods.register("password")}
+                    label={t("newPassword")}
+                    type="password"
+                    fullWidth
+                    error={!!methods.formState.errors.password}
+                    helperText={methods.formState.errors.password?.message}
                   />
 
-                  <Box sx={{ display: "flex", justifyContent: "center" }}>
-                    <Button
-                      type="submit"
-                      variant="contained"
-                      startIcon={<Edit />}
-                      sx={{ minWidth: 200 }}
-                    >
-                      {t("save")}
-                    </Button>
-                  </Box>
+                  <TextField
+                    {...methods.register("passwordConfirmation")}
+                    label={t("passwordConfirmation")}
+                    type="password"
+                    fullWidth
+                    error={!!methods.formState.errors.passwordConfirmation}
+                    helperText={
+                      methods.formState.errors.passwordConfirmation?.message
+                    }
+                  />
                 </Box>
-              </form>
-            </FormProvider>
-          </CardContent>
-        </Collapse>
-      </Card>
-    </Container>
+                <PasswordCriteria
+                  password={password || ""}
+                  passwordConfirmation={passwordConfirmation || ""}
+                />
+
+                <Box sx={{ display: "flex", justifyContent: "center" }}>
+                  <Button
+                    type="submit"
+                    variant="contained"
+                    startIcon={<Edit />}
+                    sx={{ minWidth: 200 }}
+                  >
+                    {t("save")}
+                  </Button>
+                </Box>
+              </Box>
+            </form>
+          </FormProvider>
+        </CardContent>
+      </Collapse>
+    </Card>
   );
 }
 
 // Componente Principal
 export default function EditProfilePage() {
   return (
-    <Box sx={{ py: 3 }}>
-      <Container maxWidth="md">
-        <Typography
-          variant="h4"
-          component="h1"
-          gutterBottom
-          sx={{ mb: 4, color: "primary.main" }}
-        >
-          Editar Perfil
-        </Typography>
-        <FormBasicInfo />
-        <FormChangePassword />
-      </Container>
-    </Box>
+    <PageLayout title="Editar Perfil">
+      <FormBasicInfo />
+      <FormChangePassword />
+    </PageLayout>
   );
 }

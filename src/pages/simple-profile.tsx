@@ -1,5 +1,4 @@
 import {
-  Container,
   Typography,
   Box,
   Card,
@@ -19,6 +18,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import { useLanguage } from "@/services/i18n";
 import { useAuth } from "@/services/auth";
+import PageLayout from "@/components/layout/page-layout";
 
 export default function SimpleProfilePage() {
   const { t } = useLanguage("profile");
@@ -27,92 +27,86 @@ export default function SimpleProfilePage() {
 
   if (!user) {
     return (
-      <Container maxWidth="md">
+      <PageLayout title={t("title")}>
         <Typography variant="h6" align="center">
           {t("signInRequired")}
         </Typography>
-      </Container>
+      </PageLayout>
     );
   }
 
   return (
-    <Container maxWidth="md">
-      <Box sx={{ mt: 4, mb: 4 }}>
-        <Typography variant="h4" component="h1" gutterBottom>
-          {t("title")}
-        </Typography>
-
-        <Card sx={{ mb: 3 }}>
-          <CardHeader
-            title={
-              <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                <Person color="primary" />
-                <Typography variant="h6">{t("userInformation")}</Typography>
-              </Box>
-            }
-            action={
-              <Button
-                variant="contained"
-                startIcon={<Edit />}
-                onClick={() => navigate("/profile/edit")}
-              >
-                {t("editProfile")}
-              </Button>
-            }
-          />
-          <Divider />
-          <CardContent>
-            <Box
-              sx={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                gap: 3,
-              }}
+    <PageLayout title={t("title")}>
+      <Card sx={{ mb: 3 }}>
+        <CardHeader
+          title={
+            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+              <Person color="primary" />
+              <Typography variant="h6">{t("userInformation")}</Typography>
+            </Box>
+          }
+          action={
+            <Button
+              variant="contained"
+              startIcon={<Edit />}
+              onClick={() => navigate("/profile/edit")}
             >
-              <Avatar
-                alt={`${user.firstName} ${user.lastName}`}
-                src={user.photo?.path}
-                sx={{ width: 120, height: 120, fontSize: "3rem" }}
+              {t("editProfile")}
+            </Button>
+          }
+        />
+        <Divider />
+        <CardContent>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              gap: 3,
+            }}
+          >
+            <Avatar
+              alt={`${user.firstName} ${user.lastName}`}
+              src={user.photo?.path}
+              sx={{ width: 120, height: 120, fontSize: "3rem" }}
+            >
+              {user.firstName?.[0]}
+              {user.lastName?.[0]}
+            </Avatar>
+
+            <Typography variant="h5" align="center">
+              {t("welcome", { name: `${user.firstName} ${user.lastName}` })}
+            </Typography>
+
+            <Box sx={{ width: "100%", maxWidth: 400 }}>
+              <Box
+                sx={{ display: "flex", alignItems: "center", gap: 1, mb: 2 }}
               >
-                {user.firstName?.[0]}
-                {user.lastName?.[0]}
-              </Avatar>
+                <Email color="action" />
+                <Typography variant="body1">
+                  <strong>{t("email")}:</strong> {user.email}
+                </Typography>
+              </Box>
 
-              <Typography variant="h5" align="center">
-                {t("welcome", { name: `${user.firstName} ${user.lastName}` })}
-              </Typography>
+              <Box
+                sx={{ display: "flex", alignItems: "center", gap: 1, mb: 2 }}
+              >
+                <Security color="action" />
+                <Typography variant="body1">
+                  <strong>{t("role")}:</strong> {user.role.name}
+                </Typography>
+              </Box>
 
-              <Box sx={{ width: "100%", maxWidth: 400 }}>
-                <Box
-                  sx={{ display: "flex", alignItems: "center", gap: 1, mb: 2 }}
-                >
-                  <Email color="action" />
-                  <Typography variant="body1">
-                    <strong>{t("email")}:</strong> {user.email}
-                  </Typography>
-                </Box>
-
-                <Box
-                  sx={{ display: "flex", alignItems: "center", gap: 1, mb: 2 }}
-                >
-                  <Security color="action" />
-                  <Typography variant="body1">
-                    <strong>{t("role")}:</strong> {user.role.name}
-                  </Typography>
-                </Box>
-
-                <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                  <CheckCircle color="success" />
-                  <Typography variant="body1">
-                    <strong>{t("status")}:</strong> {user.status.name}
-                  </Typography>
-                </Box>
+              <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                <CheckCircle color="success" />
+                <Typography variant="body1">
+                  <strong>{t("status")}:</strong> {user.status.name}
+                </Typography>
               </Box>
             </Box>
-          </CardContent>
-        </Card>
-      </Box>
-    </Container>
+          </Box>
+        </CardContent>
+      </Card>
+    </PageLayout>
   );
 }

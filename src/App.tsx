@@ -14,6 +14,7 @@ import SnackbarProvider from "@/components/snackbar-provider";
 import ResponsiveAppBar from "@/components/app-bar";
 import PageLoading from "@/components/loading/page-loading";
 import ErrorBoundary from "@/components/error/error-boundary";
+import ProtectedRoute from "@/components/auth/protected-route";
 import { useAuth } from "@/services/auth";
 
 // Lazy load pages for code splitting
@@ -23,6 +24,7 @@ const SimpleProfilePage = lazy(() => import("@/pages/simple-profile"));
 const EditProfilePage = lazy(() => import("@/pages/edit-profile"));
 const ForgotPasswordPage = lazy(() => import("@/pages/forgot-password"));
 const ClientsPage = lazy(() => import("@/pages/clients"));
+const AdminDashboardPage = lazy(() => import("@/pages/admin-dashboard"));
 
 // Initialize i18n
 import "@/services/i18n/client";
@@ -80,9 +82,19 @@ function AppContent() {
               }
             />
             <Route
-              path="/clients"
+              path="/admin"
               element={
-                user ? <ClientsPage /> : <Navigate to="/sign-in" replace />
+                <ProtectedRoute requiredRole="admin">
+                  <AdminDashboardPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/clients"
+              element={
+                <ProtectedRoute requiredRole="admin">
+                  <ClientsPage />
+                </ProtectedRoute>
               }
             />
             <Route path="*" element={<Navigate to="/" replace />} />
