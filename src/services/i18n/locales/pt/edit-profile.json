@@ -1,0 +1,27 @@
+{
+  "title": "Editar Perfil",
+  "firstName": "Nome",
+  "lastName": "Sobrenome",
+  "email": "Email",
+  "emailHelper": "O email não pode ser alterado",
+  "changePassword": "Alterar Senha (opcional)",
+  "currentPassword": "Senha Atual",
+  "newPassword": "Nova Senha",
+  "photo": "Foto",
+  "uploadPhoto": "Enviar Foto",
+  "save": "Salvar Alterações",
+  "saving": "Salvando...",
+  "cancel": "Cancelar",
+  "changePasswordButton": "Alterar Senha",
+  "cancelPasswordChange": "Cancelar Alteração de Senha",
+  "success": "Perfil atualizado com sucesso!",
+  "error": "Erro ao atualizar perfil. Tente novamente.",
+  "required": {
+    "firstName": "Nome é obrigatório",
+    "lastName": "Sobrenome é obrigatório",
+    "currentPassword": "Senha atual é obrigatória para alterar a senha"
+  },
+  "validation": {
+    "passwordMin": "Senha deve ter pelo menos 6 caracteres"
+  }
+}

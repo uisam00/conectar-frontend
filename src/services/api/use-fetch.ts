@@ -7,9 +7,13 @@ export default function useFetch() {
     const tokens = getTokensInfo();
 
     const headers: Record<string, string> = {
-      "Content-Type": "application/json",
       ...(options.headers as Record<string, string>),
     };
+
+    // Only set Content-Type for JSON requests, not for FormData
+    if (!(options.body instanceof FormData)) {
+      headers["Content-Type"] = "application/json";
+    }
 
     if (tokens?.token) {
       headers.Authorization = `Bearer ${tokens.token}`;

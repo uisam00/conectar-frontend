@@ -11,6 +11,7 @@ export const AUTH_RESET_PASSWORD_URL = `${API_URL}/v1/auth/reset/password`;
 export const AUTH_REFRESH_URL = `${API_URL}/v1/auth/refresh`;
 export const AUTH_LOGOUT_URL = `${API_URL}/v1/auth/logout`;
 export const AUTH_GOOGLE_LOGIN_URL = `${API_URL}/v1/auth/google/login`;
+export const AUTH_UPDATE_URL = `${API_URL}/v1/auth/me`;
 
 export const USERS_URL = `${API_URL}/v1/users`;
 export const FILES_UPLOAD_URL = `${API_URL}/v1/files/upload`;

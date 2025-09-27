@@ -18,6 +18,7 @@ import HomePage from "@/pages/home";
 import SignInPage from "@/pages/sign-in";
 // import SignUpPage from '@/pages/sign-up';
 import SimpleProfilePage from "@/pages/simple-profile";
+import EditProfilePage from "@/pages/edit-profile";
 import ForgotPasswordPage from "@/pages/forgot-password";
 import ClientsPage from "@/pages/clients";
 
@@ -55,6 +56,12 @@ function AppContent() {
           path="/profile"
           element={
             user ? <SimpleProfilePage /> : <Navigate to="/sign-in" replace />
+          }
+        />
+        <Route
+          path="/profile/edit"
+          element={
+            user ? <EditProfilePage /> : <Navigate to="/sign-in" replace />
           }
         />
         <Route
