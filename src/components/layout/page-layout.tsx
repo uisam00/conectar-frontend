@@ -14,7 +14,13 @@ export default function PageLayout({
   showBreadcrumb = true,
 }: PageLayoutProps) {
   return (
-    <Box sx={{ py: 3 }}>
+    <Box
+      sx={{
+        py: 3,
+        pt: { xs: 10, sm: 10 }, // Compensar altura do AppBar fixo
+        minHeight: "100vh",
+      }}
+    >
       <Container maxWidth="md">
         {showBreadcrumb && <Breadcrumb />}
         <Typography

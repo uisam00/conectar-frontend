@@ -6,18 +6,12 @@ import {
   ListItemIcon,
   ListItemText,
   Box,
-  IconButton,
-  Divider,
   Typography,
   Button,
+  IconButton,
+  Toolbar,
 } from "@mui/material";
-import {
-  Home,
-  AdminPanelSettings,
-  Person,
-  Close,
-  Logout,
-} from "@mui/icons-material";
+import { Home, AdminPanelSettings, Person, Logout } from "@mui/icons-material";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth, useAuthActions } from "@/services/auth";
 import UserAvatar from "@/components/user-avatar";
@@ -96,13 +90,12 @@ export default function SideDrawer({ open, onToggle }: SideDrawerProps) {
         "& .MuiDrawer-paper": {
           width: DRAWER_WIDTH,
           boxSizing: "border-box",
-          top: 64, // Altura do AppBar
-          height: "calc(100vh - 64px)", // Altura total menos a altura do AppBar
         },
       }}
     >
-      <Box sx={{ display: "flex", flexDirection: "column", height: "100%" }}>
-        <List sx={{ pt: 2, flex: 1 }}>
+      <Toolbar />
+      <Box sx={{ overflow: "auto", height: "100%" }}>
+        <List sx={{ pt: 2 }}>
           {menuItems
             .filter((item) => item.show)
             .map((item) => (
@@ -138,15 +131,24 @@ export default function SideDrawer({ open, onToggle }: SideDrawerProps) {
             ))}
         </List>
 
-        {/* Seção do usuário no final */}
-        <Box sx={{ mt: "auto" }}>
-          <Divider />
+        {/* Seção do usuário fixa na parte inferior */}
+        <Box
+          sx={{
+            position: "absolute",
+            bottom: 0,
+            left: 0,
+            right: 0,
+            backgroundColor: "background.paper",
+            borderTop: "1px solid",
+            borderColor: "divider",
+            zIndex: 1,
+          }}
+        >
           <Box sx={{ p: 2 }}>
             <Box
               sx={{
                 display: "flex",
                 alignItems: "center",
-                mb: 2,
                 cursor: "pointer",
                 "&:hover": {
                   backgroundColor: "action.hover",
@@ -166,7 +168,23 @@ export default function SideDrawer({ open, onToggle }: SideDrawerProps) {
                   {user?.email}
                 </Typography>
               </Box>
+              {/* Ícone de sair para mobile */}
+              <IconButton
+                onClick={handleLogout}
+                sx={{
+                  color: "error.main",
+                  "&:hover": {
+                    backgroundColor: "error.light",
+                    color: "error.dark",
+                  },
+                }}
+                size="small"
+              >
+                <Logout sx={{ fontSize: 20 }} />
+              </IconButton>
             </Box>
+
+            {/* Botão de sair completo para desktop */}
             <Button
               fullWidth
               variant="outlined"
@@ -174,6 +192,10 @@ export default function SideDrawer({ open, onToggle }: SideDrawerProps) {
               startIcon={<Logout sx={{ fontSize: 16 }} />}
               onClick={handleLogout}
               size="small"
+              sx={{
+                display: { xs: "none", sm: "flex" },
+                mt: 1,
+              }}
             >
               Sair
             </Button>

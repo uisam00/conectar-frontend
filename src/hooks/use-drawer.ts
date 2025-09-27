@@ -30,10 +30,16 @@ export default function useDrawer() {
     localStorage.setItem(DRAWER_STORAGE_KEY, JSON.stringify(false));
   };
 
+  const clearDrawerState = () => {
+    setIsOpen(false);
+    localStorage.removeItem(DRAWER_STORAGE_KEY);
+  };
+
   return {
     isOpen,
     toggleDrawer,
     openDrawer,
     closeDrawer,
+    clearDrawerState,
   };
 }

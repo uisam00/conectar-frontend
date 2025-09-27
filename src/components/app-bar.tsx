@@ -28,7 +28,7 @@ export default function ResponsiveAppBar() {
   const { logOut } = useAuthActions();
   const { t } = useLanguage("common");
   const navigate = useNavigate();
-  const { isOpen, toggleDrawer } = useDrawer();
+  const { isOpen, toggleDrawer, clearDrawerState } = useDrawer();
   const { selectedClient, setSelectedClient, userClients, isLoading } =
     useClient();
 
@@ -42,6 +42,7 @@ export default function ResponsiveAppBar() {
 
   const handleLogout = async () => {
     await logOut();
+    clearDrawerState(); // Limpar estado do drawer no logout
     navigate("/sign-in");
     handleClose();
   };
@@ -53,7 +54,7 @@ export default function ResponsiveAppBar() {
 
   const handleClientChange = (event: any) => {
     const clientId = event.target.value;
-    const client = userClients.find(c => c.id === clientId);
+    const client = userClients.find((c) => c.id === clientId);
     setSelectedClient(client || null);
   };
 
@@ -64,10 +65,11 @@ export default function ResponsiveAppBar() {
   return (
     <>
       <AppBar
-        position="static"
+        position="fixed"
         sx={{
           backgroundColor: "primary.main",
           boxShadow: "none",
+          zIndex: (theme) => theme.zIndex.drawer + 1,
         }}
       >
         <Toolbar>
@@ -135,7 +137,7 @@ export default function ResponsiveAppBar() {
                             Selecionar Instituição
                           </Typography>
                         </MenuItem>
-                        {userClients.map(client => (
+                        {userClients.map((client) => (
                           <MenuItem key={client.id} value={client.id}>
                             <Typography variant="body2">
                               {client.razaoSocial}
@@ -147,24 +149,6 @@ export default function ResponsiveAppBar() {
                   </FormControl>
                 </Box>
               )}
-
-            {user && user.role?.name?.toLowerCase() === "admin" && (
-              <Button
-                color="inherit"
-                component={Link}
-                to="/admin"
-                sx={{
-                  color: "white",
-                  fontWeight: "bold",
-                  backgroundColor: "rgba(255, 255, 255, 0.1)",
-                  borderRadius: 1,
-                  px: 2,
-                  py: 1,
-                }}
-              >
-                Admin
-              </Button>
-            )}
           </Box>
 
           <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>

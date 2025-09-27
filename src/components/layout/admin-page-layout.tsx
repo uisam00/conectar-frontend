@@ -12,8 +12,23 @@ export default function AdminPageLayout({
   showBreadcrumb = true,
 }: AdminPageLayoutProps) {
   return (
-    <Box sx={{ py: 3, backgroundColor: "#f5f5f5", minHeight: "100vh" }}>
-      <Container maxWidth={false} sx={{ px: 3 }}>
+    <Box
+      sx={{
+        py: { xs: 2, sm: 3 },
+        pt: { xs: 10, sm: 10 }, // Compensar altura do AppBar fixo
+        backgroundColor: "#f5f5f5",
+        minHeight: "100vh",
+        overflow: "hidden",
+      }}
+    >
+      <Container
+        maxWidth={false}
+        sx={{
+          px: { xs: 2, sm: 3 },
+          height: "100%",
+          overflow: "auto",
+        }}
+      >
         {showBreadcrumb && <Breadcrumb />}
         {children}
       </Container>
