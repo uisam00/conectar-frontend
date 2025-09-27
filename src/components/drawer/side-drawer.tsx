@@ -104,8 +104,8 @@ export default function SideDrawer({ open, onToggle }: SideDrawerProps) {
       <Box sx={{ display: "flex", flexDirection: "column", height: "100%" }}>
         <List sx={{ pt: 2, flex: 1 }}>
           {menuItems
-            .filter(item => item.show)
-            .map(item => (
+            .filter((item) => item.show)
+            .map((item) => (
               <ListItem key={item.path} disablePadding>
                 <ListItemButton
                   onClick={() => handleNavigation(item.path)}
