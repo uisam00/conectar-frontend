@@ -189,29 +189,6 @@ export default function SideDrawer({ open, onToggle }: SideDrawerProps) {
                 )}
               </IconButton>
             </Box>
-
-            {/* Botão de sair completo para desktop */}
-            <Button
-              fullWidth
-              variant="outlined"
-              color="error"
-              startIcon={
-                isLoggingOut ? (
-                  <CircularProgress size={16} color="error" />
-                ) : (
-                  <Logout sx={{ fontSize: 16 }} />
-                )
-              }
-              onClick={handleLogout}
-              disabled={isLoggingOut}
-              size="small"
-              sx={{
-                display: { xs: "none", sm: "flex" },
-                mt: 1,
-              }}
-            >
-              {isLoggingOut ? "Saindo..." : "Sair"}
-            </Button>
           </Box>
         </Box>
       </Box>

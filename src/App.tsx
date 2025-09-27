@@ -36,10 +36,10 @@ function SuspenseLoading() {
 }
 
 function AppContent() {
-  const { user, isLoaded } = useAuth();
+  const { user, isLoaded, isLoggingOut } = useAuth();
 
   if (!isLoaded) {
-    return <PageLoading message="Carregando aplicação..." />;
+    return <PageLoading message={isLoggingOut ? "Saindo..." : "Carregando aplicação..."} />;
   }
 
   return (

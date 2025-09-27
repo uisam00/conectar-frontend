@@ -22,13 +22,13 @@ import { useQueryClient } from "@tanstack/react-query";
 function AuthProvider(props: PropsWithChildren) {
   // Hook para gerenciar persistência de sessão
   useSessionPersistence();
-  
+
   // Estado para controlar carregamento do logout
   const [isLoggingOut, setIsLoggingOut] = useState(false);
 
   // React Query para buscar dados do usuário
   const { data: user, isLoading } = useUserQuery();
-  
+
   // QueryClient para invalidar cache
   const queryClient = useQueryClient();
 
@@ -37,35 +37,56 @@ function AuthProvider(props: PropsWithChildren) {
   }, []);
 
   const logOut = useCallback(async () => {
+    console.log("🚪 Iniciando logout...");
     setIsLoggingOut(true);
-    
+
     try {
       const tokens = getTokensInfo();
+      console.log("🔑 Tokens encontrados:", { hasToken: !!tokens?.token });
 
       if (tokens?.token) {
         try {
+          console.log(
+            "📤 Enviando requisição de logout para:",
+            AUTH_LOGOUT_URL
+          );
           await axiosInstance.post(AUTH_LOGOUT_URL);
+          console.log("✅ Logout no servidor realizado com sucesso");
         } catch (error) {
-          console.error("Logout error:", error);
+          console.error("❌ Erro no logout do servidor:", error);
         }
+      } else {
+        console.log("⚠️ Sem token, pulando logout no servidor");
       }
 
-      // Limpar tokens
+      console.log("🧹 Limpando tokens...");
       clearTokensInfo();
-      
-      // Invalidar cache do React Query
+
+      console.log("🗑️ Limpando cache do React Query...");
       queryClient.clear();
-      
-      // Redirecionar para login
-      window.location.href = "/sign-in";
-    } finally {
-      setIsLoggingOut(false);
+
+      // Pequeno delay para mostrar "Saindo..." antes do redirecionamento
+      console.log("⏳ Aguardando antes do redirecionamento...");
+      await new Promise((resolve) => setTimeout(resolve, 500));
+
+      // Não redireciona aqui - deixa para o componente que chama o logout
+      console.log(
+        "✅ Logout concluído - redirecionamento será feito pelo componente"
+      );
+    } catch (error) {
+      console.error("❌ Erro durante logout:", error);
+      // Mesmo com erro, limpar tokens
+      clearTokensInfo();
+      queryClient.clear();
+      console.log(
+        "✅ Logout com erro concluído - redirecionamento será feito pelo componente"
+      );
     }
   }, [queryClient]);
 
   const contextValue = useMemo(
     () => ({
-      isLoaded: !isLoading && !isLoggingOut, // isLoaded é true quando não está carregando nem fazendo logout
+      isLoaded: !isLoading && !isLoggingOut, // isLoaded é false durante logout para mostrar loading
       user: user || null,
       isLoggingOut,
     }),
