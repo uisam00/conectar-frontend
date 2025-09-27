@@ -283,12 +283,12 @@ function AvatarInput({
                 backgroundColor: "rgba(0, 0, 0, 0.7)",
               },
             }}
+            size="small"
           >
-            <ClearOutlined />
+            <ClearOutlined sx={{ fontSize: 16 }} />
           </IconButton>
         )}
 
-        {/* Botão para deletar foto atual (não apenas a nova selecionada) */}
         {user?.photo?.path && !deleteCurrentPhoto && (
           <IconButton
             onClick={e => {
@@ -297,6 +297,8 @@ function AvatarInput({
             }}
             sx={{
               position: "absolute",
+              width: 25,
+              height: 25,
               top: 0,
               right: 0,
               backgroundColor: "rgba(220, 38, 38, 0.8)",
@@ -306,7 +308,7 @@ function AvatarInput({
               },
             }}
           >
-            <DeleteOutline />
+            <DeleteOutline sx={{ fontSize: 16 }} />
           </IconButton>
         )}
       </Box>

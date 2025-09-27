@@ -11,6 +11,7 @@ import { queryClient } from "@/services/react-query/query-client";
 import ThemeProviderWrapper from "@/components/theme/theme-provider";
 import AuthProvider from "@/services/auth/auth-provider";
 import SnackbarProvider from "@/components/snackbar-provider";
+import { ClientProvider } from "@/contexts/client-context";
 import ResponsiveAppBar from "@/components/app-bar";
 import PageLoading from "@/components/loading/page-loading";
 import ErrorBoundary from "@/components/error/error-boundary";
@@ -111,8 +112,10 @@ function App() {
       <ThemeProviderWrapper>
         <CssBaseline />
         <AuthProvider>
-          <SnackbarProvider />
-          <AppContent />
+          <ClientProvider>
+            <SnackbarProvider />
+            <AppContent />
+          </ClientProvider>
         </AuthProvider>
       </ThemeProviderWrapper>
     </QueryClientProvider>

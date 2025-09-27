@@ -1,5 +1,5 @@
 import { Box, Container } from "@mui/material";
-import { ReactNode } from "react";
+import { type ReactNode } from "react";
 import Breadcrumb from "@/components/breadcrumb/breadcrumb";
 
 interface AdminPageLayoutProps {

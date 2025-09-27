@@ -7,6 +7,10 @@ import {
   Menu,
   MenuItem,
   Avatar,
+  FormControl,
+  Select,
+  Typography,
+  CircularProgress,
 } from "@mui/material";
 import { Help, Notifications, Menu as MenuIcon } from "@mui/icons-material";
 import { useState } from "react";
@@ -15,6 +19,8 @@ import { useAuth, useAuthActions } from "@/services/auth";
 import { useLanguage } from "@/services/i18n";
 import SideDrawer from "@/components/drawer/side-drawer";
 import useDrawer from "@/hooks/use-drawer";
+import { useClient } from "@/hooks/use-client";
+import UserAvatar from "@/components/user-avatar";
 
 export default function ResponsiveAppBar() {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -23,6 +29,8 @@ export default function ResponsiveAppBar() {
   const { t } = useLanguage("common");
   const navigate = useNavigate();
   const { isOpen, toggleDrawer } = useDrawer();
+  const { selectedClient, setSelectedClient, userClients, isLoading } =
+    useClient();
 
   const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -41,6 +49,12 @@ export default function ResponsiveAppBar() {
   const handleProfile = () => {
     navigate("/profile");
     handleClose();
+  };
+
+  const handleClientChange = (event: any) => {
+    const clientId = event.target.value;
+    const client = userClients.find(c => c.id === clientId);
+    setSelectedClient(client || null);
   };
 
   if (!isLoaded) {
@@ -78,85 +92,143 @@ export default function ResponsiveAppBar() {
                 style={{ height: "32px", width: "auto", cursor: "pointer" }}
               />
             </Link>
-          {user && user.role?.name?.toLowerCase() === "admin" && (
-            <Button
-              color="inherit"
-              component={Link}
-              to="/admin"
-              sx={{
-                color: "white",
-                fontWeight: "bold",
-                backgroundColor: "rgba(255, 255, 255, 0.1)",
-                borderRadius: 1,
-                px: 2,
-                py: 1,
-              }}
-            >
-              Admin
-            </Button>
-          )}
-        </Box>
 
-        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-          {user ? (
-            <>
-              <IconButton sx={{ color: "white" }}>
-                <Help />
-              </IconButton>
-              <IconButton sx={{ color: "white" }}>
-                <Notifications />
-              </IconButton>
-              <IconButton
-                size="large"
-                aria-label="account of current user"
-                aria-controls="menu-appbar"
-                aria-haspopup="true"
-                onClick={handleMenu}
-                sx={{ color: "white", p: 0 }}
-              >
-                <Avatar
-                  alt={`${user.firstName} ${user.lastName}`}
-                  src={user.photo?.path}
-                  sx={{ width: 40, height: 40 }}
-                />
-              </IconButton>
-              <Menu
-                id="menu-appbar"
-                anchorEl={anchorEl}
-                anchorOrigin={{
-                  vertical: "top",
-                  horizontal: "right",
+            {/* Seletor de Instituição para usuários normais */}
+            {user &&
+              user.role?.name?.toLowerCase() !== "admin" &&
+              userClients.length > 0 && (
+                <Box sx={{ minWidth: 200, ml: 2 }}>
+                  <FormControl fullWidth size="small">
+                    {isLoading ? (
+                      <Box
+                        sx={{
+                          display: "flex",
+                          justifyContent: "center",
+                          py: 1,
+                        }}
+                      >
+                        <CircularProgress size={20} color="inherit" />
+                      </Box>
+                    ) : (
+                      <Select
+                        value={selectedClient?.id || ""}
+                        onChange={handleClientChange}
+                        displayEmpty
+                        sx={{
+                          color: "white",
+                          "& .MuiOutlinedInput-notchedOutline": {
+                            borderColor: "rgba(255, 255, 255, 0.3)",
+                          },
+                          "&:hover .MuiOutlinedInput-notchedOutline": {
+                            borderColor: "rgba(255, 255, 255, 0.5)",
+                          },
+                          "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                            borderColor: "rgba(255, 255, 255, 0.3)",
+                          },
+                          "& .MuiSvgIcon-root": {
+                            color: "white",
+                          },
+                        }}
+                      >
+                        <MenuItem value="" disabled>
+                          <Typography variant="body2" color="text.secondary">
+                            Selecionar Instituição
+                          </Typography>
+                        </MenuItem>
+                        {userClients.map(client => (
+                          <MenuItem key={client.id} value={client.id}>
+                            <Typography variant="body2">
+                              {client.razaoSocial}
+                            </Typography>
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    )}
+                  </FormControl>
+                </Box>
+              )}
+
+            {user && user.role?.name?.toLowerCase() === "admin" && (
+              <Button
+                color="inherit"
+                component={Link}
+                to="/admin"
+                sx={{
+                  color: "white",
+                  fontWeight: "bold",
+                  backgroundColor: "rgba(255, 255, 255, 0.1)",
+                  borderRadius: 1,
+                  px: 2,
+                  py: 1,
                 }}
-                keepMounted
-                transformOrigin={{
-                  vertical: "top",
-                  horizontal: "right",
-                }}
-                open={Boolean(anchorEl)}
-                onClose={handleClose}
               >
-                <MenuItem onClick={handleProfile}>
-                  {t("navigation.profile")}
-                </MenuItem>
-                <MenuItem onClick={handleLogout}>
-                  {t("navigation.logout")}
-                </MenuItem>
-              </Menu>
-            </>
-          ) : (
-            <Button
-              color="inherit"
-              component={Link}
-              to="/sign-in"
-              sx={{ color: "white" }}
-            >
-              {t("navigation.signIn")}
-            </Button>
-          )}
-        </Box>
-      </Toolbar>
-    </AppBar>
-    {user && <SideDrawer open={isOpen} onToggle={toggleDrawer} />}
+                Admin
+              </Button>
+            )}
+          </Box>
+
+          <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+            {user ? (
+              <>
+                <IconButton sx={{ color: "white" }}>
+                  <Help />
+                </IconButton>
+                <IconButton sx={{ color: "white" }}>
+                  <Notifications />
+                </IconButton>
+                <IconButton
+                  size="large"
+                  aria-label="account of current user"
+                  aria-controls="menu-appbar"
+                  aria-haspopup="true"
+                  onClick={handleMenu}
+                  sx={{ color: "white" }}
+                >
+                  <UserAvatar
+                    size={24}
+                    sx={{
+                      bgcolor: "white",
+                      color: "primary.main",
+                    }}
+                  />
+                </IconButton>
+                <Menu
+                  id="menu-appbar"
+                  anchorEl={anchorEl}
+                  anchorOrigin={{
+                    vertical: "top",
+                    horizontal: "right",
+                  }}
+                  keepMounted
+                  transformOrigin={{
+                    vertical: "top",
+                    horizontal: "right",
+                  }}
+                  open={Boolean(anchorEl)}
+                  onClose={handleClose}
+                >
+                  <MenuItem onClick={handleProfile}>
+                    {t("navigation.profile")}
+                  </MenuItem>
+                  <MenuItem onClick={handleLogout}>
+                    {t("navigation.logout")}
+                  </MenuItem>
+                </Menu>
+              </>
+            ) : (
+              <Button
+                color="inherit"
+                component={Link}
+                to="/sign-in"
+                sx={{ color: "white" }}
+              >
+                {t("navigation.signIn")}
+              </Button>
+            )}
+          </Box>
+        </Toolbar>
+      </AppBar>
+      {user && <SideDrawer open={isOpen} onToggle={toggleDrawer} />}
     </>
   );
 }
