@@ -1,3 +1,4 @@
+import { Suspense, lazy } from "react";
 import {
   BrowserRouter as Router,
   Routes,
@@ -11,65 +12,83 @@ import ThemeProviderWrapper from "@/components/theme/theme-provider";
 import AuthProvider from "@/services/auth/auth-provider";
 import SnackbarProvider from "@/components/snackbar-provider";
 import ResponsiveAppBar from "@/components/app-bar";
+import PageLoading from "@/components/loading/page-loading";
+import ErrorBoundary from "@/components/error/error-boundary";
 import { useAuth } from "@/services/auth";
 
-// Pages
-import HomePage from "@/pages/home";
-import SignInPage from "@/pages/sign-in";
-// import SignUpPage from '@/pages/sign-up';
-import SimpleProfilePage from "@/pages/simple-profile";
-import EditProfilePage from "@/pages/edit-profile";
-import ForgotPasswordPage from "@/pages/forgot-password";
-import ClientsPage from "@/pages/clients";
+// Lazy load pages for code splitting
+const HomePage = lazy(() => import("@/pages/home"));
+const SignInPage = lazy(() => import("@/pages/sign-in"));
+const SimpleProfilePage = lazy(() => import("@/pages/simple-profile"));
+const EditProfilePage = lazy(() => import("@/pages/edit-profile"));
+const ForgotPasswordPage = lazy(() => import("@/pages/forgot-password"));
+const ClientsPage = lazy(() => import("@/pages/clients"));
 
 // Initialize i18n
 import "@/services/i18n/client";
+
+// Loading component for Suspense fallback
+function SuspenseLoading() {
+  return <PageLoading message="Carregando página..." />;
+}
 
 function AppContent() {
   const { user, isLoaded } = useAuth();
 
   if (!isLoaded) {
-    return <div>Loading...</div>;
+    return <PageLoading message="Carregando aplicação..." />;
   }
 
   return (
     <Router>
       {user && <ResponsiveAppBar />}
-      <Routes>
-        <Route
-          path="/"
-          element={user ? <HomePage /> : <Navigate to="/sign-in" replace />}
-        />
-        <Route
-          path="/sign-in"
-          element={user ? <Navigate to="/" replace /> : <SignInPage />}
-        />
-        {/* <Route 
-          path="/sign-up" 
-          element={user ? <Navigate to="/" replace /> : <SignUpPage />} 
-        /> */}
-        <Route
-          path="/forgot-password"
-          element={user ? <Navigate to="/" replace /> : <ForgotPasswordPage />}
-        />
-        <Route
-          path="/profile"
-          element={
-            user ? <SimpleProfilePage /> : <Navigate to="/sign-in" replace />
-          }
-        />
-        <Route
-          path="/profile/edit"
-          element={
-            user ? <EditProfilePage /> : <Navigate to="/sign-in" replace />
-          }
-        />
-        <Route
-          path="/clients"
-          element={user ? <ClientsPage /> : <Navigate to="/sign-in" replace />}
-        />
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
+      <ErrorBoundary>
+        <Suspense fallback={<SuspenseLoading />}>
+          <Routes>
+            <Route
+              path="/"
+              element={user ? <HomePage /> : <Navigate to="/sign-in" replace />}
+            />
+            <Route
+              path="/sign-in"
+              element={user ? <Navigate to="/" replace /> : <SignInPage />}
+            />
+            {/* <Route 
+              path="/sign-up" 
+              element={user ? <Navigate to="/" replace /> : <SignUpPage />} 
+            /> */}
+            <Route
+              path="/forgot-password"
+              element={
+                user ? <Navigate to="/" replace /> : <ForgotPasswordPage />
+              }
+            />
+            <Route
+              path="/profile"
+              element={
+                user ? (
+                  <SimpleProfilePage />
+                ) : (
+                  <Navigate to="/sign-in" replace />
+                )
+              }
+            />
+            <Route
+              path="/profile/edit"
+              element={
+                user ? <EditProfilePage /> : <Navigate to="/sign-in" replace />
+              }
+            />
+            <Route
+              path="/clients"
+              element={
+                user ? <ClientsPage /> : <Navigate to="/sign-in" replace />
+              }
+            />
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        </Suspense>
+      </ErrorBoundary>
     </Router>
   );
 }

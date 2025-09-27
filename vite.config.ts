@@ -10,4 +10,32 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          // Vendor chunks
+          vendor: ['react', 'react-dom'],
+          mui: ['@mui/material', '@mui/icons-material'],
+          router: ['react-router-dom'],
+          query: ['@tanstack/react-query'],
+          // Page chunks
+          auth: ['./src/pages/sign-in', './src/pages/forgot-password'],
+          profile: ['./src/pages/simple-profile', './src/pages/edit-profile'],
+          clients: ['./src/pages/clients'],
+        },
+      },
+    },
+    chunkSizeWarningLimit: 1000,
+  },
+  optimizeDeps: {
+    include: [
+      'react',
+      'react-dom',
+      '@mui/material',
+      '@mui/icons-material',
+      'react-router-dom',
+      '@tanstack/react-query',
+    ],
+  },
 });
