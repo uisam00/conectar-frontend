@@ -11,10 +11,6 @@ const eslintConfig = [
   // Base JavaScript recommendations
   js.configs.recommended,
 
-  ...compat.config({
-    extends: ["@typescript-eslint/recommended"],
-  }),
-
   {
     files: ["**/*.{js,jsx,ts,tsx}"],
     plugins: {
