@@ -48,7 +48,7 @@ export default function ResponsiveAppBar() {
     <AppBar
       position="static"
       sx={{
-        backgroundColor: "#19AF78",
+        backgroundColor: "primary.main",
         boxShadow: "none",
       }}
     >

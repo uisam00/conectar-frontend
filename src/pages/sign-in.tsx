@@ -72,7 +72,7 @@ export default function SignInPage() {
     <Box
       sx={{
         minHeight: "100vh",
-        background: "linear-gradient(135deg, #19AF78 0%, #0F7A5A 100%)",
+        backgroundColor: "primary.main",
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
@@ -158,8 +158,8 @@ export default function SignInPage() {
                 aria-label="toggle password visibility"
                 onClick={() => setShowPassword(!showPassword)}
                 sx={{
-                  color: "#19AF78",
-                  backgroundColor: "#8CD7B9",
+                  color: "primary.main",
+                  backgroundColor: "primary.light",
                   borderRadius: 3,
                   borderTopLeftRadius: 0,
                   borderBottomLeftRadius: 0,
@@ -168,7 +168,7 @@ export default function SignInPage() {
                   minWidth: 48,
                   alignSelf: "stretch",
                   "&:hover": {
-                    backgroundColor: "#7BC4A8",
+                    backgroundColor: "primary.dark",
                   },
                 }}
               >

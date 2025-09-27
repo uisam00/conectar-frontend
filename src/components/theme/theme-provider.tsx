@@ -20,9 +20,9 @@ export default function ThemeProvider({ children }: PropsWithChildren) {
         palette: {
           mode,
           primary: {
-            main: "#19AF78",
-            dark: "#0F7A5A",
-            light: "#4ECB8A",
+            main: "#0F7A5A",
+            dark: "#0A5A3F",
+            light: "#19AF78",
           },
           secondary: {
             main: "#dc004e",
@@ -56,14 +56,14 @@ export default function ThemeProvider({ children }: PropsWithChildren) {
                     borderColor: "#E0E0E0",
                   },
                   "&:hover fieldset": {
-                    borderColor: "#19AF78",
+                    borderColor: "primary.main",
                   },
                   "&.Mui-focused fieldset": {
-                    borderColor: "#19AF78",
+                    borderColor: "primary.main",
                   },
                 },
                 "& .MuiInputLabel-root.Mui-focused": {
-                  color: "#19AF78",
+                  color: "primary.main",
                 },
               },
             },

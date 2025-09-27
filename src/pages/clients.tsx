@@ -164,7 +164,7 @@ export default function ClientsPage() {
                 <Button
                   variant="outlined"
                   onClick={clearFilters}
-                  sx={{ color: "#19AF78", borderColor: "#19AF78" }}
+                  sx={{ color: "primary.main", borderColor: "primary.main" }}
                 >
                   Limpar campos
                 </Button>

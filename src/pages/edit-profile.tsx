@@ -407,9 +407,13 @@ function FormBasicInfo() {
       <Container maxWidth="md">
         <Card sx={{ mb: 3 }}>
           <CardHeader
-            avatar={<Person sx={{ color: "#19AF78" }} />}
+            avatar={<Person sx={{ color: "primary.main" }} />}
             title={t("title1")}
-            titleTypographyProps={{ variant: "h6", fontWeight: "bold" }}
+            titleTypographyProps={{
+              variant: "h6",
+              fontWeight: "bold",
+              color: "primary.main",
+            }}
           />
           <Divider />
           <CardContent>
@@ -523,9 +527,13 @@ function FormChangePassword() {
     <Container maxWidth="md">
       <Card>
         <CardHeader
-          avatar={<Lock sx={{ color: "#19AF78" }} />}
+          avatar={<Lock sx={{ color: "primary.main" }} />}
           title={t("title3")}
-          titleTypographyProps={{ variant: "h6", fontWeight: "bold" }}
+          titleTypographyProps={{
+            variant: "h6",
+            fontWeight: "bold",
+            color: "primary.main",
+          }}
           action={
             <Button
               variant="outlined"
@@ -612,8 +620,7 @@ export default function EditProfilePage() {
           variant="h4"
           component="h1"
           gutterBottom
-          align="center"
-          sx={{ mb: 4, fontWeight: "bold", color: "#19AF78" }}
+          sx={{ mb: 4, color: "primary.main" }}
         >
           Editar Perfil
         </Typography>
