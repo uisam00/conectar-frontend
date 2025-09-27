@@ -1,5 +1,6 @@
 import axios, { type AxiosInstance, type AxiosRequestConfig, type AxiosResponse, type AxiosError } from 'axios';
 import { getTokensInfo, setTokensInfo } from '../auth/auth-tokens-info';
+import { AUTH_REFRESH_URL } from './config';
 
 // Fila de requisições pendentes durante o refresh
 let isRefreshing = false;
@@ -39,6 +40,9 @@ axiosInstance.interceptors.request.use(
         ...config.headers,
         Authorization: `Bearer ${tokens.token}`,
       };
+      console.log('🔑 Adicionando token à requisição:', config.url);
+    } else {
+      console.log('⚠️ Sem token disponível para:', config.url);
     }
     return config;
   },
@@ -55,7 +59,14 @@ axiosInstance.interceptors.response.use(
   async (error: AxiosError) => {
     const originalRequest = error.config as AxiosRequestConfig & { _retry?: boolean };
 
+    console.log('🚨 Erro na resposta:', {
+      status: error.response?.status,
+      url: originalRequest?.url,
+      isRetry: originalRequest?._retry
+    });
+
     if (error.response?.status === 401 && !originalRequest._retry) {
+      console.log('🔒 Erro 401 detectado, iniciando refresh...');
       if (isRefreshing) {
         // Se já está fazendo refresh, adiciona à fila
         return new Promise((resolve, reject) => {
@@ -75,16 +86,21 @@ axiosInstance.interceptors.response.use(
 
       try {
         const tokens = getTokensInfo();
+        console.log('🔄 Tentando refresh token...', { hasRefreshToken: !!tokens?.refreshToken });
+        
         if (!tokens?.refreshToken) {
           throw new Error('No refresh token available');
         }
 
-        // Tentar fazer refresh do token
-        const response = await axios.post(
-          `${axiosInstance.defaults.baseURL}/v1/auth/refresh`,
-          { refreshToken: tokens.refreshToken }
-        );
+        // Tentar fazer refresh do token - o backend espera o refresh token no header Authorization
+        const response = await axios.post(AUTH_REFRESH_URL, {}, {
+          headers: {
+            'Authorization': `Bearer ${tokens.refreshToken}`,
+            'Content-Type': 'application/json',
+          }
+        });
 
+        console.log('✅ Refresh token bem-sucedido');
         const { token, refreshToken } = response.data;
         
         // Atualizar tokens
@@ -103,7 +119,11 @@ axiosInstance.interceptors.response.use(
         }
         return axiosInstance(originalRequest);
 
-      } catch (refreshError) {
+      } catch (refreshError: any) {
+        console.error('❌ Refresh token falhou:', refreshError);
+        console.error('Status:', refreshError?.response?.status);
+        console.error('Data:', refreshError?.response?.data);
+        
         // Se o refresh falhou, limpar tokens e redirecionar para login
         processQueue(refreshError, null);
         setTokensInfo(null);

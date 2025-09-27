@@ -24,26 +24,6 @@ export function useSessionPersistence() {
 
     // Verificar sessão imediatamente
     checkSession();
-
-    // Verificar sessão quando a página ganha foco (volta de outra aba)
-    const handleFocus = () => {
-      checkSession();
-    };
-
-    // Verificar sessão quando a página é visível novamente
-    const handleVisibilityChange = () => {
-      if (!document.hidden) {
-        checkSession();
-      }
-    };
-
-    window.addEventListener("focus", handleFocus);
-    document.addEventListener("visibilitychange", handleVisibilityChange);
-
-    return () => {
-      window.removeEventListener("focus", handleFocus);
-      document.removeEventListener("visibilitychange", handleVisibilityChange);
-    };
-  }, []);
+  }, []); // Remover event listeners que podem causar re-renders
 }
 

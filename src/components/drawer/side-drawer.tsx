@@ -10,6 +10,7 @@ import {
   Button,
   IconButton,
   Toolbar,
+  CircularProgress,
 } from "@mui/material";
 import { Home, AdminPanelSettings, Person, Logout } from "@mui/icons-material";
 import { useNavigate, useLocation } from "react-router-dom";
@@ -26,7 +27,7 @@ interface SideDrawerProps {
 export default function SideDrawer({ open, onToggle }: SideDrawerProps) {
   const navigate = useNavigate();
   const location = useLocation();
-  const { user } = useAuth();
+  const { user, isLoggingOut } = useAuth();
   const { logOut } = useAuthActions();
 
   const menuItems = [
@@ -171,6 +172,7 @@ export default function SideDrawer({ open, onToggle }: SideDrawerProps) {
               {/* Ícone de sair para mobile */}
               <IconButton
                 onClick={handleLogout}
+                disabled={isLoggingOut}
                 sx={{
                   color: "error.main",
                   "&:hover": {
@@ -180,7 +182,11 @@ export default function SideDrawer({ open, onToggle }: SideDrawerProps) {
                 }}
                 size="small"
               >
-                <Logout sx={{ fontSize: 20 }} />
+                {isLoggingOut ? (
+                  <CircularProgress size={20} color="error" />
+                ) : (
+                  <Logout sx={{ fontSize: 20 }} />
+                )}
               </IconButton>
             </Box>
 
@@ -189,15 +195,22 @@ export default function SideDrawer({ open, onToggle }: SideDrawerProps) {
               fullWidth
               variant="outlined"
               color="error"
-              startIcon={<Logout sx={{ fontSize: 16 }} />}
+              startIcon={
+                isLoggingOut ? (
+                  <CircularProgress size={16} color="error" />
+                ) : (
+                  <Logout sx={{ fontSize: 16 }} />
+                )
+              }
               onClick={handleLogout}
+              disabled={isLoggingOut}
               size="small"
               sx={{
                 display: { xs: "none", sm: "flex" },
                 mt: 1,
               }}
             >
-              Sair
+              {isLoggingOut ? "Saindo..." : "Sair"}
             </Button>
           </Box>
         </Box>

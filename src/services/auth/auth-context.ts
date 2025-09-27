@@ -10,10 +10,10 @@ export interface TokensInfo {
 export interface AuthContextType {
   isLoaded: boolean;
   user: User | null;
+  isLoggingOut: boolean;
 }
 
 export interface AuthActionsContextType {
-  setUser: (user: User | null) => void;
   logOut: () => Promise<void>;
 }
 
@@ -24,10 +24,10 @@ export interface AuthTokensContextType {
 export const AuthContext = createContext<AuthContextType>({
   isLoaded: false,
   user: null,
+  isLoggingOut: false,
 });
 
 export const AuthActionsContext = createContext<AuthActionsContextType>({
-  setUser: () => {},
   logOut: async () => {},
 });
 

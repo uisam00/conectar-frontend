@@ -15,10 +15,11 @@ import {
 import { useForm, FormProvider } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import { useAuth, useAuthActions } from "@/services/auth";
+import { useAuth } from "@/services/auth";
+import { useQueryClient } from "@tanstack/react-query";
 import { useLanguage } from "@/services/i18n";
 import { useSnackbar } from "@/hooks";
-import { FILES_UPLOAD_URL, AUTH_ME_URL } from "@/services/api/config";
+import { FILES_UPLOAD_URL, AUTH_UPDATE_URL } from "@/services/api/config";
 import axiosInstance from "@/services/api/axios-instance";
 import {
   ClearOutlined,
@@ -159,7 +160,7 @@ function useFileUploadService() {
 
     const response = await axiosInstance.post(FILES_UPLOAD_URL, formData, {
       headers: {
-        'Content-Type': 'multipart/form-data',
+        "Content-Type": "multipart/form-data",
       },
     });
 
@@ -285,7 +286,7 @@ function AvatarInput({
 
         {user?.photo?.path && !deleteCurrentPhoto && (
           <IconButton
-            onClick={e => {
+            onClick={(e) => {
               e.stopPropagation();
               onDeleteCurrent?.();
             }}
@@ -313,7 +314,7 @@ function AvatarInput({
 // Formulário de Informações Básicas
 function FormBasicInfo() {
   const { user } = useAuth();
-  const { setUser } = useAuthActions();
+  const queryClient = useQueryClient();
   const { t } = useLanguage("edit-profile");
   const { showSuccess, showError } = useSnackbar();
   const validationSchema = useValidationBasicInfoSchema();
@@ -332,7 +333,7 @@ function FormBasicInfo() {
   const { handleSubmit, reset, watch, setValue } = methods;
   const photo = watch("photo");
 
-  const onSubmit = handleSubmit(async formData => {
+  const onSubmit = handleSubmit(async (formData) => {
     try {
       const updateData: {
         firstName: string;
@@ -349,10 +350,11 @@ function FormBasicInfo() {
         updateData.photo = null;
       }
 
-      const response = await axiosInstance.patch(AUTH_ME_URL, updateData);
+      const response = await axiosInstance.patch(AUTH_UPDATE_URL, updateData);
 
       const updatedUser = response.data;
-      setUser(updatedUser);
+      // Invalidar cache do React Query para recarregar dados do usuário
+      queryClient.setQueryData(["user"], updatedUser);
       showSuccess(t("success.profile"));
       reset({
         firstName: updatedUser.firstName,
@@ -405,7 +407,7 @@ function FormBasicInfo() {
             >
               <AvatarInput
                 value={photo}
-                onChange={file => setValue("photo", file)}
+                onChange={(file) => setValue("photo", file)}
                 onDeleteCurrent={handleDeleteCurrentPhoto}
                 deleteCurrentPhoto={deleteCurrentPhoto}
                 onLoadingChange={setIsUploading}
@@ -467,9 +469,9 @@ function FormChangePassword() {
   const password = watch("password");
   const passwordConfirmation = watch("passwordConfirmation");
 
-  const onSubmit = handleSubmit(async formData => {
+  const onSubmit = handleSubmit(async (formData) => {
     try {
-      await axiosInstance.patch(AUTH_ME_URL, {
+      await axiosInstance.patch(AUTH_UPDATE_URL, {
         password: formData.password,
         oldPassword: formData.oldPassword,
       });

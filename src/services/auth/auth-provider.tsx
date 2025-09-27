@@ -1,7 +1,6 @@
 "use client";
 
-import type { User } from "@/types/api";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import type { PropsWithChildren } from "react";
 import {
   AuthActionsContext,
@@ -10,82 +9,71 @@ import {
   type TokensInfo,
 } from "./auth-context";
 import axiosInstance from "@/services/api/axios-instance";
-import { AUTH_LOGOUT_URL, AUTH_ME_URL } from "@/services/api/config";
-import { HTTP_CODES } from "@/services/api/config";
+import { AUTH_LOGOUT_URL } from "@/services/api/config";
 import {
   getTokensInfo,
   setTokensInfo as setTokensInfoToStorage,
   clearTokensInfo,
 } from "./auth-tokens-info";
 import { useSessionPersistence } from "@/hooks";
+import { useUserQuery } from "@/hooks/use-user-query";
+import { useQueryClient } from "@tanstack/react-query";
 
 function AuthProvider(props: PropsWithChildren) {
-  const [isLoaded, setIsLoaded] = useState(false);
-  const [user, setUser] = useState<User | null>(null);
-
   // Hook para gerenciar persistência de sessão
   useSessionPersistence();
+  
+  // Estado para controlar carregamento do logout
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
+
+  // React Query para buscar dados do usuário
+  const { data: user, isLoading } = useUserQuery();
+  
+  // QueryClient para invalidar cache
+  const queryClient = useQueryClient();
 
   const setTokensInfo = useCallback((tokensInfo: TokensInfo | null) => {
     setTokensInfoToStorage(tokensInfo);
-
-    if (!tokensInfo) {
-      setUser(null);
-    }
   }, []);
 
   const logOut = useCallback(async () => {
-    const tokens = getTokensInfo();
-
-    if (tokens?.token) {
-      try {
-        await axiosInstance.post(AUTH_LOGOUT_URL);
-      } catch (error) {
-        console.error("Logout error:", error);
-      }
-    }
-
-    // Clear tokens and user data
-    clearTokensInfo();
-    setUser(null);
-  }, []);
-
-  const loadData = useCallback(async () => {
-    const tokens = getTokensInfo();
-
+    setIsLoggingOut(true);
+    
     try {
+      const tokens = getTokensInfo();
+
       if (tokens?.token) {
-        const response = await axiosInstance.get(AUTH_ME_URL);
-
-        if (response.status === HTTP_CODES.UNAUTHORIZED) {
-          logOut();
-          return;
+        try {
+          await axiosInstance.post(AUTH_LOGOUT_URL);
+        } catch (error) {
+          console.error("Logout error:", error);
         }
-
-        setUser(response.data);
       }
-    } catch (error) {
-      console.error("Auth load data error:", error);
-    } finally {
-      setIsLoaded(true);
-    }
-  }, [logOut]);
 
-  useEffect(() => {
-    loadData();
-  }, [loadData]);
+      // Limpar tokens
+      clearTokensInfo();
+      
+      // Invalidar cache do React Query
+      queryClient.clear();
+      
+      // Redirecionar para login
+      window.location.href = "/sign-in";
+    } finally {
+      setIsLoggingOut(false);
+    }
+  }, [queryClient]);
 
   const contextValue = useMemo(
     () => ({
-      isLoaded,
-      user,
+      isLoaded: !isLoading && !isLoggingOut, // isLoaded é true quando não está carregando nem fazendo logout
+      user: user || null,
+      isLoggingOut,
     }),
-    [isLoaded, user]
+    [isLoading, user, isLoggingOut]
   );
 
   const contextActionsValue = useMemo(
     () => ({
-      setUser,
       logOut,
     }),
     [logOut]

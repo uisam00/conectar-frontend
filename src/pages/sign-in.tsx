@@ -11,7 +11,8 @@ import {
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { Link, useNavigate } from "react-router-dom";
 import { useLanguage } from "@/services/i18n";
-import { useAuthActions, useAuthTokens } from "@/services/auth";
+import { useAuthTokens } from "@/services/auth";
+import { useQueryClient } from "@tanstack/react-query";
 import axiosInstance from "@/services/api/axios-instance";
 import { AUTH_LOGIN_URL } from "@/services/api/config";
 import { useErrorHandler } from "@/hooks";
@@ -20,7 +21,7 @@ import LabelInput from "@/components/form/label-input";
 export default function SignInPage() {
   const { t } = useLanguage("sign-in");
   const { setTokensInfo } = useAuthTokens();
-  const { setUser } = useAuthActions();
+  const queryClient = useQueryClient();
   const navigate = useNavigate();
   const { handleApiError } = useErrorHandler();
   const [isLoading, setIsLoading] = useState(false);
@@ -48,7 +49,8 @@ export default function SignInPage() {
         refreshToken: response.data.refreshToken,
         tokenExpires: response.data.tokenExpires,
       });
-      setUser(response.data.user);
+      // Invalidar cache do React Query para recarregar dados do usuário
+      queryClient.setQueryData(["user"], response.data.user);
       navigate("/");
     } catch (error) {
       handleApiError(error);
