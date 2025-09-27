@@ -1,27 +1,57 @@
 {
   "title": "Editar Perfil",
+  "title1": "Informações Básicas",
+  "title2": "Alterar Email",
+  "title3": "Alterar Senha",
   "firstName": "Nome",
   "lastName": "Sobrenome",
   "email": "Email",
-  "emailHelper": "O email não pode ser alterado",
-  "changePassword": "Alterar Senha (opcional)",
-  "currentPassword": "Senha Atual",
+  "newEmail": "Novo Email",
+  "emailConfirmation": "Confirmação de Email",
+  "password": "Nova Senha",
   "newPassword": "Nova Senha",
+  "oldPassword": "Senha Atual",
+  "passwordConfirmation": "Confirmar Nova Senha",
   "photo": "Foto",
-  "uploadPhoto": "Enviar Foto",
-  "save": "Salvar Alterações",
-  "saving": "Salvando...",
+  "save": "Salvar",
   "cancel": "Cancelar",
-  "changePasswordButton": "Alterar Senha",
-  "cancelPasswordChange": "Cancelar Alteração de Senha",
-  "success": "Perfil atualizado com sucesso!",
-  "error": "Erro ao atualizar perfil. Tente novamente.",
   "required": {
     "firstName": "Nome é obrigatório",
     "lastName": "Sobrenome é obrigatório",
-    "currentPassword": "Senha atual é obrigatória para alterar a senha"
+    "email": "Email é obrigatório",
+    "emailConfirmation": "Confirmação de email é obrigatória",
+    "password": "Senha é obrigatória",
+    "oldPassword": "Senha atual é obrigatória",
+    "passwordConfirmation": "Confirmação de senha é obrigatória"
   },
   "validation": {
-    "passwordMin": "Senha deve ter pelo menos 6 caracteres"
+    "email": {
+      "invalid": "Email inválido"
+    },
+    "emailConfirmation": {
+      "match": "Emails não coincidem"
+    },
+    "password": {
+      "minLength": "Senha deve ter pelo menos 8 caracteres",
+      "pattern": "Senha deve conter pelo menos: 1 letra minúscula, 1 maiúscula, 1 número e 1 caractere especial (@$!%*?&)"
+    },
+    "passwordConfirmation": {
+      "match": "As senhas não coincidem"
+    }
+  },
+  "success": {
+    "profile": "Perfil atualizado com sucesso!",
+    "email": "Email atualizado com sucesso!",
+    "password": "Senha atualizada com sucesso!"
+  },
+  "error": {
+    "generic": "Erro ao atualizar perfil. Tente novamente."
+  },
+  "criteria": {
+    "minLength": "Min 8 dígitos (ex: 12345678)",
+    "uppercase": "Letra maiúscula (ex: A)",
+    "number": "Número (ex: 1)",
+    "specialChar": "Caracter especial (ex: @$!%*?&)",
+    "match": "Senhas conferem"
   }
 }

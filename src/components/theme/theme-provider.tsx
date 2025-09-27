@@ -38,6 +38,12 @@ export default function ThemeProvider({ children }: PropsWithChildren) {
                 fontSize: "1rem",
                 fontWeight: "bold",
               },
+              contained: {
+                color: "white",
+                "&:hover": {
+                  color: "white",
+                },
+              },
             },
           },
           MuiTextField: {

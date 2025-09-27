@@ -1,23 +1,10 @@
 {
   "title": "Perfil",
-  "actions": {
-    "submit": "Salvar"
-  },
-  "inputs": {
-    "firstName": {
-      "label": "Nome"
-    },
-    "lastName": {
-      "label": "Sobrenome"
-    },
-    "email": {
-      "label": "E-mail"
-    },
-    "password": {
-      "label": "Nova Senha"
-    },
-    "oldPassword": {
-      "label": "Senha Atual"
-    }
-  }
+  "welcome": "Bem-vindo, {{name}}!",
+  "userInformation": "Informações do Usuário",
+  "email": "Email",
+  "role": "Função",
+  "status": "Status",
+  "editProfile": "Editar Perfil",
+  "signInRequired": "Por favor, faça login para visualizar seu perfil."
 }

@@ -1,416 +1,625 @@
-import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
 import {
   Container,
   Typography,
-  Box,
-  Paper,
-  TextField,
   Button,
+  Box,
   Avatar,
-  Grid,
-  Alert,
-  CircularProgress,
+  IconButton,
+  TextField,
+  Card,
+  CardContent,
+  CardHeader,
   Divider,
+  Collapse,
 } from "@mui/material";
-import { PhotoCamera, Save, Cancel } from "@mui/icons-material";
-import { useForm, Controller } from "react-hook-form";
+import { useForm, FormProvider } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import { useAuth } from "@/services/auth";
-import { useSnackbar, useFileUpload } from "@/hooks";
+import { useAuth, useAuthActions } from "@/services/auth";
 import { useLanguage } from "@/services/i18n";
+import { useSnackbar } from "@/hooks";
+import { FILES_UPLOAD_URL, AUTH_ME_URL } from "@/services/api/config";
 import useFetch from "@/services/api/use-fetch";
-import { AUTH_UPDATE_URL } from "@/services/api/config";
-import type { AuthUpdateDto, User } from "@/types/api";
+import {
+  ClearOutlined,
+  DeleteOutline,
+  Lock,
+  Person,
+  Edit,
+  CheckCircle,
+  Cancel,
+} from "@mui/icons-material";
+import { useDropzone } from "react-dropzone";
+import type { FileType } from "@/types/api";
 
-const createSchema = (t: any) =>
-  yup.object({
+// Componente para mostrar critérios de senha
+function PasswordCriteria({
+  password,
+  passwordConfirmation,
+}: {
+  password: string;
+  passwordConfirmation: string;
+}) {
+  const { t } = useLanguage("edit-profile");
+
+  const criteria = [
+    {
+      test: password.length >= 8,
+      text: t("criteria.minLength"),
+    },
+    {
+      test: /[A-Z]/.test(password),
+      text: t("criteria.uppercase"),
+    },
+    {
+      test: /\d/.test(password),
+      text: t("criteria.number"),
+    },
+    {
+      test: /[@$!%*?&]/.test(password),
+      text: t("criteria.specialChar"),
+    },
+    {
+      test:
+        password && passwordConfirmation && password === passwordConfirmation,
+      text: t("criteria.match"),
+    },
+  ];
+
+  return (
+    <Box
+      sx={{
+        mt: 1,
+        display: "flex",
+        flexWrap: "wrap",
+        gap: 1.5,
+      }}
+    >
+      {criteria.map((criterion, index) => (
+        <Box
+          key={index}
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            gap: 0.5,
+            width: { xs: "100%", sm: "calc(33.333% - 10px)" },
+            minWidth: { xs: "100%", sm: "200px" },
+            whiteSpace: "nowrap",
+          }}
+        >
+          {criterion.test ? (
+            <CheckCircle color="success" fontSize="small" />
+          ) : (
+            <Cancel color="error" fontSize="small" />
+          )}
+          <Typography
+            variant="caption"
+            sx={{
+              color: criterion.test ? "success.main" : "error.main",
+              fontSize: "0.7rem",
+            }}
+          >
+            {criterion.text}
+          </Typography>
+        </Box>
+      ))}
+    </Box>
+  );
+}
+
+// Tipos
+type EditProfileBasicInfoFormData = {
+  firstName: string;
+  lastName: string;
+  photo?: FileType | null;
+};
+
+type EditProfileChangePasswordFormData = {
+  oldPassword: string;
+  password: string;
+  passwordConfirmation: string;
+};
+
+// Validações
+const useValidationBasicInfoSchema = () => {
+  const { t } = useLanguage("edit-profile");
+
+  return yup.object().shape({
     firstName: yup.string().required(t("required.firstName")),
     lastName: yup.string().required(t("required.lastName")),
-    password: yup.string().optional(),
-    oldPassword: yup.string().when("password", {
-      is: (password: string) => password && password.length > 0,
-      then: schema => schema.required(t("required.currentPassword")),
-      otherwise: schema => schema.notRequired(),
-    }),
   });
+};
 
-type FormData = yup.InferType<ReturnType<typeof createSchema>>;
-
-export default function EditProfilePage() {
-  const navigate = useNavigate();
-  const { user, setUser } = useAuth();
-  const { showSnackbar } = useSnackbar();
+const useValidationChangePasswordSchema = () => {
   const { t } = useLanguage("edit-profile");
+
+  return yup.object().shape({
+    oldPassword: yup.string().required(t("required.oldPassword")),
+    password: yup
+      .string()
+      .min(8, t("validation.password.minLength"))
+      .matches(
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/,
+        t("validation.password.pattern")
+      )
+      .required(t("required.password")),
+    passwordConfirmation: yup
+      .string()
+      .oneOf([yup.ref("password")], t("validation.passwordConfirmation.match"))
+      .required(t("required.passwordConfirmation")),
+  });
+};
+
+// Serviço de Upload de Arquivos
+function useFileUploadService() {
   const fetchBase = useFetch();
 
-  const [loading, setLoading] = useState(false);
-  const [showPasswordFields, setShowPasswordFields] = useState(false);
+  return async (file: File) => {
+    const formData = new FormData();
+    formData.append("file", file);
 
-  const {
-    uploading: uploadingPhoto,
-    preview: photoPreview,
-    uploadFile,
-    resetPreview,
-  } = useFileUpload({
-    maxSize: 5 * 1024 * 1024, // 5MB
-    allowedTypes: ["image/"],
-    onSuccess: file => {
-      if (user) {
-        setUser({
-          ...user,
-          photo: file,
-        });
+    const response = await fetchBase(FILES_UPLOAD_URL, {
+      method: "POST",
+      body: formData,
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      return { status: response.status, data };
+    } else {
+      throw new Error(`Upload failed: ${response.status}`);
+    }
+  };
+}
+
+// Componente Avatar Input
+function AvatarInput({
+  value,
+  onChange,
+  onDeleteCurrent,
+  deleteCurrentPhoto,
+  onLoadingChange,
+}: {
+  value?: FileType | null;
+  onChange: (file: FileType | null) => void;
+  onDeleteCurrent?: () => void;
+  deleteCurrentPhoto?: boolean;
+  error?: string;
+  onLoadingChange?: (loading: boolean) => void;
+}) {
+  const [isLoading, setIsLoading] = useState(false);
+  const { user } = useAuth();
+  const fetchFileUpload = useFileUploadService();
+
+  const onDrop = async (acceptedFiles: File[]) => {
+    if (acceptedFiles.length > 0) {
+      setIsLoading(true);
+      onLoadingChange?.(true);
+      try {
+        const { status, data } = await fetchFileUpload(acceptedFiles[0]);
+        if (status === 201) {
+          onChange(data.file);
+        }
+      } catch (error) {
+        console.error("Upload error:", error);
+      } finally {
+        setIsLoading(false);
+        onLoadingChange?.(false);
       }
+    }
+  };
+
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    onDrop,
+    accept: {
+      "image/jpeg": [],
+      "image/png": [],
+      "image/jpg": [],
+      "image/webp": [],
     },
+    maxFiles: 1,
+    maxSize: 1024 * 1024 * 2, // 2MB
+    disabled: isLoading,
   });
 
-  const schema = createSchema(t);
+  const removeAvatar = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    onChange(null);
+  };
 
-  const {
-    control,
-    handleSubmit,
-    formState: { errors, isDirty },
-    reset,
-    watch,
-  } = useForm<FormData>({
-    resolver: yupResolver(schema),
+  return (
+    <Box
+      {...getRootProps()}
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        cursor: "pointer",
+        position: "relative",
+      }}
+    >
+      <input {...getInputProps()} />
+      {isDragActive && (
+        <Box
+          sx={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            bottom: 0,
+            right: 0,
+            backgroundColor: "rgba(0, 0, 0, 0.5)",
+            zIndex: 1,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            borderRadius: "50%",
+          }}
+        ></Box>
+      )}
+
+      <Box sx={{ position: "relative", display: "inline-block" }}>
+        <Avatar
+          alt={`${user?.firstName} ${user?.lastName}`}
+          src={
+            value?.path || (!deleteCurrentPhoto ? user?.photo?.path : undefined)
+          }
+          sx={{ width: 80, height: 80, fontSize: "2rem" }}
+        >
+          {user?.firstName?.[0]}
+          {user?.lastName?.[0]}
+        </Avatar>
+
+        {value && (
+          <IconButton
+            onClick={removeAvatar}
+            sx={{
+              position: "absolute",
+              top: 0,
+              right: 0,
+              backgroundColor: "rgba(0, 0, 0, 0.5)",
+              color: "white",
+              "&:hover": {
+                backgroundColor: "rgba(0, 0, 0, 0.7)",
+              },
+            }}
+          >
+            <ClearOutlined />
+          </IconButton>
+        )}
+
+        {/* Botão para deletar foto atual (não apenas a nova selecionada) */}
+        {user?.photo?.path && !deleteCurrentPhoto && (
+          <IconButton
+            onClick={e => {
+              e.stopPropagation();
+              onDeleteCurrent?.();
+            }}
+            sx={{
+              position: "absolute",
+              top: 0,
+              right: 0,
+              backgroundColor: "rgba(220, 38, 38, 0.8)",
+              color: "white",
+              "&:hover": {
+                backgroundColor: "rgba(220, 38, 38, 1)",
+              },
+            }}
+          >
+            <DeleteOutline />
+          </IconButton>
+        )}
+      </Box>
+    </Box>
+  );
+}
+
+// Formulário de Informações Básicas
+function FormBasicInfo() {
+  const { user } = useAuth();
+  const { setUser } = useAuthActions();
+  const { t } = useLanguage("edit-profile");
+  const { showSuccess, showError } = useSnackbar();
+  const fetchBase = useFetch();
+  const validationSchema = useValidationBasicInfoSchema();
+  const [deleteCurrentPhoto, setDeleteCurrentPhoto] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
+
+  const methods = useForm<EditProfileBasicInfoFormData>({
+    resolver: yupResolver(validationSchema),
     defaultValues: {
-      firstName: user?.firstName || "",
-      lastName: user?.lastName || "",
-      password: "",
-      oldPassword: "",
+      firstName: "",
+      lastName: "",
+      photo: null,
     },
   });
 
-  const watchedPassword = watch("password");
+  const { handleSubmit, setError, reset, watch, setValue } = methods;
+  const photo = watch("photo");
 
-  useEffect(() => {
-    if (user?.photo?.path) {
-      setPhotoPreview(user.photo.path);
-    }
-  }, [user]);
-
-  const handlePhotoChange = async (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    const file = event.target.files?.[0];
-    if (!file) return;
-
-    await uploadFile(file);
-  };
-
-  const togglePasswordFields = () => {
-    setShowPasswordFields(!showPasswordFields);
-    // Clear password fields when hiding
-    if (showPasswordFields) {
-      reset({
-        firstName: user?.firstName || "",
-        lastName: user?.lastName || "",
-        password: "",
-        oldPassword: "",
-      });
-    }
-  };
-
-  const onSubmit = async (data: FormData) => {
-    setLoading(true);
-
+  const onSubmit = handleSubmit(async formData => {
     try {
-      // Validate password if fields are visible and password is provided
-      if (
-        showPasswordFields &&
-        data.password &&
-        data.password.trim().length > 0
-      ) {
-        if (data.password.length < 6) {
-          showSnackbar(
-            "A nova senha deve ter pelo menos 6 caracteres",
-            "error"
-          );
-          setLoading(false);
-          return;
-        }
-        if (!data.oldPassword || data.oldPassword.trim().length === 0) {
-          showSnackbar(
-            "A senha atual é obrigatória para alterar a senha",
-            "error"
-          );
-          setLoading(false);
-          return;
-        }
-      }
-
-      const updateData: AuthUpdateDto = {
-        firstName: data.firstName,
-        lastName: data.lastName,
+      const updateData: {
+        firstName: string;
+        lastName: string;
+        photo?: { id: string } | null;
+      } = {
+        firstName: formData.firstName,
+        lastName: formData.lastName,
       };
 
-      // Only include password fields if password fields are visible and password is being changed
-      if (
-        showPasswordFields &&
-        data.password &&
-        data.password.trim().length > 0
-      ) {
-        updateData.password = data.password;
-        updateData.oldPassword = data.oldPassword;
+      if (formData.photo) {
+        updateData.photo = { id: formData.photo.id };
+      } else if (deleteCurrentPhoto) {
+        updateData.photo = null;
       }
 
-      const response = await fetchBase(AUTH_UPDATE_URL, {
+      const response = await fetchBase(AUTH_ME_URL, {
         method: "PATCH",
         body: JSON.stringify(updateData),
-        headers: {
-          "Content-Type": "application/json",
-        },
       });
 
       if (response.ok) {
         const updatedUser = await response.json();
         setUser(updatedUser);
-        showSnackbar(t("success"), "success");
+        showSuccess(t("success.profile"));
         reset({
           firstName: updatedUser.firstName,
           lastName: updatedUser.lastName,
-          password: "",
-          oldPassword: "",
+          photo: null,
         });
+        setDeleteCurrentPhoto(false);
       } else {
         const errorData = await response.json();
-        throw new Error(errorData.message || t("error"));
+        if (errorData.errors) {
+          Object.keys(errorData.errors).forEach(key => {
+            setError(key as keyof EditProfileBasicInfoFormData, {
+              type: "manual",
+              message: errorData.errors[key],
+            });
+          });
+        } else {
+          showError(errorData.message || t("error.generic"));
+        }
       }
-    } catch (error) {
-      console.error("Profile update error:", error);
-      showSnackbar(
-        error instanceof Error ? error.message : t("error"),
-        "error"
-      );
-    } finally {
-      setLoading(false);
+    } catch {
+      showError(t("error.generic"));
     }
+  });
+
+  const handleDeleteCurrentPhoto = () => {
+    setDeleteCurrentPhoto(true);
+    setValue("photo", null);
   };
 
-  const handleCancel = () => {
-    reset({
-      firstName: user?.firstName || "",
-      lastName: user?.lastName || "",
-      password: "",
-      oldPassword: "",
-    });
-    navigate("/profile");
-  };
+  useEffect(() => {
+    if (user) {
+      reset({
+        firstName: user.firstName || "",
+        lastName: user.lastName || "",
+        photo: null,
+      });
+    }
+  }, [user, reset]);
 
-  if (!user) {
-    return (
+  return (
+    <FormProvider {...methods}>
       <Container maxWidth="md">
-        <Alert severity="error">
-          Você precisa estar logado para editar o perfil.
-        </Alert>
+        <Card sx={{ mb: 3 }}>
+          <CardHeader
+            avatar={<Person sx={{ color: "#19AF78" }} />}
+            title={t("title1")}
+            titleTypographyProps={{ variant: "h6", fontWeight: "bold" }}
+          />
+          <Divider />
+          <CardContent>
+            <form onSubmit={onSubmit}>
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: 3,
+                  alignItems: "center",
+                }}
+              >
+                <AvatarInput
+                  value={photo}
+                  onChange={file => setValue("photo", file)}
+                  onDeleteCurrent={handleDeleteCurrentPhoto}
+                  deleteCurrentPhoto={deleteCurrentPhoto}
+                  onLoadingChange={setIsUploading}
+                />
+
+                <Box sx={{ width: "100%", display: "flex", gap: 2 }}>
+                  <TextField
+                    {...methods.register("firstName")}
+                    label={t("firstName")}
+                    fullWidth
+                    error={!!methods.formState.errors.firstName}
+                    helperText={methods.formState.errors.firstName?.message}
+                  />
+
+                  <TextField
+                    {...methods.register("lastName")}
+                    label={t("lastName")}
+                    fullWidth
+                    error={!!methods.formState.errors.lastName}
+                    helperText={methods.formState.errors.lastName?.message}
+                  />
+                </Box>
+
+                <Button
+                  type="submit"
+                  variant="contained"
+                  fullWidth
+                  startIcon={<Edit />}
+                  disabled={isUploading}
+                  sx={{ maxWidth: 300 }}
+                >
+                  {isUploading ? "Enviando..." : t("save")}
+                </Button>
+              </Box>
+            </form>
+          </CardContent>
+        </Card>
       </Container>
-    );
-  }
+    </FormProvider>
+  );
+}
+
+// Formulário de Alteração de Senha
+function FormChangePassword() {
+  const { t } = useLanguage("edit-profile");
+  const { showSuccess, showError } = useSnackbar();
+  const fetchBase = useFetch();
+  const validationSchema = useValidationChangePasswordSchema();
+  const [isOpen, setIsOpen] = useState(false);
+
+  const methods = useForm<EditProfileChangePasswordFormData>({
+    resolver: yupResolver(validationSchema),
+    defaultValues: {
+      oldPassword: "",
+      password: "",
+      passwordConfirmation: "",
+    },
+  });
+
+  const { handleSubmit, setError, reset, watch } = methods;
+  const password = watch("password");
+  const passwordConfirmation = watch("passwordConfirmation");
+
+  const onSubmit = handleSubmit(async formData => {
+    try {
+      const response = await fetchBase(AUTH_ME_URL, {
+        method: "PATCH",
+        body: JSON.stringify({
+          password: formData.password,
+          oldPassword: formData.oldPassword,
+        }),
+      });
+
+      if (response.ok) {
+        showSuccess(t("success.password"));
+        reset();
+      } else {
+        const errorData = await response.json();
+        if (errorData.errors) {
+          Object.keys(errorData.errors).forEach(key => {
+            setError(key as keyof EditProfileChangePasswordFormData, {
+              type: "manual",
+              message: errorData.errors[key],
+            });
+          });
+        } else {
+          showError(errorData.message || t("error.generic"));
+        }
+      }
+    } catch {
+      showError(t("error.generic"));
+    }
+  });
 
   return (
     <Container maxWidth="md">
-      <Box sx={{ mt: 4, mb: 4 }}>
-        <Paper elevation={3} sx={{ padding: 4 }}>
-          <Typography variant="h4" component="h1" gutterBottom align="center">
-            {t("title")}
-          </Typography>
-
-          <Box sx={{ display: "flex", justifyContent: "center", mb: 4 }}>
-            <Box sx={{ position: "relative", display: "inline-block" }}>
-              <Avatar
-                src={photoPreview || undefined}
-                sx={{ width: 120, height: 120, fontSize: "3rem" }}
-              >
-                {user.firstName?.[0]}
-                {user.lastName?.[0]}
-              </Avatar>
-              <input
-                accept="image/*"
-                style={{ display: "none" }}
-                id="photo-upload"
-                type="file"
-                onChange={handlePhotoChange}
-                disabled={uploadingPhoto}
-              />
-              <label htmlFor="photo-upload">
-                <Button
-                  component="span"
-                  variant="contained"
-                  startIcon={<PhotoCamera />}
-                  disabled={uploadingPhoto}
-                  sx={{
-                    position: "absolute",
-                    bottom: 0,
-                    right: 0,
-                    minWidth: "auto",
-                    width: 40,
-                    height: 40,
-                    borderRadius: "50%",
-                    backgroundColor: "#19AF78",
-                    "&:hover": { backgroundColor: "#0F7A5A" },
-                  }}
-                >
-                  {uploadingPhoto && (
-                    <CircularProgress size={20} color="inherit" />
-                  )}
-                </Button>
-              </label>
-            </Box>
-          </Box>
-
-          <form onSubmit={handleSubmit(onSubmit)}>
-            <Grid container spacing={3}>
-              <Grid item xs={12} sm={6}>
-                <Controller
-                  name="firstName"
-                  control={control}
-                  render={({ field }) => (
-                    <TextField
-                      {...field}
-                      fullWidth
-                      label={t("firstName")}
-                      error={!!errors.firstName}
-                      helperText={errors.firstName?.message}
-                      disabled={loading}
-                    />
-                  )}
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <Controller
-                  name="lastName"
-                  control={control}
-                  render={({ field }) => (
-                    <TextField
-                      {...field}
-                      fullWidth
-                      label={t("lastName")}
-                      error={!!errors.lastName}
-                      helperText={errors.lastName?.message}
-                      disabled={loading}
-                    />
-                  )}
-                />
-              </Grid>
-
-              <Grid item xs={12}>
-                <TextField
-                  fullWidth
-                  label={t("email")}
-                  value={user.email}
-                  disabled
-                  helperText={t("emailHelper")}
-                />
-              </Grid>
-
-              <Grid item xs={12}>
-                <Box sx={{ display: "flex", justifyContent: "center", my: 2 }}>
-                  <Button
-                    variant="outlined"
-                    onClick={togglePasswordFields}
+      <Card>
+        <CardHeader
+          avatar={<Lock sx={{ color: "#19AF78" }} />}
+          title={t("title3")}
+          titleTypographyProps={{ variant: "h6", fontWeight: "bold" }}
+          action={
+            <Button
+              variant="outlined"
+              startIcon={<Lock />}
+              onClick={() => setIsOpen(!isOpen)}
+              sx={{ mr: 1 }}
+            >
+              {isOpen ? "Fechar" : "Alterar Senha"}
+            </Button>
+          }
+        />
+        <Divider />
+        <Collapse in={isOpen}>
+          <CardContent>
+            <FormProvider {...methods}>
+              <form onSubmit={onSubmit}>
+                <Box sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
+                  <Box
                     sx={{
-                      color: "#19AF78",
-                      borderColor: "#19AF78",
-                      "&:hover": {
-                        borderColor: "#0F7A5A",
-                        backgroundColor: "rgba(25, 175, 120, 0.04)",
-                      },
+                      display: "flex",
+                      gap: 2,
+                      flexDirection: { xs: "column", md: "row" },
                     }}
                   >
-                    {showPasswordFields
-                      ? t("cancelPasswordChange")
-                      : t("changePasswordButton")}
-                  </Button>
-                </Box>
-              </Grid>
-
-              {showPasswordFields && (
-                <>
-                  <Grid item xs={12}>
-                    <Divider sx={{ my: 2 }}>
-                      <Typography variant="body2" color="text.secondary">
-                        {t("changePassword")}
-                      </Typography>
-                    </Divider>
-                  </Grid>
-
-                  <Grid item xs={12} sm={6}>
-                    <Controller
-                      name="oldPassword"
-                      control={control}
-                      render={({ field }) => (
-                        <TextField
-                          {...field}
-                          fullWidth
-                          type="password"
-                          label={t("currentPassword")}
-                          error={!!errors.oldPassword}
-                          helperText={errors.oldPassword?.message}
-                          disabled={loading}
-                        />
-                      )}
+                    <TextField
+                      {...methods.register("oldPassword")}
+                      label={t("oldPassword")}
+                      type="password"
+                      fullWidth
+                      error={!!methods.formState.errors.oldPassword}
+                      helperText={methods.formState.errors.oldPassword?.message}
                     />
-                  </Grid>
-                  <Grid item xs={12} sm={6}>
-                    <Controller
-                      name="password"
-                      control={control}
-                      render={({ field }) => (
-                        <TextField
-                          {...field}
-                          fullWidth
-                          type="password"
-                          label={t("newPassword")}
-                          error={!!errors.password}
-                          helperText={errors.password?.message}
-                          disabled={loading}
-                        />
-                      )}
+                    <TextField
+                      {...methods.register("password")}
+                      label={t("newPassword")}
+                      type="password"
+                      fullWidth
+                      error={!!methods.formState.errors.password}
+                      helperText={methods.formState.errors.password?.message}
                     />
-                  </Grid>
-                </>
-              )}
 
-              <Grid item xs={12}>
-                <Box
-                  sx={{
-                    display: "flex",
-                    gap: 2,
-                    justifyContent: "flex-end",
-                    mt: 3,
-                  }}
-                >
-                  <Button
-                    variant="outlined"
-                    onClick={handleCancel}
-                    disabled={loading}
-                    startIcon={<Cancel />}
-                  >
-                    {t("cancel")}
-                  </Button>
-                  <Button
-                    type="submit"
-                    variant="contained"
-                    disabled={loading || !isDirty}
-                    startIcon={
-                      loading ? <CircularProgress size={20} /> : <Save />
-                    }
-                    sx={{
-                      backgroundColor: "#19AF78",
-                      "&:hover": { backgroundColor: "#0F7A5A" },
-                    }}
-                  >
-                    {loading ? t("saving") : t("save")}
-                  </Button>
+                    <TextField
+                      {...methods.register("passwordConfirmation")}
+                      label={t("passwordConfirmation")}
+                      type="password"
+                      fullWidth
+                      error={!!methods.formState.errors.passwordConfirmation}
+                      helperText={
+                        methods.formState.errors.passwordConfirmation?.message
+                      }
+                    />
+                  </Box>
+                  <PasswordCriteria
+                    password={password || ""}
+                    passwordConfirmation={passwordConfirmation || ""}
+                  />
+
+                  <Box sx={{ display: "flex", justifyContent: "center" }}>
+                    <Button
+                      type="submit"
+                      variant="contained"
+                      startIcon={<Edit />}
+                      sx={{ minWidth: 200 }}
+                    >
+                      {t("save")}
+                    </Button>
+                  </Box>
                 </Box>
-              </Grid>
-            </Grid>
-          </form>
-        </Paper>
-      </Box>
+              </form>
+            </FormProvider>
+          </CardContent>
+        </Collapse>
+      </Card>
     </Container>
+  );
+}
+
+// Componente Principal
+export default function EditProfilePage() {
+  return (
+    <Box sx={{ py: 3 }}>
+      <Container maxWidth="md">
+        <Typography
+          variant="h4"
+          component="h1"
+          gutterBottom
+          align="center"
+          sx={{ mb: 4, fontWeight: "bold", color: "#19AF78" }}
+        >
+          Editar Perfil
+        </Typography>
+        <FormBasicInfo />
+        <FormChangePassword />
+      </Container>
+    </Box>
   );
 }

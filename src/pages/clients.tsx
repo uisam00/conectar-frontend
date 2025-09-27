@@ -168,15 +168,7 @@ export default function ClientsPage() {
                 >
                   Limpar campos
                 </Button>
-                <Button
-                  variant="contained"
-                  sx={{
-                    backgroundColor: "#19AF78",
-                    "&:hover": { backgroundColor: "#0F7A5A" },
-                  }}
-                >
-                  Filtrar
-                </Button>
+                <Button variant="contained">Filtrar</Button>
               </Box>
             </Box>
           </Collapse>

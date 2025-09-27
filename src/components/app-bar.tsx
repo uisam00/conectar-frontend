@@ -8,7 +8,7 @@ import {
   MenuItem,
   Avatar,
 } from "@mui/material";
-import { AccountCircle, Help, Notifications } from "@mui/icons-material";
+import { Help, Notifications } from "@mui/icons-material";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth, useAuthActions } from "@/services/auth";
@@ -95,13 +95,13 @@ export default function ResponsiveAppBar() {
                 aria-controls="menu-appbar"
                 aria-haspopup="true"
                 onClick={handleMenu}
-                sx={{ color: "white" }}
+                sx={{ color: "white", p: 0 }}
               >
-                {user.photo ? (
-                  <Avatar src={user.photo.path} alt={user.firstName} />
-                ) : (
-                  <AccountCircle />
-                )}
+                <Avatar
+                  alt={`${user.firstName} ${user.lastName}`}
+                  src={user.photo?.path}
+                  sx={{ width: 40, height: 40 }}
+                />
               </IconButton>
               <Menu
                 id="menu-appbar"
