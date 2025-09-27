@@ -1,9 +1,9 @@
-import Cookies from 'js-cookie';
-import type { TokensInfo } from './auth-context';
+import Cookies from "js-cookie";
+import type { TokensInfo } from "./auth-context";
 
-const TOKEN_KEY = 'auth-token';
-const REFRESH_TOKEN_KEY = 'auth-refresh-token';
-const TOKEN_EXPIRES_KEY = 'auth-token-expires';
+const TOKEN_KEY = "auth-token";
+const REFRESH_TOKEN_KEY = "auth-refresh-token";
+const TOKEN_EXPIRES_KEY = "auth-token-expires";
 
 export function getTokensInfo(): TokensInfo | null {
   const token = Cookies.get(TOKEN_KEY);
@@ -31,8 +31,10 @@ export function setTokensInfo(tokensInfo: TokensInfo | null): void {
 
   // Set cookies with expiration
   const expires = new Date(tokensInfo.tokenExpires * 1000);
-  
+
   Cookies.set(TOKEN_KEY, tokensInfo.token, { expires });
   Cookies.set(REFRESH_TOKEN_KEY, tokensInfo.refreshToken, { expires });
-  Cookies.set(TOKEN_EXPIRES_KEY, tokensInfo.tokenExpires.toString(), { expires });
+  Cookies.set(TOKEN_EXPIRES_KEY, tokensInfo.tokenExpires.toString(), {
+    expires,
+  });
 }

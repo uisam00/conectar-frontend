@@ -1,9 +1,9 @@
-import { Container, Typography, Box, Paper } from '@mui/material';
-import { useLanguage } from '@/services/i18n';
-import { useAuth } from '@/services/auth';
+import { Container, Typography, Box, Paper } from "@mui/material";
+import { useLanguage } from "@/services/i18n";
+import { useAuth } from "@/services/auth";
 
 export default function SimpleProfilePage() {
-  const { t } = useLanguage('profile');
+  const { t } = useLanguage("profile");
   const { user } = useAuth();
 
   if (!user) {
@@ -21,16 +21,16 @@ export default function SimpleProfilePage() {
       <Box sx={{ mt: 4, mb: 4 }}>
         <Paper elevation={3} sx={{ padding: 4 }}>
           <Typography variant="h4" component="h1" gutterBottom align="center">
-            {t('title')}
+            {t("title")}
           </Typography>
 
-          <Box sx={{ display: 'flex', justifyContent: 'center', mb: 4 }}>
+          <Box sx={{ display: "flex", justifyContent: "center", mb: 4 }}>
             <Typography variant="h6">
               Welcome, {user.firstName} {user.lastName}!
             </Typography>
           </Box>
 
-          <Box sx={{ mt: 3, p: 2, bgcolor: 'grey.100', borderRadius: 1 }}>
+          <Box sx={{ mt: 3, p: 2, bgcolor: "grey.100", borderRadius: 1 }}>
             <Typography variant="h6" gutterBottom>
               User Information
             </Typography>

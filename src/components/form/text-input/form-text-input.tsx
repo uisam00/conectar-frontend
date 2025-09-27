@@ -6,14 +6,8 @@ import InputAdornment from "@mui/material/InputAdornment";
 import TextField from "@mui/material/TextField";
 import React, { useState } from "react";
 import type { ChangeEvent, Ref } from "react";
-import {
-  Controller,
-} from "react-hook-form";
-import type {
-  ControllerProps,
-  FieldPath,
-  FieldValues,
-} from "react-hook-form";
+import { Controller } from "react-hook-form";
+import type { ControllerProps, FieldPath, FieldValues } from "react-hook-form";
 import type { InputBaseComponentProps } from "@mui/material/InputBase";
 
 export type TextInputProps = {
@@ -45,7 +39,7 @@ function TextInput(
 ) {
   const [isShowPassword, setIsShowPassword] = useState(false);
 
-  const handleClickShowPassword = () => setIsShowPassword((show) => !show);
+  const handleClickShowPassword = () => setIsShowPassword(show => !show);
 
   const handleMouseDownPassword = (
     event: React.MouseEvent<HTMLButtonElement>
@@ -103,7 +97,10 @@ function FormTextInput<
   TFieldValues extends FieldValues = FieldValues,
   TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
 >(
-  props: Pick<ControllerProps<TFieldValues, TName>, "name" | "defaultValue" | "control"> &
+  props: Pick<
+    ControllerProps<TFieldValues, TName>,
+    "name" | "defaultValue" | "control"
+  > &
     TextInputProps
 ) {
   return (

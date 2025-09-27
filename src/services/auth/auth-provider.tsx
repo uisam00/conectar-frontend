@@ -1,12 +1,7 @@
 "use client";
 
 import type { User } from "@/types/api";
-import {
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import type { PropsWithChildren } from "react";
 import {
   AuthActionsContext,
@@ -44,7 +39,7 @@ function AuthProvider(props: PropsWithChildren) {
           method: "POST",
         });
       } catch (error) {
-        console.error('Logout error:', error);
+        console.error("Logout error:", error);
       }
     }
     setTokensInfo(null);
@@ -70,7 +65,7 @@ function AuthProvider(props: PropsWithChildren) {
         }
       }
     } catch (error) {
-      console.error('Auth load data error:', error);
+      console.error("Auth load data error:", error);
     } finally {
       setIsLoaded(true);
     }

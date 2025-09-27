@@ -1,4 +1,4 @@
-import { toast } from 'react-toastify';
+import { toast } from "react-toastify";
 
 export default function useSnackbar() {
   const showSuccess = (message: string) => {
@@ -24,4 +24,3 @@ export default function useSnackbar() {
     showWarning,
   };
 }
-

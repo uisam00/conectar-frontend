@@ -1,4 +1,5 @@
-export const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
+export const API_URL =
+  import.meta.env.VITE_API_URL || "http://localhost:3001/api";
 
 export const AUTH_ME_URL = `${API_URL}/v1/auth/me`;
 export const AUTH_LOGIN_URL = `${API_URL}/v1/auth/email/login`;
@@ -25,5 +26,4 @@ export const HTTP_CODES = {
   INTERNAL_SERVER_ERROR: 500,
 } as const;
 
-export type HTTP_CODES_ENUM = typeof HTTP_CODES[keyof typeof HTTP_CODES];
-
+export type HTTP_CODES_ENUM = (typeof HTTP_CODES)[keyof typeof HTTP_CODES];

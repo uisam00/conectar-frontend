@@ -1,23 +1,24 @@
-import { useState } from 'react';
+import { useState } from "react";
 import {
   Paper,
   Box,
-  Button,
   TextField,
   Link as MuiLink,
   IconButton,
   Typography,
-} from '@mui/material';
-import { Visibility, VisibilityOff } from '@mui/icons-material';
-import { Link, useNavigate } from 'react-router-dom';
-import { useLanguage } from '@/services/i18n';
-import { useAuthActions, useAuthTokens } from '@/services/auth';
-import useFetch from '@/services/api/use-fetch';
-import { AUTH_LOGIN_URL } from '@/services/api/config';
-import { useErrorHandler } from '@/hooks';
+  Button,
+} from "@mui/material";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
+import { Link, useNavigate } from "react-router-dom";
+import { useLanguage } from "@/services/i18n";
+import { useAuthActions, useAuthTokens } from "@/services/auth";
+import useFetch from "@/services/api/use-fetch";
+import { AUTH_LOGIN_URL } from "@/services/api/config";
+import { useErrorHandler } from "@/hooks";
+import LabelInput from "@/components/form/label-input";
 
 export default function SignInPage() {
-  const { t } = useLanguage('sign-in');
+  const { t } = useLanguage("sign-in");
   const { setTokensInfo } = useAuthTokens();
   const { setUser } = useAuthActions();
   const fetchBase = useFetch();
@@ -26,8 +27,8 @@ export default function SignInPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
-    email: '',
-    password: '',
+    email: "",
+    password: "",
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -42,7 +43,7 @@ export default function SignInPage() {
     setIsLoading(true);
     try {
       const response = await fetchBase(AUTH_LOGIN_URL, {
-        method: 'POST',
+        method: "POST",
         body: JSON.stringify(formData),
       });
 
@@ -54,7 +55,7 @@ export default function SignInPage() {
           tokenExpires: result.tokenExpires,
         });
         setUser(result.user);
-        navigate('/');
+        navigate("/");
       } else {
         const errorData = await response.json();
         const errors = errorData.errors || errorData;
@@ -70,12 +71,12 @@ export default function SignInPage() {
   return (
     <Box
       sx={{
-        minHeight: '100vh',
-        background: 'linear-gradient(135deg, #19AF78 0%, #0F7A5A 100%)',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
+        minHeight: "100vh",
+        background: "linear-gradient(135deg, #19AF78 0%, #0F7A5A 100%)",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
         padding: 2,
       }}
     >
@@ -84,9 +85,9 @@ export default function SignInPage() {
           src="/logo.png"
           alt="Conectar"
           style={{
-            height: '80px',
-            width: 'auto',
-            filter: 'brightness(0) invert(1)'
+            height: "80px",
+            width: "auto",
+            filter: "brightness(0) invert(1)",
           }}
         />
       </Box>
@@ -95,44 +96,40 @@ export default function SignInPage() {
         elevation={8}
         sx={{
           padding: 3,
-          width: '100%',
+          width: "100%",
           maxWidth: 450,
           borderRadius: 2,
-          backgroundColor: 'white'
+          backgroundColor: "white",
         }}
       >
         <Box component="form" onSubmit={handleSubmit}>
-          <Box sx={{ mb: 2 }}>
-            <Typography variant="body2" sx={{ mb: 0.5,  color: '#333' }}>
-              {t('inputs.email.label')}
-            </Typography>
-            <TextField
-              name="email"
-              type="email"
-              autoComplete="email"
-              id="email"
-              autoFocus
-              fullWidth
-              value={formData.email}
-              onChange={handleChange}
-              required
-              sx={{
-                '& .MuiOutlinedInput-root': {
-                  borderRadius: 3,
-                  height: 48,
-                },
-              }}
-            />
-          </Box>
+          <LabelInput
+            label={t("inputs.email.label")}
+            name="email"
+            type="email"
+            autoComplete="email"
+            id="email"
+            autoFocus
+            value={formData.email}
+            onChange={handleChange}
+            required
+          />
 
           <Box sx={{ mb: 2 }}>
-            <Typography variant="body2" sx={{ mb: 0.5, color: '#333' }}>
-              {t('inputs.password.label')}
+            <Typography variant="body2" sx={{ mb: 0.5, color: "#333" }}>
+              {t("inputs.password.label")}
             </Typography>
-            <Box sx={{ display: 'flex', alignItems: 'stretch', gap: 0, width: '100%' }}>
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "stretch",
+                gap: 0,
+                width: "100%",
+              }}
+            >
               <TextField
                 name="password"
-                type={showPassword ? 'text' : 'password'}
+                type={showPassword ? "text" : "password"}
                 autoComplete="current-password"
                 id="password"
                 fullWidth
@@ -140,19 +137,19 @@ export default function SignInPage() {
                 onChange={handleChange}
                 required
                 sx={{
-                  '& .MuiOutlinedInput-root': {
+                  "& .MuiOutlinedInput-root": {
                     borderRadius: 3,
                     borderTopRightRadius: 0,
                     borderBottomRightRadius: 0,
                     height: 48,
-                    '& fieldset': {
-                      borderRight: 'none',
+                    "& fieldset": {
+                      borderRight: "none",
                     },
-                    '&:hover fieldset': {
-                      borderRight: 'none',
+                    "&:hover fieldset": {
+                      borderRight: "none",
                     },
-                    '&.Mui-focused fieldset': {
-                      borderRight: 'none',
+                    "&.Mui-focused fieldset": {
+                      borderRight: "none",
                     },
                   },
                 }}
@@ -161,18 +158,18 @@ export default function SignInPage() {
                 aria-label="toggle password visibility"
                 onClick={() => setShowPassword(!showPassword)}
                 sx={{
-                  color: '#19AF78',
-                  backgroundColor: '#8CD7B9',
+                  color: "#19AF78",
+                  backgroundColor: "#8CD7B9",
                   borderRadius: 3,
                   borderTopLeftRadius: 0,
                   borderBottomLeftRadius: 0,
                   height: 48,
                   width: 48,
                   minWidth: 48,
-                  alignSelf: 'stretch',
-                  '&:hover': {
-                    backgroundColor: '#7BC4A8',
-                  }
+                  alignSelf: "stretch",
+                  "&:hover": {
+                    backgroundColor: "#7BC4A8",
+                  },
                 }}
               >
                 {showPassword ? <VisibilityOff /> : <Visibility />}
@@ -184,22 +181,10 @@ export default function SignInPage() {
             type="submit"
             fullWidth
             variant="contained"
-            sx={{
-              mt: 2,
-              mb: 2,
-              backgroundColor: '#19AF78',
-              color: 'white',
-              '&:hover': {
-                backgroundColor: '#0F7A5A',
-              },
-              borderRadius: 3,
-              py: 1.5,
-              fontSize: '1rem',
-              fontWeight: 'bold'
-            }}
+            sx={{ mt: 2, mb: 2 }}
             disabled={isLoading}
           >
-            {isLoading ? t('loading') : t('actions.submit')}
+            {isLoading ? t("loading") : t("actions.submit")}
           </Button>
 
           <Box textAlign="center" sx={{ mt: 1 }}>
@@ -208,15 +193,15 @@ export default function SignInPage() {
               to="/forgot-password"
               variant="body2"
               sx={{
-                color: '#666',
-                textDecoration: 'none',
-                fontSize: '0.9rem',
-                '&:hover': {
-                  textDecoration: 'underline'
-                }
+                color: "#666",
+                textDecoration: "none",
+                fontSize: "0.9rem",
+                "&:hover": {
+                  textDecoration: "underline",
+                },
               }}
             >
-              {t('actions.forgotPassword')}
+              {t("actions.forgotPassword")}
             </MuiLink>
           </Box>
         </Box>

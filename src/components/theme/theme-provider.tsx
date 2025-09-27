@@ -1,27 +1,17 @@
-import { ThemeProvider as MuiThemeProvider, createTheme } from '@mui/material/styles';
-import CssBaseline from '@mui/material/CssBaseline';
-import { createContext, useContext, useState, useMemo } from 'react';
-import type { PropsWithChildren } from 'react';
-
-interface ThemeContextType {
-  mode: 'light' | 'dark';
-  toggleColorMode: () => void;
-}
-
-const ThemeContext = createContext<ThemeContextType>({
-  mode: 'light',
-  toggleColorMode: () => {},
-});
-
-export function useTheme() {
-  return useContext(ThemeContext);
-}
+import {
+  ThemeProvider as MuiThemeProvider,
+  createTheme,
+} from "@mui/material/styles";
+import CssBaseline from "@mui/material/CssBaseline";
+import { useState, useMemo } from "react";
+import type { PropsWithChildren } from "react";
+import { ThemeContext } from "./theme-context";
 
 export default function ThemeProvider({ children }: PropsWithChildren) {
-  const [mode, setMode] = useState<'light' | 'dark'>('light');
+  const [mode, setMode] = useState<"light" | "dark">("light");
 
   const toggleColorMode = () => {
-    setMode((prev) => (prev === 'light' ? 'dark' : 'light'));
+    setMode(prev => (prev === "light" ? "dark" : "light"));
   };
 
   const theme = useMemo(
@@ -30,39 +20,44 @@ export default function ThemeProvider({ children }: PropsWithChildren) {
         palette: {
           mode,
           primary: {
-            main: '#19AF78',
-            dark: '#0F7A5A',
-            light: '#4ECB8A',
+            main: "#19AF78",
+            dark: "#0F7A5A",
+            light: "#4ECB8A",
           },
           secondary: {
-            main: '#dc004e',
+            main: "#dc004e",
           },
         },
         components: {
           MuiButton: {
             styleOverrides: {
               root: {
-                textTransform: 'none',
+                textTransform: "none",
+                borderRadius: 3,
+                py: 1.5,
+                fontSize: "1rem",
+                fontWeight: "bold",
               },
             },
           },
           MuiTextField: {
             styleOverrides: {
               root: {
-                '& .MuiOutlinedInput-root': {
-                  borderRadius: 2,
-                  '& fieldset': {
-                    borderColor: '#E0E0E0',
+                "& .MuiOutlinedInput-root": {
+                  borderRadius: 3,
+                  height: 48,
+                  "& fieldset": {
+                    borderColor: "#E0E0E0",
                   },
-                  '&:hover fieldset': {
-                    borderColor: '#19AF78',
+                  "&:hover fieldset": {
+                    borderColor: "#19AF78",
                   },
-                  '&.Mui-focused fieldset': {
-                    borderColor: '#19AF78',
+                  "&.Mui-focused fieldset": {
+                    borderColor: "#19AF78",
                   },
                 },
-                '& .MuiInputLabel-root.Mui-focused': {
-                  color: '#19AF78',
+                "& .MuiInputLabel-root.Mui-focused": {
+                  color: "#19AF78",
                 },
               },
             },

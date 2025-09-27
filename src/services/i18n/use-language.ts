@@ -1,4 +1,4 @@
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from "react-i18next";
 
 export default function useLanguage(namespace?: string) {
   const { t, i18n } = useTranslation(namespace);

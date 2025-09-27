@@ -119,4 +119,3 @@ export interface AuthUpdateDto {
 export interface AuthGoogleLoginDto {
   idToken: string;
 }
-

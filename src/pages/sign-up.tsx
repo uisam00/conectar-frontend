@@ -1,39 +1,31 @@
-import { useState } from 'react';
-import {
-  Container,
-  Paper,
-  Typography,
-  Box,
-  Button,
-  TextField,
-  Link as MuiLink,
-  Divider,
-} from '@mui/material';
-import { Link, useNavigate } from 'react-router-dom';
-import { useLanguage } from '@/services/i18n';
-import useFetch from '@/services/api/use-fetch';
-import { AUTH_REGISTER_URL } from '@/services/api/config';
-import { useSnackbar, useErrorHandler } from '@/hooks';
+import { useState } from "react";
+import { Paper, Box, Link as MuiLink, Button } from "@mui/material";
+import { Link, useNavigate } from "react-router-dom";
+import { useLanguage } from "@/services/i18n";
+import useFetch from "@/services/api/use-fetch";
+import { AUTH_REGISTER_URL } from "@/services/api/config";
+import { useErrorHandler } from "@/hooks";
+import useSnackbar from "@/hooks/use-snackbar";
+import LabelInput from "@/components/form/label-input";
 
 export default function SignUpPage() {
-  const { t } = useLanguage('sign-up');
+  const { t } = useLanguage("sign-up");
   const fetchBase = useFetch();
   const navigate = useNavigate();
   const { showSuccess } = useSnackbar();
   const { handleApiError } = useErrorHandler();
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
-    email: '',
-    password: '',
+    firstName: "",
+    lastName: "",
+    email: "",
+    password: "",
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
     setFormData({
       ...formData,
-      [name]: value,
+      [e.target.name]: e.target.value,
     });
   };
 
@@ -42,13 +34,15 @@ export default function SignUpPage() {
     setIsLoading(true);
     try {
       const response = await fetchBase(AUTH_REGISTER_URL, {
-        method: 'POST',
+        method: "POST",
         body: JSON.stringify(formData),
       });
 
       if (response.ok) {
-        showSuccess('Registration successful! Please check your email to confirm your account.');
-        navigate('/sign-in');
+        showSuccess(
+          "Registration successful! Please check your email to confirm your account."
+        );
+        navigate("/sign-in");
       } else {
         const errorData = await response.json();
         const errors = errorData.errors || errorData;
@@ -62,92 +56,110 @@ export default function SignUpPage() {
   };
 
   return (
-    <Container component="main" maxWidth="sm">
-      <Box
+    <Box
+      sx={{
+        minHeight: "100vh",
+        background: "linear-gradient(135deg, #19AF78 0%, #0F7A5A 100%)",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        padding: 2,
+      }}
+    >
+      <Box sx={{ mb: 4 }}>
+        <img
+          src="/logo.png"
+          alt="Conectar"
+          style={{
+            height: "80px",
+            width: "auto",
+            filter: "brightness(0) invert(1)",
+          }}
+        />
+      </Box>
+
+      <Paper
+        elevation={8}
         sx={{
-          marginTop: 8,
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
+          padding: 3,
+          width: "100%",
+          maxWidth: 450,
+          borderRadius: 2,
+          backgroundColor: "white",
         }}
       >
-        <Paper elevation={3} sx={{ padding: 4, width: '100%' }}>
-          <Typography component="h1" variant="h4" align="center" gutterBottom>
-            {t('title')}
-          </Typography>
+        <Box component="form" onSubmit={handleSubmit}>
+          <LabelInput
+            label={t("inputs.firstName.label")}
+            name="firstName"
+            type="text"
+            autoComplete="given-name"
+            autoFocus
+            value={formData.firstName}
+            onChange={handleChange}
+            required
+          />
 
-          <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1 }}>
-            <TextField
-              name="firstName"
-              label={t('inputs.firstName.label')}
-              autoComplete="given-name"
-              autoFocus
-              fullWidth
-              margin="normal"
-              value={formData.firstName}
-              onChange={handleChange}
-              required
-            />
+          <LabelInput
+            label={t("inputs.lastName.label")}
+            name="lastName"
+            type="text"
+            autoComplete="family-name"
+            value={formData.lastName}
+            onChange={handleChange}
+            required
+          />
 
-            <TextField
-              name="lastName"
-              label={t('inputs.lastName.label')}
-              autoComplete="family-name"
-              fullWidth
-              margin="normal"
-              value={formData.lastName}
-              onChange={handleChange}
-              required
-            />
+          <LabelInput
+            label={t("inputs.email.label")}
+            name="email"
+            type="email"
+            autoComplete="email"
+            value={formData.email}
+            onChange={handleChange}
+            required
+          />
 
-            <TextField
-              name="email"
-              label={t('inputs.email.label')}
-              type="email"
-              autoComplete="email"
-              fullWidth
-              margin="normal"
-              value={formData.email}
-              onChange={handleChange}
-              required
-            />
+          <LabelInput
+            label={t("inputs.password.label")}
+            name="password"
+            type="password"
+            autoComplete="new-password"
+            value={formData.password}
+            onChange={handleChange}
+            required
+          />
 
-            <TextField
-              name="password"
-              label={t('inputs.password.label')}
-              type="password"
-              autoComplete="new-password"
-              fullWidth
-              margin="normal"
-              value={formData.password}
-              onChange={handleChange}
-              required
-            />
+          <Button
+            type="submit"
+            fullWidth
+            variant="contained"
+            sx={{ mt: 2, mb: 2 }}
+            disabled={isLoading}
+          >
+            {isLoading ? t("loading") : t("actions.submit")}
+          </Button>
 
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              sx={{ mt: 3, mb: 2 }}
-              disabled={isLoading}
+          <Box textAlign="center" sx={{ mt: 1 }}>
+            <MuiLink
+              component={Link}
+              to="/sign-in"
+              variant="body2"
+              sx={{
+                color: "#666",
+                textDecoration: "none",
+                fontSize: "0.9rem",
+                "&:hover": {
+                  textDecoration: "underline",
+                },
+              }}
             >
-              {isLoading ? t('loading') : t('actions.submit')}
-            </Button>
-
-            <Divider sx={{ my: 2 }}>
-              <Typography variant="body2" color="text.secondary">
-                {t('or')}
-              </Typography>
-            </Divider>
-
-            <Box textAlign="center">
-              <MuiLink component={Link} to="/sign-in" variant="body2">
-                {t('actions.accountAlreadyExists')}
-              </MuiLink>
-            </Box>
+              {t("actions.accountAlreadyExists")}
+            </MuiLink>
           </Box>
-        </Paper>
-      </Box>
-    </Container>
+        </Box>
+      </Paper>
+    </Box>
   );
 }
