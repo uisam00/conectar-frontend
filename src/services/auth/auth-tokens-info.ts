@@ -14,10 +14,19 @@ export function getTokensInfo(): TokensInfo | null {
     return null;
   }
 
+  const expiresTimestamp = parseInt(tokenExpires, 10);
+  
+  // Check if token is expired
+  if (Date.now() >= expiresTimestamp * 1000) {
+    // Clear expired tokens
+    setTokensInfo(null);
+    return null;
+  }
+
   return {
     token,
     refreshToken,
-    tokenExpires: parseInt(tokenExpires, 10),
+    tokenExpires: expiresTimestamp,
   };
 }
 
@@ -29,12 +38,22 @@ export function setTokensInfo(tokensInfo: TokensInfo | null): void {
     return;
   }
 
-  // Set cookies with expiration
+  // Set cookies with proper configuration
   const expires = new Date(tokensInfo.tokenExpires * 1000);
-
-  Cookies.set(TOKEN_KEY, tokensInfo.token, { expires });
-  Cookies.set(REFRESH_TOKEN_KEY, tokensInfo.refreshToken, { expires });
-  Cookies.set(TOKEN_EXPIRES_KEY, tokensInfo.tokenExpires.toString(), {
+  const cookieOptions = {
     expires,
-  });
+    secure: process.env.NODE_ENV === 'production', // Only secure in production
+    sameSite: 'lax' as const, // CSRF protection
+    path: '/', // Available for entire site
+  };
+
+  Cookies.set(TOKEN_KEY, tokensInfo.token, cookieOptions);
+  Cookies.set(REFRESH_TOKEN_KEY, tokensInfo.refreshToken, cookieOptions);
+  Cookies.set(TOKEN_EXPIRES_KEY, tokensInfo.tokenExpires.toString(), cookieOptions);
+}
+
+export function clearTokensInfo(): void {
+  Cookies.remove(TOKEN_KEY, { path: '/' });
+  Cookies.remove(REFRESH_TOKEN_KEY, { path: '/' });
+  Cookies.remove(TOKEN_EXPIRES_KEY, { path: '/' });
 }

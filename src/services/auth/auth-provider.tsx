@@ -15,12 +15,17 @@ import { HTTP_CODES } from "@/services/api/config";
 import {
   getTokensInfo,
   setTokensInfo as setTokensInfoToStorage,
+  clearTokensInfo,
 } from "./auth-tokens-info";
+import { useSessionPersistence } from "@/hooks";
 
 function AuthProvider(props: PropsWithChildren) {
   const [isLoaded, setIsLoaded] = useState(false);
   const [user, setUser] = useState<User | null>(null);
   const fetchBase = useFetch();
+
+  // Hook para gerenciar persistência de sessão
+  useSessionPersistence();
 
   const setTokensInfo = useCallback((tokensInfo: TokensInfo | null) => {
     setTokensInfoToStorage(tokensInfo);
@@ -42,8 +47,11 @@ function AuthProvider(props: PropsWithChildren) {
         console.error("Logout error:", error);
       }
     }
-    setTokensInfo(null);
-  }, [setTokensInfo, fetchBase]);
+
+    // Clear tokens and user data
+    clearTokensInfo();
+    setUser(null);
+  }, [fetchBase]);
 
   const loadData = useCallback(async () => {
     const tokens = getTokensInfo();
