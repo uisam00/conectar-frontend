@@ -21,10 +21,14 @@ import {
   TableHead,
   TableRow,
   TablePagination,
+  TableSortLabel,
 } from "@mui/material";
 import { Search, ExpandLess, ExpandMore } from "@mui/icons-material";
 import AdminPageLayout from "@/components/layout/admin-page-layout";
 import { useClients } from "@/hooks/use-clients-query";
+
+type Order = 'asc' | 'desc';
+
 
 export default function ClientsPage() {
   const [activeTab, setActiveTab] = useState(0);
@@ -44,6 +48,8 @@ export default function ClientsPage() {
   const [hasSearched, setHasSearched] = useState(true);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [order, setOrder] = useState<Order>('asc');
+  const [orderBy, setOrderBy] = useState<string>('');
 
   // Mapear filtros da UI para filtros da API
   const apiFilters = useMemo(
@@ -61,8 +67,10 @@ export default function ClientsPage() {
             : undefined,
       page: page + 1, // API usa página baseada em 1
       limit: rowsPerPage,
+      sortBy: orderBy || undefined,
+      sortOrder: orderBy ? (order === 'asc' ? 'ASC' as const : 'DESC' as const) : undefined,
     }),
-    [appliedFilters, page, rowsPerPage]
+    [appliedFilters, page, rowsPerPage, orderBy, order]
   );
 
   const { clients, total, loading, error } = useClients(
@@ -129,6 +137,16 @@ export default function ClientsPage() {
 
   const handleTabChange = (_event: React.SyntheticEvent, newValue: number) => {
     setActiveTab(newValue);
+  };
+
+  const handleRequestSort = (
+    _event: React.MouseEvent<unknown>,
+    property: string,
+  ) => {
+    const isAsc = orderBy === property && order === 'asc';
+    setOrder(isAsc ? 'desc' : 'asc');
+    setOrderBy(property);
+    setPage(0);
   };
 
   // Definir colunas da tabela
@@ -214,9 +232,9 @@ export default function ClientsPage() {
                 gap: 1,
                 flexDirection: { xs: "column", sm: "row" },
               }}
-            >
-              <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                <Search sx={{ color: "#666" }} />
+          >
+            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+              <Search sx={{ color: "#666" }} />
                 <Typography
                   variant="h6"
                   sx={{
@@ -224,8 +242,8 @@ export default function ClientsPage() {
                     fontSize: { xs: "1rem", sm: "1.25rem" },
                   }}
                 >
-                  Filtros
-                </Typography>
+                Filtros
+              </Typography>
               </Box>
               <Typography
                 variant="body2"
@@ -382,13 +400,14 @@ export default function ClientsPage() {
               aria-label="sticky table"
               sx={{ minWidth: 600 }}
             >
-              <TableHead>
+            <TableHead>
                 <TableRow>
                   {columns.map((column) => (
                     <TableCell
                       key={column.id}
                       align={column.align}
                       style={{ minWidth: column.minWidth }}
+                      sortDirection={orderBy === column.id ? order : false}
                       sx={{
                         fontWeight: "bold",
                         backgroundColor: "#f0f8f0",
@@ -396,12 +415,32 @@ export default function ClientsPage() {
                         padding: { xs: "8px 4px", sm: "16px" },
                       }}
                     >
-                      {column.label}
-                    </TableCell>
+                      <TableSortLabel
+                        active={orderBy === column.id}
+                        direction={orderBy === column.id ? order : 'asc'}
+                        onClick={(event) => handleRequestSort(event, column.id)}
+                        sx={{
+                          '&.MuiTableSortLabel-root': {
+                            color: 'inherit',
+                            '&:hover': {
+                              color: 'inherit',
+                            },
+                            '&.Mui-active': {
+                              color: 'inherit',
+                            },
+                          },
+                          '&.MuiTableSortLabel-icon': {
+                            color: 'inherit !important',
+                          },
+                        }}
+                      >
+                        {column.label}
+                      </TableSortLabel>
+                </TableCell>
                   ))}
-                </TableRow>
-              </TableHead>
-              <TableBody>
+              </TableRow>
+            </TableHead>
+            <TableBody>
                 {loading ? (
                   <TableRow>
                     <TableCell
@@ -442,11 +481,11 @@ export default function ClientsPage() {
                               }}
                             >
                               {column.id === "statusId" ? (
-                                <Chip
+                    <Chip
                                   label={getStatusLabel(value as number)}
-                                  size="small"
+                      size="small"
                                   color={getStatusColor(value as number) as any}
-                                  variant="outlined"
+                      variant="outlined"
                                   sx={{
                                     fontSize: { xs: "0.7rem", sm: "0.75rem" },
                                   }}
@@ -460,15 +499,15 @@ export default function ClientsPage() {
                               ) : (
                                 value
                               )}
-                            </TableCell>
+                  </TableCell>
                           );
                         })}
-                      </TableRow>
+                </TableRow>
                     ))
                 )}
-              </TableBody>
-            </Table>
-          </TableContainer>
+            </TableBody>
+          </Table>
+        </TableContainer>
           <TablePagination
             rowsPerPageOptions={[5, 10, 25, 50, 100]}
             component="div"

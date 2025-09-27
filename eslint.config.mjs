@@ -12,7 +12,7 @@ const eslintConfig = [
   js.configs.recommended,
 
   ...compat.config({
-    extends: ["next/core-web-vitals", "next/typescript"],
+    extends: ["@typescript-eslint/recommended"],
   }),
 
   {

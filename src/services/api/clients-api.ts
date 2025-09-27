@@ -23,6 +23,8 @@ export interface ClientsFilters {
   isSpecial?: boolean;
   page?: number;
   limit?: number;
+  sortBy?: string;
+  sortOrder?: 'ASC' | 'DESC';
 }
 
 import axiosInstance from "./axios-instance";
@@ -37,6 +39,8 @@ export async function getClients(filters: ClientsFilters = {}): Promise<ClientsR
   if (filters.isSpecial !== undefined) queryParams.append("isSpecial", filters.isSpecial.toString());
   if (filters.page) queryParams.append("page", filters.page.toString());
   if (filters.limit) queryParams.append("limit", filters.limit.toString());
+  if (filters.sortBy) queryParams.append("sortBy", filters.sortBy);
+  if (filters.sortOrder) queryParams.append("sortOrder", filters.sortOrder);
 
   const queryString = queryParams.toString();
   const url = `/v1/clients${queryString ? `?${queryString}` : ""}`;
