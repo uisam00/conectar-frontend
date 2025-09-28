@@ -50,7 +50,7 @@ export default function SignInPage() {
         tokenExpires: response.data.tokenExpires,
       });
       // Invalidar cache do React Query para recarregar dados do usuário
-      queryClient.setQueryData(["user"], response.data.user);
+      queryClient.setQueryData(["currentUser"], response.data.user);
       navigate("/");
     } catch (error) {
       handleApiError(error);
