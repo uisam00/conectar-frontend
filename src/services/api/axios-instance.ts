@@ -101,7 +101,10 @@ axiosInstance.interceptors.response.use(
         processQueue(refreshError, null);
         setTokensInfo(null);
         
-        window.location.href = '/sign-in';
+        // Only redirect if it's not already a login page request
+        if (!originalRequest.url?.includes('/sign-in') && !originalRequest.url?.includes('/auth/')) {
+          window.location.href = '/sign-in';
+        }
         return Promise.reject(refreshError);
       } finally {
         isRefreshing = false;

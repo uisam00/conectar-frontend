@@ -16,13 +16,13 @@ import {
   clearTokensInfo,
 } from "./auth-tokens-info";
 import { useSessionPersistence } from "@/hooks";
-import { useUserQuery } from "@/hooks/use-user-query";
+import { useCurrentUser } from "@/hooks/use-current-user";
 import { useQueryClient } from "@tanstack/react-query";
 
 function AuthProvider(props: PropsWithChildren) {
   useSessionPersistence();
   const [isLoggingOut, setIsLoggingOut] = useState(false);
-  const { data: user, isLoading } = useUserQuery();
+  const { data: user, isLoading, error } = useCurrentUser();
   const queryClient = useQueryClient();
 
   const setTokensInfo = useCallback((tokensInfo: TokensInfo | null) => {
@@ -60,8 +60,9 @@ function AuthProvider(props: PropsWithChildren) {
       isLoaded: !isLoading && !isLoggingOut,
       user: user || null,
       isLoggingOut,
+      error,
     }),
-    [isLoading, user, isLoggingOut]
+    [isLoading, user, isLoggingOut, error]
   );
 
   const contextActionsValue = useMemo(

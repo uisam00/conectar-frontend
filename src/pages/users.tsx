@@ -40,7 +40,7 @@ import { useUsersQuery } from "@/hooks/use-users-query";
 import { useLanguage } from "@/services/i18n";
 import ClientSelect from "@/components/form/client-select";
 import ClientRoleSelect from "@/components/form/client-role-select";
-import { deleteUser } from "@/services/api/users";
+import { useDeleteUser } from "@/hooks/use-delete-user";
 
 type Order = "asc" | "desc";
 
@@ -48,6 +48,7 @@ export default function UsersPage() {
   const { t } = useLanguage("usersAdminPanel");
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
+  const deleteUserMutation = useDeleteUser();
 
   const [activeTab, setActiveTab] = useState(0);
   const [filtersExpanded, setFiltersExpanded] = useState(true);
@@ -221,23 +222,16 @@ export default function UsersPage() {
 
   // Funções de manipulação dos botões de ação
   const handleViewUser = (userId: number) => {
-    navigate(`/admin/users/${userId}`);
+    navigate(`/admin/users/view/${userId}`);
   };
 
   const handleEditUser = (userId: number) => {
-    navigate(`/admin/users/${userId}/edit`);
+    navigate(`/admin/users/edit/${userId}`);
   };
 
-  const handleDeleteUser = async (userId: number) => {
+  const handleDeleteUser = (userId: number) => {
     if (window.confirm(t("table.actions.confirmDelete"))) {
-      try {
-        await deleteUser(userId);
-        // Recarregar a lista de usuários
-        window.location.reload();
-      } catch (error) {
-        console.error("Erro ao deletar usuário:", error);
-        alert(t("table.actions.deleteError"));
-      }
+      deleteUserMutation.mutate(userId);
     }
   };
 
