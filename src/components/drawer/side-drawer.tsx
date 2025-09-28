@@ -12,7 +12,13 @@ import {
   Toolbar,
   CircularProgress,
 } from "@mui/material";
-import { Home, AdminPanelSettings, Person, Logout } from "@mui/icons-material";
+import {
+  Home,
+  AdminPanelSettings,
+  Person,
+  Logout,
+  People,
+} from "@mui/icons-material";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth, useAuthActions } from "@/services/auth";
 import UserAvatar from "@/components/user-avatar";
@@ -53,6 +59,12 @@ export default function SideDrawer({ open, onToggle }: SideDrawerProps) {
       label: "Instituições",
       icon: <AdminPanelSettings />,
       path: "/admin/clients",
+      show: user?.role?.name?.toLowerCase() === "admin",
+    },
+    {
+      label: "Usuários",
+      icon: <People />,
+      path: "/admin/users",
       show: user?.role?.name?.toLowerCase() === "admin",
     },
   ];

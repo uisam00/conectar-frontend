@@ -13,6 +13,7 @@ import {
   Analytics,
   Security,
   AdminPanelSettings,
+  Person,
 } from "@mui/icons-material";
 import PageLayout from "@/components/layout/page-layout";
 
@@ -25,6 +26,13 @@ export default function AdminDashboardPage() {
       description: "Visualize, edite e gerencie todos os clientes do sistema",
       icon: <People sx={{ fontSize: 40, color: "primary.main" }} />,
       path: "/admin/clients",
+      available: true,
+    },
+    {
+      title: "Gerenciar Usuários",
+      description: "Visualize, edite e gerencie todos os usuários do sistema",
+      icon: <Person sx={{ fontSize: 40, color: "secondary.main" }} />,
+      path: "/admin/users",
       available: true,
     },
   ];

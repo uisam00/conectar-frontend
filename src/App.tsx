@@ -25,6 +25,7 @@ const SimpleProfilePage = lazy(() => import("@/pages/simple-profile"));
 const EditProfilePage = lazy(() => import("@/pages/edit-profile"));
 const ForgotPasswordPage = lazy(() => import("@/pages/forgot-password"));
 const ClientsPage = lazy(() => import("@/pages/clients"));
+const UsersPage = lazy(() => import("@/pages/users"));
 const AdminDashboardPage = lazy(() => import("@/pages/admin-dashboard"));
 
 // Initialize i18n
@@ -39,7 +40,11 @@ function AppContent() {
   const { user, isLoaded, isLoggingOut } = useAuth();
 
   if (!isLoaded) {
-    return <PageLoading message={isLoggingOut ? "Saindo..." : "Carregando aplicação..."} />;
+    return (
+      <PageLoading
+        message={isLoggingOut ? "Saindo..." : "Carregando aplicação..."}
+      />
+    );
   }
 
   return (
@@ -95,6 +100,14 @@ function AppContent() {
               element={
                 <ProtectedRoute requiredRole="admin">
                   <ClientsPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/users"
+              element={
+                <ProtectedRoute requiredRole="admin">
+                  <UsersPage />
                 </ProtectedRoute>
               }
             />
