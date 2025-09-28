@@ -88,7 +88,7 @@ export default function UsersPage() {
   const updateURL = (newParams: Record<string, string | number>) => {
     const params = new URLSearchParams(searchParams);
     Object.entries(newParams).forEach(([key, value]) => {
-      if (value && value !== "") {
+      if (value !== "" && value !== null && value !== undefined) {
         params.set(key, value.toString());
       } else {
         params.delete(key);

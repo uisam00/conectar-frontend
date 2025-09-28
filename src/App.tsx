@@ -27,6 +27,9 @@ const ForgotPasswordPage = lazy(() => import("@/pages/forgot-password"));
 const ConfirmEmailPage = lazy(() => import("@/pages/confirm-email"));
 const ConfirmNewEmailPage = lazy(() => import("@/pages/confirm-new-email"));
 const ClientsPage = lazy(() => import("@/pages/clients"));
+const CreateClientPage = lazy(() => import("@/pages/create-client"));
+const EditClientPage = lazy(() => import("@/pages/edit-client"));
+const ViewClientPage = lazy(() => import("@/pages/view-client"));
 const UsersPage = lazy(() => import("@/pages/users"));
 const CreateUserPage = lazy(() => import("@/pages/create-user"));
 const UserViewPage = lazy(() => import("@/pages/user-view"));
@@ -149,6 +152,30 @@ function AppContent() {
               element={
                 <ProtectedRoute requiredRole="admin">
                   <UserEditPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/clients/create"
+              element={
+                <ProtectedRoute requiredRole="admin">
+                  <CreateClientPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/clients/:id"
+              element={
+                <ProtectedRoute requiredRole="admin">
+                  <ViewClientPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/clients/:id/edit"
+              element={
+                <ProtectedRoute requiredRole="admin">
+                  <EditClientPage />
                 </ProtectedRoute>
               }
             />

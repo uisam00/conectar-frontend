@@ -24,14 +24,25 @@ import {
   TablePagination,
   TableSortLabel,
 } from "@mui/material";
-import { Search, ExpandLess, ExpandMore } from "@mui/icons-material";
+import {
+  Search,
+  ExpandLess,
+  ExpandMore,
+  Visibility,
+  Edit,
+  Add,
+} from "@mui/icons-material";
+import { Avatar } from "@mui/material";
 import AdminPageLayout from "@/components/layout/admin-page-layout";
 import { useClients } from "@/hooks/use-clients-query";
+import { useNavigate } from "react-router-dom";
+import { IconButton, Tooltip } from "@mui/material";
 
 type Order = "asc" | "desc";
 
 export default function ClientsPage() {
   const [searchParams, setSearchParams] = useSearchParams();
+  const navigate = useNavigate();
 
   const [activeTab, setActiveTab] = useState(0);
   const [filtersExpanded, setFiltersExpanded] = useState(true);
@@ -74,7 +85,7 @@ export default function ClientsPage() {
     if (newFilters.status) params.set("status", newFilters.status);
     if (newFilters.conectarPlus)
       params.set("conectarPlus", newFilters.conectarPlus);
-    if (newPage > 0) params.set("page", newPage.toString());
+    if (newPage >= 0) params.set("page", newPage.toString());
     if (newRowsPerPage !== 10) params.set("limit", newRowsPerPage.toString());
     if (newOrderBy) params.set("sortBy", newOrderBy);
     if (newOrder !== "asc") params.set("order", newOrder);
@@ -196,24 +207,29 @@ export default function ClientsPage() {
   // Definir colunas da tabela
   interface Column {
     id:
+      | "avatar"
+      | "id"
       | "razaoSocial"
       | "cnpj"
       | "nomeComercial"
-      | "statusId"
       | "planId"
-      | "createdAt";
+      | "conectaPlus"
+      | "statusId";
     label: string;
     minWidth?: number;
     align?: "right";
   }
 
   const columns: readonly Column[] = [
+    { id: "avatar", label: "", minWidth: 60 },
+    { id: "id", label: "ID", minWidth: 80 },
     { id: "razaoSocial", label: "Razão Social", minWidth: 200 },
     { id: "cnpj", label: "CNPJ", minWidth: 150 },
     { id: "nomeComercial", label: "Nome Comercial", minWidth: 200 },
+    { id: "planId", label: "Plano", minWidth: 150 },
+    { id: "conectaPlus", label: "Conecta Plus", minWidth: 120 },
     { id: "statusId", label: "Status", minWidth: 120 },
-    { id: "planId", label: "Plano", minWidth: 100 },
-    { id: "createdAt", label: "Criado em", minWidth: 150 },
+    { id: "actions", label: "Ações", minWidth: 120, align: "center" },
   ];
 
   return (
@@ -409,6 +425,8 @@ export default function ClientsPage() {
           </Box>
           <Button
             variant="outlined"
+            startIcon={<Add />}
+            onClick={() => navigate("/admin/clients/create")}
             sx={{
               color: "#666",
               borderColor: "#666",
@@ -504,50 +522,115 @@ export default function ClientsPage() {
                     </TableCell>
                   </TableRow>
                 ) : (
-                  clients
-                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                    .map((client) => (
-                      <TableRow
-                        hover
-                        role="checkbox"
-                        tabIndex={-1}
-                        key={client.id}
-                      >
-                        {columns.map((column) => {
-                          const value = client[column.id];
-                          return (
-                            <TableCell
-                              key={column.id}
-                              align={column.align}
-                              sx={{
-                                fontSize: { xs: "0.75rem", sm: "0.875rem" },
-                                padding: { xs: "8px 4px", sm: "16px" },
-                              }}
-                            >
-                              {column.id === "statusId" ? (
-                                <Chip
-                                  label={getStatusLabel(value as number)}
-                                  size="small"
-                                  color={getStatusColor(value as number) as any}
-                                  variant="outlined"
-                                  sx={{
-                                    fontSize: { xs: "0.7rem", sm: "0.75rem" },
-                                  }}
-                                />
-                              ) : column.id === "planId" ? (
-                                `Plano ${value}`
-                              ) : column.id === "createdAt" ? (
-                                new Date(value as string).toLocaleDateString(
-                                  "pt-BR"
-                                )
-                              ) : (
-                                value
-                              )}
-                            </TableCell>
-                          );
-                        })}
-                      </TableRow>
-                    ))
+                  clients.map((client) => (
+                    <TableRow
+                      hover
+                      role="checkbox"
+                      tabIndex={-1}
+                      key={client.id}
+                    >
+                      {columns.map((column) => {
+                        const value = client[column.id];
+                        return (
+                          <TableCell
+                            key={column.id}
+                            align={column.align}
+                            sx={{
+                              fontSize: { xs: "0.75rem", sm: "0.875rem" },
+                              padding: { xs: "8px 4px", sm: "16px" },
+                            }}
+                          >
+                            {column.id === "actions" ? (
+                              <Box
+                                sx={{
+                                  display: "flex",
+                                  gap: 1,
+                                  justifyContent: "center",
+                                }}
+                              >
+                                <Tooltip title="Visualizar">
+                                  <IconButton
+                                    size="small"
+                                    onClick={() =>
+                                      navigate(`/admin/clients/${client.id}`)
+                                    }
+                                    sx={{ color: "primary.main" }}
+                                  >
+                                    <Visibility fontSize="small" />
+                                  </IconButton>
+                                </Tooltip>
+                                <Tooltip title="Editar">
+                                  <IconButton
+                                    size="small"
+                                    onClick={() =>
+                                      navigate(
+                                        `/admin/clients/${client.id}/edit`
+                                      )
+                                    }
+                                    sx={{ color: "secondary.main" }}
+                                  >
+                                    <Edit fontSize="small" />
+                                  </IconButton>
+                                </Tooltip>
+                              </Box>
+                            ) : column.id === "avatar" ? (
+                              <Avatar
+                                src={client.photo?.path}
+                                alt={client.razaoSocial}
+                                sx={{
+                                  width: 40,
+                                  height: 40,
+                                  fontSize: "1rem",
+                                  fontWeight: "bold",
+                                }}
+                              >
+                                {client.razaoSocial?.charAt(0)?.toUpperCase()}
+                              </Avatar>
+                            ) : column.id === "id" ? (
+                              <Typography
+                                variant="body2"
+                                sx={{
+                                  fontWeight: "medium",
+                                  color: "text.secondary",
+                                  fontFamily: "monospace",
+                                }}
+                              >
+                                {client.id}
+                              </Typography>
+                            ) : column.id === "statusId" ? (
+                              <Chip
+                                label={getStatusLabel(value as number)}
+                                size="small"
+                                color={getStatusColor(value as number) as any}
+                                variant="outlined"
+                                sx={{
+                                  fontSize: { xs: "0.7rem", sm: "0.75rem" },
+                                }}
+                              />
+                            ) : column.id === "planId" ? (
+                              client.plan?.name || `Plano ${value}`
+                            ) : column.id === "conectaPlus" ? (
+                              <Chip
+                                label={client.plan?.isSpecial ? "Sim" : "Não"}
+                                size="small"
+                                color={
+                                  client.plan?.isSpecial ? "warning" : "default"
+                                }
+                                variant={
+                                  client.plan?.isSpecial ? "filled" : "outlined"
+                                }
+                                sx={{
+                                  fontSize: { xs: "0.7rem", sm: "0.75rem" },
+                                }}
+                              />
+                            ) : (
+                              value
+                            )}
+                          </TableCell>
+                        );
+                      })}
+                    </TableRow>
+                  ))
                 )}
               </TableBody>
             </Table>

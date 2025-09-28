@@ -26,6 +26,7 @@ import axiosInstance from "@/services/api/axios-instance";
 import type { CreateUserDto, FileType } from "@/types/api";
 import { Person, ClearOutlined, Add } from "@mui/icons-material";
 import ClientRoleSelector from "@/components/form/client-role-selector";
+import StatusSelectFixed from "@/components/form/status-select-fixed";
 
 const FILES_UPLOAD_URL = "/v1/files/upload";
 const USERS_CREATE_URL = "/v1/users";
@@ -338,24 +339,13 @@ export default function CreateUserPage() {
                     </Select>
                   </FormControl>
 
-                  <FormControl
-                    fullWidth
+                  <StatusSelectFixed
+                    value={watch("statusId") || 1}
+                    onChange={(statusId) => setValue("statusId", statusId)}
                     disabled={isLoading}
                     error={!!methods.formState.errors.statusId}
-                  >
-                    <InputLabel>Status</InputLabel>
-                    <Select
-                      {...methods.register("statusId")}
-                      value={watch("statusId") || 1}
-                      onChange={(e) =>
-                        setValue("statusId", Number(e.target.value))
-                      }
-                      label="Status"
-                    >
-                      <MenuItem value={1}>Ativo</MenuItem>
-                      <MenuItem value={2}>Inativo</MenuItem>
-                    </Select>
-                  </FormControl>
+                    helperText={methods.formState.errors.statusId?.message}
+                  />
                 </Box>
 
                 <ClientRoleSelector
