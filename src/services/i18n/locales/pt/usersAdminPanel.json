@@ -1,0 +1,66 @@
+{
+  "title": "Usuários do Sistema",
+  "filters": {
+    "button": "Filtros",
+    "activeCount": "filtro(s) ativo(s)",
+    "clear": "Limpar",
+    "apply": "Filtrar",
+    "tabs": {
+      "general": "Busca Geral",
+      "advanced": "Filtros Avançados"
+    },
+    "search": {
+      "label": "Buscar por nome, sobrenome ou email",
+      "placeholder": "Digite para buscar..."
+    },
+    "role": {
+      "label": "Função",
+      "all": "Todos",
+      "admin": "Administrador",
+      "user": "Usuário"
+    },
+    "status": {
+      "label": "Status",
+      "all": "Todos",
+      "active": "Ativo",
+      "inactive": "Inativo"
+    },
+    "client": {
+      "label": "Cliente",
+      "all": "Todos",
+      "loading": "Carregando...",
+      "loadMore": "Carregar mais..."
+    }
+  },
+  "table": {
+    "headers": {
+      "id": "ID",
+      "firstName": "Nome",
+      "lastName": "Sobrenome",
+      "email": "Email",
+      "role": "Função",
+      "status": "Status",
+      "clients": "Clientes",
+      "createdAt": "Criado em",
+      "updatedAt": "Atualizado em"
+    },
+    "loading": "Carregando...",
+    "error": "Erro ao carregar usuários. Tente novamente.",
+    "noData": "Nenhum usuário encontrado",
+    "pagination": {
+      "rowsPerPage": "Linhas por página:",
+      "displayedRows": "{{from}}-{{to}} de {{count}}"
+    }
+  },
+  "filterChips": {
+    "search": "Busca: {{value}}",
+    "firstName": "Nome: {{value}}",
+    "lastName": "Sobrenome: {{value}}",
+    "email": "Email: {{value}}",
+    "role": "Função: {{value}}",
+    "status": "Status: {{value}}",
+    "client": "Cliente: {{value}}",
+    "systemRole": "Função Sistema: {{value}}",
+    "clientRole": "Função Cliente: {{value}}"
+  }
+}

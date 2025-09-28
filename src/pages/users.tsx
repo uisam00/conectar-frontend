@@ -29,10 +29,12 @@ import AdminPageLayout from "@/components/layout/admin-page-layout";
 import { useUsersQuery } from "@/hooks/use-users-query";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { getClients } from "@/services/api/clients-api";
+import { useLanguage } from "@/services/i18n";
 
 type Order = "asc" | "desc";
 
 export default function UsersPage() {
+  const { t } = useLanguage("usersAdminPanel");
   const [searchParams, setSearchParams] = useSearchParams();
 
   const [activeTab, setActiveTab] = useState(0);
@@ -49,7 +51,6 @@ export default function UsersPage() {
     clientRoleId: searchParams.get("clientRoleId") || "",
   });
 
-  // Buscar clientes para o filtro com infinity query
   const {
     data: clientsData,
     fetchNextPage,
@@ -63,10 +64,9 @@ export default function UsersPage() {
       return allPages.length < totalPages ? allPages.length + 1 : undefined;
     },
     initialPageParam: 1,
-    staleTime: 5 * 60 * 1000, // 5 minutes
+    staleTime: 5 * 60 * 1000,
   });
 
-  // Flatten all clients from all pages
   const allClients = clientsData?.pages?.flatMap((page) => page.data) || [];
   const [appliedFilters, setAppliedFilters] = useState({
     search: searchParams.get("search") || "",
@@ -227,24 +227,33 @@ export default function UsersPage() {
   const getFilterChips = () => {
     const chips = [];
     if (appliedFilters.search)
-      chips.push({ label: `Busca: ${appliedFilters.search}`, key: "search" });
+      chips.push({
+        label: t("filterChips.search", { value: appliedFilters.search }),
+        key: "search",
+      });
     if (appliedFilters.firstName)
       chips.push({
-        label: `Nome: ${appliedFilters.firstName}`,
+        label: t("filterChips.firstName", { value: appliedFilters.firstName }),
         key: "firstName",
       });
     if (appliedFilters.lastName)
       chips.push({
-        label: `Sobrenome: ${appliedFilters.lastName}`,
+        label: t("filterChips.lastName", { value: appliedFilters.lastName }),
         key: "lastName",
       });
     if (appliedFilters.email)
-      chips.push({ label: `Email: ${appliedFilters.email}`, key: "email" });
+      chips.push({
+        label: t("filterChips.email", { value: appliedFilters.email }),
+        key: "email",
+      });
     if (appliedFilters.roleId)
-      chips.push({ label: `Role: ${appliedFilters.roleId}`, key: "roleId" });
+      chips.push({
+        label: t("filterChips.role", { value: appliedFilters.roleId }),
+        key: "roleId",
+      });
     if (appliedFilters.statusId)
       chips.push({
-        label: `Status: ${appliedFilters.statusId}`,
+        label: t("filterChips.status", { value: appliedFilters.statusId }),
         key: "statusId",
       });
     if (appliedFilters.clientId) {
@@ -252,18 +261,24 @@ export default function UsersPage() {
         (c) => c.id.toString() === appliedFilters.clientId
       );
       chips.push({
-        label: `Cliente: ${client?.razaoSocial || appliedFilters.clientId}`,
+        label: t("filterChips.client", {
+          value: client?.razaoSocial || appliedFilters.clientId,
+        }),
         key: "clientId",
       });
     }
     if (appliedFilters.systemRoleId)
       chips.push({
-        label: `Role Sistema: ${appliedFilters.systemRoleId}`,
+        label: t("filterChips.systemRole", {
+          value: appliedFilters.systemRoleId,
+        }),
         key: "systemRoleId",
       });
     if (appliedFilters.clientRoleId)
       chips.push({
-        label: `Role Cliente: ${appliedFilters.clientRoleId}`,
+        label: t("filterChips.clientRole", {
+          value: appliedFilters.clientRoleId,
+        }),
         key: "clientRoleId",
       });
     return chips;
@@ -288,11 +303,12 @@ export default function UsersPage() {
       <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
         <Typography
           variant="h4"
-          sx={{ mb: 2, fontWeight: "bold", color: "#333" }}
+          component="h1"
+          gutterBottom
+          sx={{ mb: 2, color: "primary.main" }}
         >
-          Usuários do Sistema
+          {t("title")}
         </Typography>
-        {/* Header com botões */}
         <Box
           sx={{
             display: "flex",
@@ -316,12 +332,12 @@ export default function UsersPage() {
                 },
               }}
             >
-              Filtros
+              {t("filters.button")}
               {filtersExpanded ? <ExpandLess /> : <ExpandMore />}
             </Button>
             {getActiveFiltersCount() > 0 && (
               <Chip
-                label={`${getActiveFiltersCount()} filtro(s) ativo(s)`}
+                label={`${getActiveFiltersCount()} ${t("filters.activeCount")}`}
                 color="primary"
                 size="small"
               />
@@ -340,15 +356,14 @@ export default function UsersPage() {
                 },
               }}
             >
-              Limpar
+              {t("filters.clear")}
             </Button>
             <Button variant="contained" onClick={handleApplyFilters}>
-              Filtrar
+              {t("filters.apply")}
             </Button>
           </Box>
         </Box>
 
-        {/* Filtros ativos */}
         {getActiveFiltersCount() > 0 && (
           <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
             {getFilterChips().map((chip) => (
@@ -364,7 +379,6 @@ export default function UsersPage() {
           </Box>
         )}
 
-        {/* Filtros */}
         <Collapse in={filtersExpanded}>
           <Paper sx={{ p: 2, mb: 2 }}>
             <Tabs
@@ -372,18 +386,18 @@ export default function UsersPage() {
               onChange={(_e, newValue) => setActiveTab(newValue)}
               sx={{ mb: 2 }}
             >
-              <Tab label="Busca Geral" />
-              <Tab label="Filtros Avançados" />
+              <Tab label={t("filters.tabs.general")} />
+              <Tab label={t("filters.tabs.advanced")} />
             </Tabs>
 
             {activeTab === 0 && (
               <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
                 <TextField
-                  label="Buscar por nome, sobrenome ou email"
+                  label={t("filters.search.label")}
                   value={filters.search}
                   onChange={(e) => handleFilterChange("search", e.target.value)}
                   fullWidth
-                  placeholder="Digite para buscar..."
+                  placeholder={t("filters.search.placeholder")}
                 />
               </Box>
             )}
@@ -402,41 +416,45 @@ export default function UsersPage() {
                   }}
                 >
                   <FormControl fullWidth>
-                    <InputLabel>Role</InputLabel>
+                    <InputLabel>{t("filters.role.label")}</InputLabel>
                     <Select
                       value={filters.roleId}
                       onChange={(e) =>
                         handleFilterChange("roleId", e.target.value)
                       }
-                      label="Role"
+                      label={t("filters.role.label")}
                     >
-                      <MenuItem value="">Todos</MenuItem>
-                      <MenuItem value="1">Admin</MenuItem>
-                      <MenuItem value="2">User</MenuItem>
+                      <MenuItem value="">{t("filters.role.all")}</MenuItem>
+                      <MenuItem value="1">{t("filters.role.admin")}</MenuItem>
+                      <MenuItem value="2">{t("filters.role.user")}</MenuItem>
                     </Select>
                   </FormControl>
                   <FormControl fullWidth>
-                    <InputLabel>Status</InputLabel>
+                    <InputLabel>{t("filters.status.label")}</InputLabel>
                     <Select
                       value={filters.statusId}
                       onChange={(e) =>
                         handleFilterChange("statusId", e.target.value)
                       }
-                      label="Status"
+                      label={t("filters.status.label")}
                     >
-                      <MenuItem value="">Todos</MenuItem>
-                      <MenuItem value="1">Ativo</MenuItem>
-                      <MenuItem value="2">Inativo</MenuItem>
+                      <MenuItem value="">{t("filters.status.all")}</MenuItem>
+                      <MenuItem value="1">
+                        {t("filters.status.active")}
+                      </MenuItem>
+                      <MenuItem value="2">
+                        {t("filters.status.inactive")}
+                      </MenuItem>
                     </Select>
                   </FormControl>
                   <FormControl fullWidth>
-                    <InputLabel>Cliente</InputLabel>
+                    <InputLabel>{t("filters.client.label")}</InputLabel>
                     <Select
                       value={filters.clientId}
                       onChange={(e) =>
                         handleFilterChange("clientId", e.target.value)
                       }
-                      label="Cliente"
+                      label={t("filters.client.label")}
                       MenuProps={{
                         PaperProps: {
                           style: {
@@ -445,7 +463,7 @@ export default function UsersPage() {
                         },
                       }}
                     >
-                      <MenuItem value="">Todos</MenuItem>
+                      <MenuItem value="">{t("filters.client.all")}</MenuItem>
                       {allClients.map((client) => (
                         <MenuItem key={client.id} value={client.id.toString()}>
                           {client.razaoSocial}
@@ -462,8 +480,8 @@ export default function UsersPage() {
                           }}
                         >
                           {isFetchingNextPage
-                            ? "Carregando..."
-                            : "Carregar mais..."}
+                            ? t("filters.client.loading")
+                            : t("filters.client.loadMore")}
                         </MenuItem>
                       )}
                     </Select>
@@ -474,7 +492,6 @@ export default function UsersPage() {
           </Paper>
         </Collapse>
 
-        {/* Tabela */}
         <Paper sx={{ width: "100%", overflow: "hidden" }}>
           <TableContainer sx={{ maxHeight: 600 }}>
             <Table stickyHeader aria-label="sticky table">
@@ -511,7 +528,7 @@ export default function UsersPage() {
                         },
                       }}
                     >
-                      ID
+                      {t("table.headers.id")}
                     </TableSortLabel>
                   </TableCell>
                   <TableCell
@@ -545,7 +562,7 @@ export default function UsersPage() {
                         },
                       }}
                     >
-                      Nome
+                      {t("table.headers.firstName")}
                     </TableSortLabel>
                   </TableCell>
                   <TableCell
@@ -579,7 +596,7 @@ export default function UsersPage() {
                         },
                       }}
                     >
-                      Sobrenome
+                      {t("table.headers.lastName")}
                     </TableSortLabel>
                   </TableCell>
                   <TableCell
@@ -613,7 +630,7 @@ export default function UsersPage() {
                         },
                       }}
                     >
-                      Email
+                      {t("table.headers.email")}
                     </TableSortLabel>
                   </TableCell>
                   <TableCell
@@ -627,7 +644,7 @@ export default function UsersPage() {
                       padding: { xs: "8px 4px", sm: "16px" },
                     }}
                   >
-                    Role
+                    {t("table.headers.role")}
                   </TableCell>
                   <TableCell
                     key="status"
@@ -640,7 +657,7 @@ export default function UsersPage() {
                       padding: { xs: "8px 4px", sm: "16px" },
                     }}
                   >
-                    Status
+                    {t("table.headers.status")}
                   </TableCell>
                   <TableCell
                     key="clients"
@@ -653,7 +670,7 @@ export default function UsersPage() {
                       padding: { xs: "8px 4px", sm: "16px" },
                     }}
                   >
-                    Clientes
+                    {t("table.headers.clients")}
                   </TableCell>
                   <TableCell
                     key="createdAt"
@@ -686,7 +703,7 @@ export default function UsersPage() {
                         },
                       }}
                     >
-                      Criado em
+                      {t("table.headers.createdAt")}
                     </TableSortLabel>
                   </TableCell>
                   <TableCell
@@ -720,7 +737,7 @@ export default function UsersPage() {
                         },
                       }}
                     >
-                      Atualizado em
+                      {t("table.headers.updatedAt")}
                     </TableSortLabel>
                   </TableCell>
                 </TableRow>
@@ -729,21 +746,19 @@ export default function UsersPage() {
                 {isLoading ? (
                   <TableRow>
                     <TableCell colSpan={9} align="center" sx={{ py: 4 }}>
-                      <Typography>Carregando...</Typography>
+                      <Typography>{t("table.loading")}</Typography>
                     </TableCell>
                   </TableRow>
                 ) : error ? (
                   <TableRow>
                     <TableCell colSpan={9} align="center" sx={{ py: 4 }}>
-                      <Alert severity="error">
-                        Erro ao carregar usuários. Tente novamente.
-                      </Alert>
+                      <Alert severity="error">{t("table.error")}</Alert>
                     </TableCell>
                   </TableRow>
                 ) : usersData?.data?.length === 0 ? (
                   <TableRow>
                     <TableCell colSpan={9} align="center" sx={{ py: 4 }}>
-                      <Typography>Nenhum usuário encontrado</Typography>
+                      <Typography>{t("table.noData")}</Typography>
                     </TableCell>
                   </TableRow>
                 ) : (
@@ -824,7 +839,7 @@ export default function UsersPage() {
             page={page}
             onPageChange={handleChangePage}
             onRowsPerPageChange={handleChangeRowsPerPage}
-            labelRowsPerPage="Linhas por página:"
+            labelRowsPerPage={t("table.pagination.rowsPerPage")}
             labelDisplayedRows={({ from, to, count }) =>
               `${from}-${to} de ${count !== -1 ? count : `mais de ${to}`}`
             }
