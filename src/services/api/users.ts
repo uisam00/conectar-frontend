@@ -79,3 +79,33 @@ export async function getUsers(filters: UsersFilters = {}): Promise<UsersRespons
   });
   return response.data;
 }
+
+// Funções de ação para usuários
+export async function getUserById(id: number): Promise<User> {
+  const language = localStorage.getItem("i18nextLng") || "en";
+  const response = await axiosInstance.get(`/v1/users/${id}`, {
+    headers: {
+      "x-custom-lang": language,
+    },
+  });
+  return response.data;
+}
+
+export async function updateUser(id: number, userData: Partial<User>): Promise<User> {
+  const language = localStorage.getItem("i18nextLng") || "en";
+  const response = await axiosInstance.patch(`/v1/users/${id}`, userData, {
+    headers: {
+      "x-custom-lang": language,
+    },
+  });
+  return response.data;
+}
+
+export async function deleteUser(id: number): Promise<void> {
+  const language = localStorage.getItem("i18nextLng") || "en";
+  await axiosInstance.delete(`/v1/users/${id}`, {
+    headers: {
+      "x-custom-lang": language,
+    },
+  });
+}

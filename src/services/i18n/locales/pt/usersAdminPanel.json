@@ -42,8 +42,15 @@
       "role": "Função",
       "status": "Status",
       "clients": "Clientes",
-      "createdAt": "Criado em",
-      "updatedAt": "Atualizado em"
+      "avatar": "Avatar",
+      "actions": "Ações"
+    },
+    "actions": {
+      "view": "Visualizar",
+      "edit": "Editar",
+      "delete": "Excluir",
+      "confirmDelete": "Tem certeza que deseja excluir este usuário?",
+      "deleteError": "Erro ao excluir usuário. Tente novamente."
     },
     "loading": "Carregando...",
     "error": "Erro ao carregar usuários. Tente novamente.",

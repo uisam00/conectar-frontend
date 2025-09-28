@@ -23,13 +23,24 @@ import {
   TableRow,
   TablePagination,
   TableSortLabel,
+  Avatar,
+  IconButton,
+  Tooltip,
 } from "@mui/material";
-import { Search, ExpandLess, ExpandMore } from "@mui/icons-material";
+import {
+  Search,
+  ExpandLess,
+  ExpandMore,
+  Visibility,
+  Edit,
+  Delete,
+} from "@mui/icons-material";
 import AdminPageLayout from "@/components/layout/admin-page-layout";
 import { useUsersQuery } from "@/hooks/use-users-query";
 import { useLanguage } from "@/services/i18n";
 import ClientSelect from "@/components/form/client-select";
 import ClientRoleSelect from "@/components/form/client-role-select";
+import { deleteUser } from "@/services/api/users";
 
 type Order = "asc" | "desc";
 
@@ -206,6 +217,28 @@ export default function UsersPage() {
 
   const getActiveFiltersCount = () => {
     return Object.values(appliedFilters).filter((value) => value !== "").length;
+  };
+
+  // Funções de manipulação dos botões de ação
+  const handleViewUser = (userId: number) => {
+    navigate(`/admin/users/${userId}`);
+  };
+
+  const handleEditUser = (userId: number) => {
+    navigate(`/admin/users/${userId}/edit`);
+  };
+
+  const handleDeleteUser = async (userId: number) => {
+    if (window.confirm(t("table.actions.confirmDelete"))) {
+      try {
+        await deleteUser(userId);
+        // Recarregar a lista de usuários
+        window.location.reload();
+      } catch (error) {
+        console.error("Erro ao deletar usuário:", error);
+        alert(t("table.actions.deleteError"));
+      }
+    }
   };
 
   const getFilterChips = () => {
@@ -482,6 +515,19 @@ export default function UsersPage() {
               <TableHead>
                 <TableRow>
                   <TableCell
+                    key="avatar"
+                    align="center"
+                    style={{ minWidth: 80 }}
+                    sx={{
+                      fontWeight: "bold",
+                      backgroundColor: "#f0f8f0",
+                      fontSize: { xs: "0.75rem", sm: "0.875rem" },
+                      padding: { xs: "8px 4px", sm: "16px" },
+                    }}
+                  >
+                    {t("table.headers.avatar")}
+                  </TableCell>
+                  <TableCell
                     key="id"
                     align="left"
                     style={{ minWidth: 70 }}
@@ -657,10 +703,9 @@ export default function UsersPage() {
                     {t("table.headers.clients")}
                   </TableCell>
                   <TableCell
-                    key="createdAt"
-                    align="left"
+                    key="actions"
+                    align="center"
                     style={{ minWidth: 120 }}
-                    sortDirection={orderBy === "createdAt" ? order : false}
                     sx={{
                       fontWeight: "bold",
                       backgroundColor: "#f0f8f0",
@@ -668,61 +713,7 @@ export default function UsersPage() {
                       padding: { xs: "8px 4px", sm: "16px" },
                     }}
                   >
-                    <TableSortLabel
-                      active={orderBy === "createdAt"}
-                      direction={orderBy === "createdAt" ? order : "asc"}
-                      onClick={(event) => handleRequestSort(event, "createdAt")}
-                      sx={{
-                        "&.MuiTableSortLabel-root": {
-                          color: "inherit",
-                          "&:hover": {
-                            color: "inherit",
-                          },
-                          "&.Mui-active": {
-                            color: "inherit",
-                          },
-                        },
-                        "&.MuiTableSortLabel-icon": {
-                          color: "inherit !important",
-                        },
-                      }}
-                    >
-                      {t("table.headers.createdAt")}
-                    </TableSortLabel>
-                  </TableCell>
-                  <TableCell
-                    key="updatedAt"
-                    align="left"
-                    style={{ minWidth: 120 }}
-                    sortDirection={orderBy === "updatedAt" ? order : false}
-                    sx={{
-                      fontWeight: "bold",
-                      backgroundColor: "#f0f8f0",
-                      fontSize: { xs: "0.75rem", sm: "0.875rem" },
-                      padding: { xs: "8px 4px", sm: "16px" },
-                    }}
-                  >
-                    <TableSortLabel
-                      active={orderBy === "updatedAt"}
-                      direction={orderBy === "updatedAt" ? order : "asc"}
-                      onClick={(event) => handleRequestSort(event, "updatedAt")}
-                      sx={{
-                        "&.MuiTableSortLabel-root": {
-                          color: "inherit",
-                          "&:hover": {
-                            color: "inherit",
-                          },
-                          "&.Mui-active": {
-                            color: "inherit",
-                          },
-                        },
-                        "&.MuiTableSortLabel-icon": {
-                          color: "inherit !important",
-                        },
-                      }}
-                    >
-                      {t("table.headers.updatedAt")}
-                    </TableSortLabel>
+                    {t("table.headers.actions")}
                   </TableCell>
                 </TableRow>
               </TableHead>
@@ -748,6 +739,15 @@ export default function UsersPage() {
                 ) : (
                   usersData?.data?.map((user) => (
                     <TableRow key={user.id} hover>
+                      <TableCell align="center">
+                        <Avatar
+                          src={user.photo?.path}
+                          alt={`${user.firstName} ${user.lastName}`}
+                          sx={{ width: 40, height: 40, fontSize: "1rem" }}
+                        >
+                          {user.firstName?.charAt(0)?.toUpperCase()}
+                        </Avatar>
+                      </TableCell>
                       <TableCell
                         sx={{ fontSize: { xs: "0.75rem", sm: "0.875rem" } }}
                       >
@@ -799,15 +799,39 @@ export default function UsersPage() {
                           "-"
                         )}
                       </TableCell>
-                      <TableCell
-                        sx={{ fontSize: { xs: "0.75rem", sm: "0.875rem" } }}
-                      >
-                        {new Date(user.createdAt).toLocaleDateString("pt-BR")}
-                      </TableCell>
-                      <TableCell
-                        sx={{ fontSize: { xs: "0.75rem", sm: "0.875rem" } }}
-                      >
-                        {new Date(user.updatedAt).toLocaleDateString("pt-BR")}
+                      <TableCell align="center">
+                        <Box
+                          sx={{
+                            display: "flex",
+                            gap: 0.5,
+                            justifyContent: "center",
+                          }}
+                        >
+                          <Tooltip title={t("table.actions.view")}>
+                            <IconButton
+                              size="small"
+                              onClick={() => handleViewUser(user.id)}
+                            >
+                              <Visibility fontSize="small" />
+                            </IconButton>
+                          </Tooltip>
+                          <Tooltip title={t("table.actions.edit")}>
+                            <IconButton
+                              size="small"
+                              onClick={() => handleEditUser(user.id)}
+                            >
+                              <Edit fontSize="small" />
+                            </IconButton>
+                          </Tooltip>
+                          <Tooltip title={t("table.actions.delete")}>
+                            <IconButton
+                              size="small"
+                              onClick={() => handleDeleteUser(user.id)}
+                            >
+                              <Delete fontSize="small" />
+                            </IconButton>
+                          </Tooltip>
+                        </Box>
                       </TableCell>
                     </TableRow>
                   ))
