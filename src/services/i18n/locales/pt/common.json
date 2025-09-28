@@ -28,5 +28,20 @@
     "serverError": "Erro interno do servidor",
     "networkError": "Erro de conexão",
     "generic": "Ocorreu um erro inesperado"
+  },
+  "emailConfirmation": {
+    "title": "Confirmação de Email",
+    "newEmailTitle": "Confirmação de Novo Email",
+    "loading": "Confirmando seu email...",
+    "newEmailLoading": "Confirmando seu novo email...",
+    "success": "Email Confirmado!",
+    "newEmailSuccess": "Novo Email Confirmado!",
+    "successMessage": "Email confirmado com sucesso! Você pode fazer login agora.",
+    "newEmailSuccessMessage": "Novo email confirmado com sucesso! Você pode fazer login agora.",
+    "error": "Erro na Confirmação",
+    "errorMessage": "Erro ao confirmar email. O link pode ter expirado ou ser inválido.",
+    "newEmailErrorMessage": "Erro ao confirmar novo email. O link pode ter expirado ou ser inválido.",
+    "hashNotFound": "Hash de confirmação não encontrado.",
+    "goToLogin": "Ir para Login"
   }
 }

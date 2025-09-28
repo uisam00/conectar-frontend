@@ -24,6 +24,8 @@ const SignInPage = lazy(() => import("@/pages/sign-in"));
 const SimpleProfilePage = lazy(() => import("@/pages/simple-profile"));
 const EditProfilePage = lazy(() => import("@/pages/edit-profile"));
 const ForgotPasswordPage = lazy(() => import("@/pages/forgot-password"));
+const ConfirmEmailPage = lazy(() => import("@/pages/confirm-email"));
+const ConfirmNewEmailPage = lazy(() => import("@/pages/confirm-new-email"));
 const ClientsPage = lazy(() => import("@/pages/clients"));
 const UsersPage = lazy(() => import("@/pages/users"));
 const CreateUserPage = lazy(() => import("@/pages/create-user"));
@@ -70,6 +72,18 @@ function AppContent() {
               path="/forgot-password"
               element={
                 user ? <Navigate to="/" replace /> : <ForgotPasswordPage />
+              }
+            />
+            <Route
+              path="/confirm-email"
+              element={
+                user ? <Navigate to="/" replace /> : <ConfirmEmailPage />
+              }
+            />
+            <Route
+              path="/confirm-new-email"
+              element={
+                user ? <Navigate to="/" replace /> : <ConfirmNewEmailPage />
               }
             />
             <Route
