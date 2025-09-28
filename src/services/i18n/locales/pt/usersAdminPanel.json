@@ -1,5 +1,6 @@
 {
   "title": "Usuários do Sistema",
+  "createUser": "Criar Usuário",
   "filters": {
     "button": "Filtros",
     "activeCount": "filtro(s) ativo(s)",

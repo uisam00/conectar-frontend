@@ -36,6 +36,7 @@ export interface CreateUserDto {
   photo?: FileDto;
   role?: RoleDto;
   status?: StatusDto;
+  clientRoles?: { clientId: number; clientRoleId: number }[];
 }
 
 export interface UpdateUserDto {

@@ -1,5 +1,5 @@
 import { useState, useMemo } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, useNavigate } from "react-router-dom";
 import {
   Box,
   Typography,
@@ -27,14 +27,15 @@ import {
 import { Search, ExpandLess, ExpandMore } from "@mui/icons-material";
 import AdminPageLayout from "@/components/layout/admin-page-layout";
 import { useUsersQuery } from "@/hooks/use-users-query";
-import { useInfiniteQuery } from "@tanstack/react-query";
-import { getClients } from "@/services/api/clients-api";
 import { useLanguage } from "@/services/i18n";
+import ClientSelect from "@/components/form/client-select";
+import ClientRoleSelect from "@/components/form/client-role-select";
 
 type Order = "asc" | "desc";
 
 export default function UsersPage() {
   const { t } = useLanguage("usersAdminPanel");
+  const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
 
   const [activeTab, setActiveTab] = useState(0);
@@ -51,23 +52,6 @@ export default function UsersPage() {
     clientRoleId: searchParams.get("clientRoleId") || "",
   });
 
-  const {
-    data: clientsData,
-    fetchNextPage,
-    hasNextPage,
-    isFetchingNextPage,
-  } = useInfiniteQuery({
-    queryKey: ["clients", "select"],
-    queryFn: ({ pageParam = 1 }) => getClients({ page: pageParam, limit: 10 }),
-    getNextPageParam: (lastPage, allPages) => {
-      const totalPages = Math.ceil(lastPage.total / 10);
-      return allPages.length < totalPages ? allPages.length + 1 : undefined;
-    },
-    initialPageParam: 1,
-    staleTime: 5 * 60 * 1000,
-  });
-
-  const allClients = clientsData?.pages?.flatMap((page) => page.data) || [];
   const [appliedFilters, setAppliedFilters] = useState({
     search: searchParams.get("search") || "",
     firstName: searchParams.get("firstName") || "",
@@ -136,8 +120,8 @@ export default function UsersPage() {
 
   const { data: usersData, isLoading, error } = useUsersQuery(apiFilters);
 
-  const handleFilterChange = (field: string, value: string) => {
-    setFilters((prev) => ({ ...prev, [field]: value }));
+  const handleFilterChange = (field: string, value: string | number) => {
+    setFilters((prev) => ({ ...prev, [field]: value.toString() }));
   };
 
   const handleApplyFilters = () => {
@@ -257,12 +241,9 @@ export default function UsersPage() {
         key: "statusId",
       });
     if (appliedFilters.clientId) {
-      const client = allClients.find(
-        (c) => c.id.toString() === appliedFilters.clientId
-      );
       chips.push({
         label: t("filterChips.client", {
-          value: client?.razaoSocial || appliedFilters.clientId,
+          value: appliedFilters.clientId,
         }),
         key: "clientId",
       });
@@ -301,14 +282,39 @@ export default function UsersPage() {
   return (
     <AdminPageLayout>
       <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-        <Typography
-          variant="h4"
-          component="h1"
-          gutterBottom
-          sx={{ mb: 2, color: "primary.main" }}
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: { xs: "flex-start", sm: "center" },
+            mb: { xs: 1.5, sm: 2 },
+            flexDirection: { xs: "column", sm: "row" },
+            gap: { xs: 1.5, sm: 0 },
+          }}
         >
-          {t("title")}
-        </Typography>
+          <Box>
+            <Typography variant="h6" sx={{ fontWeight: "bold", mb: 0.5 }}>
+              {t("title")}
+            </Typography>
+            <Typography variant="body2" sx={{ color: "#666" }}>
+              {usersData?.data && usersData.data.length > 0
+                ? `${usersData.data.length} usuário(s) encontrado(s)`
+                : "Nenhum usuário encontrado"}
+            </Typography>
+          </Box>
+          <Button
+            variant="outlined"
+            onClick={() => navigate("/admin/users/create")}
+            sx={{
+              color: "#666",
+              borderColor: "#666",
+              width: { xs: "100%", sm: "auto" },
+            }}
+          >
+            Novo
+          </Button>
+        </Box>
+
         <Box
           sx={{
             display: "flex",
@@ -324,10 +330,9 @@ export default function UsersPage() {
               startIcon={<Search />}
               onClick={() => setFiltersExpanded(!filtersExpanded)}
               sx={{
-                borderColor: "#4caf50",
-                color: "#4caf50",
+                borderColor: "primary.main",
+                color: "primary.main",
                 "&:hover": {
-                  borderColor: "#45a049",
                   backgroundColor: "rgba(76, 175, 80, 0.04)",
                 },
               }}
@@ -424,7 +429,6 @@ export default function UsersPage() {
                       }
                       label={t("filters.role.label")}
                     >
-                      <MenuItem value="">{t("filters.role.all")}</MenuItem>
                       <MenuItem value="1">{t("filters.role.admin")}</MenuItem>
                       <MenuItem value="2">{t("filters.role.user")}</MenuItem>
                     </Select>
@@ -438,7 +442,6 @@ export default function UsersPage() {
                       }
                       label={t("filters.status.label")}
                     >
-                      <MenuItem value="">{t("filters.status.all")}</MenuItem>
                       <MenuItem value="1">
                         {t("filters.status.active")}
                       </MenuItem>
@@ -447,45 +450,26 @@ export default function UsersPage() {
                       </MenuItem>
                     </Select>
                   </FormControl>
-                  <FormControl fullWidth>
-                    <InputLabel>{t("filters.client.label")}</InputLabel>
-                    <Select
-                      value={filters.clientId}
-                      onChange={(e) =>
-                        handleFilterChange("clientId", e.target.value)
-                      }
-                      label={t("filters.client.label")}
-                      MenuProps={{
-                        PaperProps: {
-                          style: {
-                            maxHeight: 300,
-                          },
-                        },
-                      }}
-                    >
-                      <MenuItem value="">{t("filters.client.all")}</MenuItem>
-                      {allClients.map((client) => (
-                        <MenuItem key={client.id} value={client.id.toString()}>
-                          {client.razaoSocial}
-                        </MenuItem>
-                      ))}
-                      {hasNextPage && (
-                        <MenuItem
-                          disabled={isFetchingNextPage}
-                          onClick={() => fetchNextPage()}
-                          sx={{
-                            justifyContent: "center",
-                            fontWeight: "bold",
-                            color: "primary.main",
-                          }}
-                        >
-                          {isFetchingNextPage
-                            ? t("filters.client.loading")
-                            : t("filters.client.loadMore")}
-                        </MenuItem>
-                      )}
-                    </Select>
-                  </FormControl>
+                  <ClientSelect
+                    value={filters.clientId ? parseInt(filters.clientId) : ""}
+                    onChange={(value) =>
+                      handleFilterChange("clientId", value.toString())
+                    }
+                    label={t("filters.client.label")}
+                  />
+                  <ClientRoleSelect
+                    value={
+                      filters.clientRoleId ? parseInt(filters.clientRoleId) : ""
+                    }
+                    onChange={(value) =>
+                      handleFilterChange(
+                        "clientRoleId",
+                        value === 0 ? "" : value.toString()
+                      )
+                    }
+                    label="Role do Cliente"
+                    enabled={filtersExpanded}
+                  />
                 </Box>
               </Box>
             )}
@@ -845,13 +829,19 @@ export default function UsersPage() {
             }
             sx={{
               "& .MuiTablePagination-toolbar": {
-                flexWrap: "wrap",
-                gap: 1,
+                flexDirection: { xs: "column", sm: "row" },
+                gap: { xs: 1, sm: 0 },
+                alignItems: { xs: "stretch", sm: "center" },
               },
-              "& .MuiTablePagination-selectLabel, & .MuiTablePagination-displayedRows":
-                {
-                  fontSize: { xs: "0.75rem", sm: "0.875rem" },
-                },
+              "& .MuiTablePagination-selectLabel": {
+                fontSize: { xs: "0.75rem", sm: "0.875rem" },
+              },
+              "& .MuiTablePagination-displayedRows": {
+                fontSize: { xs: "0.75rem", sm: "0.875rem" },
+              },
+              "& .MuiTablePagination-select": {
+                fontSize: { xs: "0.75rem", sm: "0.875rem" },
+              },
             }}
           />
         </Paper>

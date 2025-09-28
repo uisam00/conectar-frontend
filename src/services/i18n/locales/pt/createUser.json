@@ -1,0 +1,42 @@
+{
+  "title": "Criar Novo Usuário",
+  "form": {
+    "title": "Informações do Usuário",
+    "firstName": "Nome",
+    "lastName": "Sobrenome",
+    "email": "Email",
+    "password": "Senha",
+    "role": "Função",
+    "clients": "Clientes",
+    "clientRoles": "Funções dos Clientes",
+    "clientRole": "Função do Cliente",
+    "cancel": "Cancelar",
+    "create": "Criar Usuário",
+    "uploading": "Enviando..."
+  },
+  "validation": {
+    "email": {
+      "required": "Email é obrigatório",
+      "invalid": "Email inválido"
+    },
+    "password": {
+      "required": "Senha é obrigatória",
+      "minLength": "Senha deve ter pelo menos 6 caracteres"
+    },
+    "firstName": {
+      "required": "Nome é obrigatório"
+    },
+    "lastName": {
+      "required": "Sobrenome é obrigatório"
+    },
+    "role": {
+      "required": "Função é obrigatória"
+    }
+  },
+  "success": {
+    "userCreated": "Usuário criado com sucesso!"
+  },
+  "error": {
+    "createUser": "Erro ao criar usuário. Tente novamente."
+  }
+}

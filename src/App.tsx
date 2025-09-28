@@ -26,6 +26,7 @@ const EditProfilePage = lazy(() => import("@/pages/edit-profile"));
 const ForgotPasswordPage = lazy(() => import("@/pages/forgot-password"));
 const ClientsPage = lazy(() => import("@/pages/clients"));
 const UsersPage = lazy(() => import("@/pages/users"));
+const CreateUserPage = lazy(() => import("@/pages/create-user"));
 const AdminDashboardPage = lazy(() => import("@/pages/admin-dashboard"));
 
 // Initialize i18n
@@ -108,6 +109,14 @@ function AppContent() {
               element={
                 <ProtectedRoute requiredRole="admin">
                   <UsersPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/users/create"
+              element={
+                <ProtectedRoute requiredRole="admin">
+                  <CreateUserPage />
                 </ProtectedRoute>
               }
             />
