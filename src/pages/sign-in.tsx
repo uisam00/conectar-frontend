@@ -93,7 +93,7 @@ export default function SignInPage() {
           backgroundColor: "white",
         }}
       >
-        <Box component="form" onSubmit={handleSubmit}>
+        <Box component="form" onSubmit={handleSubmit} autoComplete="on">
           <LabelInput
             label={t("inputs.email.label")}
             name="email"
