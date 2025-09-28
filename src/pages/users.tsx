@@ -689,18 +689,52 @@ export default function UsersPage() {
                       Criado em
                     </TableSortLabel>
                   </TableCell>
+                  <TableCell
+                    key="updatedAt"
+                    align="left"
+                    style={{ minWidth: 120 }}
+                    sortDirection={orderBy === "updatedAt" ? order : false}
+                    sx={{
+                      fontWeight: "bold",
+                      backgroundColor: "#f0f8f0",
+                      fontSize: { xs: "0.75rem", sm: "0.875rem" },
+                      padding: { xs: "8px 4px", sm: "16px" },
+                    }}
+                  >
+                    <TableSortLabel
+                      active={orderBy === "updatedAt"}
+                      direction={orderBy === "updatedAt" ? order : "asc"}
+                      onClick={(event) => handleRequestSort(event, "updatedAt")}
+                      sx={{
+                        "&.MuiTableSortLabel-root": {
+                          color: "inherit",
+                          "&:hover": {
+                            color: "inherit",
+                          },
+                          "&.Mui-active": {
+                            color: "inherit",
+                          },
+                        },
+                        "&.MuiTableSortLabel-icon": {
+                          color: "inherit !important",
+                        },
+                      }}
+                    >
+                      Atualizado em
+                    </TableSortLabel>
+                  </TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
                 {isLoading ? (
                   <TableRow>
-                    <TableCell colSpan={8} align="center" sx={{ py: 4 }}>
+                    <TableCell colSpan={9} align="center" sx={{ py: 4 }}>
                       <Typography>Carregando...</Typography>
                     </TableCell>
                   </TableRow>
                 ) : error ? (
                   <TableRow>
-                    <TableCell colSpan={8} align="center" sx={{ py: 4 }}>
+                    <TableCell colSpan={9} align="center" sx={{ py: 4 }}>
                       <Alert severity="error">
                         Erro ao carregar usuários. Tente novamente.
                       </Alert>
@@ -708,7 +742,7 @@ export default function UsersPage() {
                   </TableRow>
                 ) : usersData?.data?.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={8} align="center" sx={{ py: 4 }}>
+                    <TableCell colSpan={9} align="center" sx={{ py: 4 }}>
                       <Typography>Nenhum usuário encontrado</Typography>
                     </TableCell>
                   </TableRow>
@@ -770,6 +804,11 @@ export default function UsersPage() {
                         sx={{ fontSize: { xs: "0.75rem", sm: "0.875rem" } }}
                       >
                         {new Date(user.createdAt).toLocaleDateString("pt-BR")}
+                      </TableCell>
+                      <TableCell
+                        sx={{ fontSize: { xs: "0.75rem", sm: "0.875rem" } }}
+                      >
+                        {new Date(user.updatedAt).toLocaleDateString("pt-BR")}
                       </TableCell>
                     </TableRow>
                   ))
