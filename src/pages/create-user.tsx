@@ -14,6 +14,7 @@ import {
   Avatar,
   IconButton,
   Typography,
+  CircularProgress,
 } from "@mui/material";
 import { useForm, FormProvider } from "react-hook-form";
 import { useDropzone } from "react-dropzone";
@@ -66,10 +67,12 @@ function AvatarInput({
   value,
   onChange,
   onLoadingChange,
+  disabled = false,
 }: {
   value?: FileType | null;
   onChange: (file: FileType | null) => void;
   onLoadingChange?: (loading: boolean) => void;
+  disabled?: boolean;
 }) {
   const [isLoading, setIsLoading] = useState(false);
   const fetchFileUpload = useFileUploadService();
@@ -102,7 +105,7 @@ function AvatarInput({
     },
     maxFiles: 1,
     maxSize: 1024 * 1024 * 2, // 2MB
-    disabled: isLoading,
+    disabled: isLoading || disabled,
   });
 
   const removeAvatar = (e: React.MouseEvent) => {
@@ -117,8 +120,9 @@ function AvatarInput({
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
-        cursor: "pointer",
+        cursor: disabled ? "not-allowed" : "pointer",
         position: "relative",
+        opacity: disabled ? 0.6 : 1,
       }}
     >
       <input {...getInputProps()} />
@@ -152,6 +156,7 @@ function AvatarInput({
         {value && (
           <IconButton
             onClick={removeAvatar}
+            disabled={disabled}
             sx={{
               position: "absolute",
               top: 0,
@@ -180,6 +185,9 @@ export default function CreateUserPage() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [isUploading, setIsUploading] = useState(false);
+  const [isCreating, setIsCreating] = useState(false);
+
+  const isLoading = isUploading || isCreating;
 
   const methods = useForm<CreateUserFormData>({
     defaultValues: {
@@ -198,6 +206,7 @@ export default function CreateUserPage() {
   const photo = watch("photo");
 
   const onSubmit = handleSubmit(async (formData) => {
+    setIsCreating(true);
     try {
       const createData: CreateUserDto = {
         email: formData.email,
@@ -218,6 +227,8 @@ export default function CreateUserPage() {
     } catch (error: any) {
       console.error("Error creating user:", error);
       showError(t("error.createUser"));
+    } finally {
+      setIsCreating(false);
     }
   });
 
@@ -262,6 +273,7 @@ export default function CreateUserPage() {
                   value={photo}
                   onChange={(file) => setValue("photo", file)}
                   onLoadingChange={setIsUploading}
+                  disabled={isLoading}
                 />
 
                 <Box sx={{ width: "100%", display: "flex", gap: 2 }}>
@@ -269,6 +281,7 @@ export default function CreateUserPage() {
                     {...methods.register("firstName")}
                     label={t("form.firstName")}
                     fullWidth
+                    disabled={isLoading}
                     error={!!methods.formState.errors.firstName}
                     helperText={methods.formState.errors.firstName?.message}
                   />
@@ -277,6 +290,7 @@ export default function CreateUserPage() {
                     {...methods.register("lastName")}
                     label={t("form.lastName")}
                     fullWidth
+                    disabled={isLoading}
                     error={!!methods.formState.errors.lastName}
                     helperText={methods.formState.errors.lastName?.message}
                   />
@@ -288,6 +302,7 @@ export default function CreateUserPage() {
                     label={t("form.email")}
                     type="email"
                     fullWidth
+                    disabled={isLoading}
                     error={!!methods.formState.errors.email}
                     helperText={methods.formState.errors.email?.message}
                   />
@@ -297,6 +312,7 @@ export default function CreateUserPage() {
                     label={t("form.password")}
                     type="password"
                     fullWidth
+                    disabled={isLoading}
                     error={!!methods.formState.errors.password}
                     helperText={methods.formState.errors.password?.message}
                   />
@@ -305,6 +321,7 @@ export default function CreateUserPage() {
                 <Box sx={{ width: "100%", display: "flex", gap: 2 }}>
                   <FormControl
                     fullWidth
+                    disabled={isLoading}
                     error={!!methods.formState.errors.roleId}
                   >
                     <InputLabel>Função do Sistema</InputLabel>
@@ -323,6 +340,7 @@ export default function CreateUserPage() {
 
                   <FormControl
                     fullWidth
+                    disabled={isLoading}
                     error={!!methods.formState.errors.statusId}
                   >
                     <InputLabel>Status</InputLabel>
@@ -343,6 +361,7 @@ export default function CreateUserPage() {
                 <ClientRoleSelector
                   value={watch("clientRoles")}
                   onChange={handleClientRoleChange}
+                  disabled={isLoading}
                 />
 
                 <Box
@@ -352,6 +371,7 @@ export default function CreateUserPage() {
                     type="button"
                     variant="outlined"
                     fullWidth
+                    disabled={isLoading}
                     onClick={() => navigate("/admin/users")}
                   >
                     {t("form.cancel")}
@@ -360,10 +380,16 @@ export default function CreateUserPage() {
                     type="submit"
                     variant="contained"
                     fullWidth
-                    startIcon={<Add />}
-                    disabled={isUploading}
+                    startIcon={
+                      isLoading ? (
+                        <CircularProgress size={20} color="inherit" />
+                      ) : (
+                        <Add />
+                      )
+                    }
+                    disabled={isLoading}
                   >
-                    {isUploading ? t("form.uploading") : t("form.create")}
+                    {t("form.create")}
                   </Button>
                 </Box>
               </Box>

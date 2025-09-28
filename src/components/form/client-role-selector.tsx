@@ -41,32 +41,6 @@ export default function ClientRoleSelector({
     onChange(value.filter((assignment) => assignment.clientId !== clientId));
   };
 
-  const getRoleColor = (roleName: string) => {
-    switch (roleName.toLowerCase()) {
-      case "admin":
-        return "error";
-      case "manager":
-        return "warning";
-      case "user":
-        return "info";
-      default:
-        return "default";
-    }
-  };
-
-  const getRoleIcon = (roleName: string) => {
-    switch (roleName.toLowerCase()) {
-      case "admin":
-        return <CheckCircle />;
-      case "manager":
-        return <Person />;
-      case "user":
-        return <Person />;
-      default:
-        return <Person />;
-    }
-  };
-
   return (
     <Box sx={{ width: "100%" }}>
       <Typography
@@ -131,12 +105,12 @@ export default function ClientRoleSelector({
                         >
                           {assignment.clientName}
                         </Typography>
+
                         <Chip
-                          icon={getRoleIcon(assignment.roleName)}
                           label={assignment.roleName}
-                          color={getRoleColor(assignment.roleName) as any}
                           size="small"
                           variant="outlined"
+                          sx={{ fontSize: "0.7rem" }}
                         />
                       </Box>
                     </Box>

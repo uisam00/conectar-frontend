@@ -11,8 +11,7 @@
     "clientRoles": "Funções dos Clientes",
     "clientRole": "Função do Cliente",
     "cancel": "Cancelar",
-    "create": "Criar Usuário",
-    "uploading": "Enviando..."
+    "create": "Criar Usuário"
   },
   "validation": {
     "email": {
