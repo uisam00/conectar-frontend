@@ -2,6 +2,27 @@
 
 Frontend React baseado no extensive-react-boilerplate, mas usando React Router ao invés do Next.js.
 
+Api de teste prático.
+
+[Documentação completa aqui](/docs/readme.md)
+
+Demo: https://conectar-backend-t4fq.onrender.com/docs
+
+API (Swagger): https://conectar-backend-t4fq.onrender.com/docs
+
+Repo Frontend: https://github.com/uisam00/conectar-frontend
+
+## Usuário de teste
+
+Use as credenciais abaixo para acessar o sistema em desenvolvimento:
+
+```json
+{
+  "email": "fulano@example.com",
+  "password": "Senha!123"
+}
+```
+
 ## Tecnologias
 
 - **React 19** com TypeScript
