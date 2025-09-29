@@ -89,7 +89,6 @@ function AvatarInput({
           onChange(data.file);
         }
       } catch (error) {
-        console.error("Upload error:", error);
       } finally {
         setIsLoading(false);
         onLoadingChange?.(false);
@@ -227,7 +226,6 @@ export default function CreateUserPage() {
       showSuccess(t("success.userCreated"));
       navigate("/admin/users");
     } catch (error: any) {
-      console.error("Error creating user:", error);
       showError(t("error.createUser"));
     } finally {
       setIsCreating(false);

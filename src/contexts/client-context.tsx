@@ -31,7 +31,6 @@ export function ClientProvider({ children }: ClientProviderProps) {
       }
     } catch (err) {
       setError("Erro ao carregar instituições");
-      console.error("Erro ao buscar clientes:", err);
     } finally {
       setIsLoading(false);
     }

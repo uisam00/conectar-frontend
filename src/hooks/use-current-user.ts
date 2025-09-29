@@ -14,7 +14,6 @@ export function useCurrentUser() {
         });
         return response.data;
       } catch (error) {
-        console.error("Error fetching current user:", error);
         throw error;
       }
     },

@@ -4,28 +4,27 @@ import type { User } from "@/types/api";
 
 export interface GoogleAuthResponse {
   user: User;
-  accessToken: string;
+  token: string;
   refreshToken: string;
   tokenExpires: number;
 }
 
 export interface GoogleLoginRequest {
-  credential: string;
+  idToken: string;
 }
 
 /**
  * Realiza login com Google usando o token de credencial
  */
-export async function loginWithGoogle(credential: string): Promise<GoogleAuthResponse> {
+export async function loginWithGoogle(idToken: string): Promise<GoogleAuthResponse> {
   try {
     const response = await axiosInstance.post<GoogleAuthResponse>(
       AUTH_GOOGLE_LOGIN_URL,
-      { credential } as GoogleLoginRequest
+      { idToken } as GoogleLoginRequest
     );
     
     return response.data;
   } catch (error) {
-    console.error('Erro no login com Google:', error);
     throw error;
   }
 }
@@ -73,7 +72,7 @@ export function initializeGoogleAuth(): Promise<void> {
  */
 export function renderGoogleButton(
   elementId: string,
-  onSuccess: (credential: string) => void,
+  onSuccess: (idToken: string) => void,
   onError: (error: string) => void
 ): void {
   if (!window.google || !window.google.accounts) {
@@ -83,8 +82,8 @@ export function renderGoogleButton(
 
   const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
   
-  if (!clientId) {
-    onError('Google Client ID não configurado');
+  if (!clientId || clientId === 'your-google-client-id-here') {
+    onError('Google Client ID não configurado. Configure VITE_GOOGLE_CLIENT_ID no arquivo .env');
     return;
   }
 
@@ -92,9 +91,11 @@ export function renderGoogleButton(
     client_id: clientId,
     callback: (response: any) => {
       if (response.credential) {
+        // O Google retorna um JWT que contém o idToken
+        // Vamos extrair o idToken do JWT ou usar o credential diretamente
         onSuccess(response.credential);
       } else {
-        onError('Credencial do Google não recebida');
+        onError('Token do Google não recebido');
       }
     },
     auto_select: false,

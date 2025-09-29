@@ -11,7 +11,7 @@ export default function ThemeProvider({ children }: PropsWithChildren) {
   const [mode, setMode] = useState<"light" | "dark">("light");
 
   const toggleColorMode = () => {
-    setMode(prev => (prev === "light" ? "dark" : "light"));
+    setMode((prev) => (prev === "light" ? "dark" : "light"));
   };
 
   const theme = useMemo(
@@ -20,9 +20,9 @@ export default function ThemeProvider({ children }: PropsWithChildren) {
         palette: {
           mode,
           primary: {
-            main: "#0F7A5A",
-            dark: "#0A5A3F",
-            light: "#19AF78",
+            main: "#19AF78",
+            dark: "#0F7A5A",
+            light: "#4BCF8A",
           },
           secondary: {
             main: "#dc004e",

@@ -9,7 +9,7 @@ import {
   loginWithGoogle 
 } from '@/services/auth/google-auth';
 
-export function useGoogleAuth() {
+export function useGoogleSignup() {
   const [isLoading, setIsLoading] = useState(false);
   const [isGoogleLoaded, setIsGoogleLoaded] = useState(false);
   const { showSuccess, showError } = useSnackbar();
@@ -48,13 +48,13 @@ export function useGoogleAuth() {
       // Invalidar cache do React Query para recarregar dados do usuário
       queryClient.setQueryData(["currentUser"], response.user);
       
-      showSuccess('Login realizado com sucesso!');
+      showSuccess('Cadastro realizado com sucesso!');
       navigate('/');
       
     } catch (error: any) {
       showError(
         error.response?.data?.message || 
-        'Erro ao fazer login com Google. Tente novamente.'
+        'Erro ao fazer cadastro com Google. Tente novamente.'
       );
     } finally {
       setIsLoading(false);
@@ -65,7 +65,7 @@ export function useGoogleAuth() {
     showError(`Erro na autenticação Google: ${error}`);
   }, [showError]);
 
-  const renderGoogleLoginButton = useCallback((elementId: string) => {
+  const renderGoogleSignupButton = useCallback((elementId: string) => {
     if (!isGoogleLoaded) {
       return;
     }
@@ -73,13 +73,13 @@ export function useGoogleAuth() {
     try {
       renderGoogleButton(elementId, handleGoogleSuccess, handleGoogleError);
     } catch (error) {
-      showError('Erro ao carregar botão de login Google');
+      showError('Erro ao carregar botão de cadastro Google');
     }
   }, [isGoogleLoaded, handleGoogleSuccess, handleGoogleError, showError]);
 
   return {
     isLoading,
     isGoogleLoaded,
-    renderGoogleLoginButton,
+    renderGoogleSignupButton,
   };
 }

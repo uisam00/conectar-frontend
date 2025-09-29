@@ -178,14 +178,14 @@ export default function SignInPage() {
               type="submit"
               fullWidth
               variant="contained"
-              sx={{ mt: 2, mb: 2 }}
+              sx={{ mt: 3, mb: 3 }}
               disabled={isLoading}
             >
               {isLoading ? t("loading") : t("actions.submit")}
             </Button>
 
             {/* Divisor */}
-            <Box sx={{ display: "flex", alignItems: "center", my: 2 }}>
+            <Box sx={{ display: "flex", alignItems: "center", my: 3 }}>
               <Box sx={{ flex: 1, height: 1, backgroundColor: "#e0e0e0" }} />
               <Typography variant="body2" sx={{ mx: 2, color: "#666" }}>
                 ou
@@ -201,7 +201,10 @@ export default function SignInPage() {
               disabled={isLoading}
             />
 
-            <Box textAlign="center" sx={{ mt: 1 }}>
+            <Box
+              textAlign="center"
+              sx={{ mt: 3, display: "flex", flexDirection: "column", gap: 2 }}
+            >
               <MuiLink
                 component={Link}
                 to="/forgot-password"
@@ -216,6 +219,21 @@ export default function SignInPage() {
                 }}
               >
                 {t("actions.forgotPassword")}
+              </MuiLink>
+              <MuiLink
+                component={Link}
+                to="/sign-up"
+                variant="body2"
+                sx={{
+                  color: "#666",
+                  textDecoration: "none",
+                  fontSize: "0.9rem",
+                  "&:hover": {
+                    textDecoration: "underline",
+                  },
+                }}
+              >
+                Não tem uma conta? Cadastre-se
               </MuiLink>
             </Box>
           </Box>

@@ -198,7 +198,6 @@ function AvatarInput({
           onChange(data.file);
         }
       } catch (error) {
-        console.error("Upload error:", error);
       } finally {
         setIsLoading(false);
         onLoadingChange?.(false);

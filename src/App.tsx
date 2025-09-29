@@ -21,6 +21,7 @@ import { useAuth } from "@/services/auth";
 // Lazy load pages for code splitting
 const HomePage = lazy(() => import("@/pages/home/home"));
 const SignInPage = lazy(() => import("@/pages/auth/sign-in"));
+const SignUpPage = lazy(() => import("@/pages/auth/sign-up"));
 const SimpleProfilePage = lazy(() => import("@/pages/profile/simple-profile"));
 const EditProfilePage = lazy(() => import("@/pages/profile/edit-profile"));
 const ForgotPasswordPage = lazy(() => import("@/pages/auth/forgot-password"));
@@ -83,10 +84,10 @@ function AppContent() {
               path="/sign-in"
               element={user ? <Navigate to="/" replace /> : <SignInPage />}
             />
-            {/* <Route 
-              path="/sign-up" 
-              element={user ? <Navigate to="/" replace /> : <SignUpPage />} 
-            /> */}
+            <Route
+              path="/sign-up"
+              element={user ? <Navigate to="/" replace /> : <SignUpPage />}
+            />
             <Route
               path="/forgot-password"
               element={

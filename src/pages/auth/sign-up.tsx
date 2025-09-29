@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Paper, Box, Link as MuiLink, Button } from "@mui/material";
+import { Paper, Box, Link as MuiLink, Button, Typography } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
 import { useLanguage } from "@/services/i18n";
 import axiosInstance from "@/services/api/axios-instance";
@@ -7,6 +7,8 @@ import { AUTH_REGISTER_URL } from "@/services/api/config";
 import { useErrorHandler } from "@/hooks";
 import useSnackbar from "@/hooks/use-snackbar";
 import LabelInput from "@/components/form/label-input";
+import GoogleSignupButton from "@/components/auth/google-signup-button";
+import { Helmet } from "react-helmet";
 
 export default function SignUpPage() {
   const { t } = useLanguage("sign-up");
@@ -46,110 +48,132 @@ export default function SignUpPage() {
   };
 
   return (
-    <Box
-      sx={{
-        minHeight: "100vh",
-        background: "linear-gradient(135deg, #19AF78 0%, #0F7A5A 100%)",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
-        padding: 2,
-      }}
-    >
-      <Box sx={{ mb: 4 }}>
-        <img
-          src="/logo.png"
-          alt="Conéctar"
-          style={{
-            height: "80px",
-            width: "auto",
-            filter: "brightness(0) invert(1)",
-          }}
-        />
-      </Box>
-
-      <Paper
-        elevation={8}
+    <>
+      <Helmet>
+        <title>Cadastro | Conéctar</title>
+      </Helmet>
+      <Box
         sx={{
-          padding: 3,
-          width: "100%",
-          maxWidth: 450,
-          borderRadius: 2,
-          backgroundColor: "white",
+          minHeight: "100vh",
+          background: "linear-gradient(135deg, #19AF78 0%, #0F7A5A 100%)",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          padding: 2,
         }}
       >
-        <Box component="form" onSubmit={handleSubmit}>
-          <LabelInput
-            label={t("inputs.firstName.label")}
-            name="firstName"
-            type="text"
-            autoComplete="given-name"
-            autoFocus
-            value={formData.firstName}
-            onChange={handleChange}
-            required
+        <Box sx={{ mb: 4 }}>
+          <img
+            src="/logo.png"
+            alt="Conéctar"
+            style={{
+              height: "80px",
+              width: "auto",
+              filter: "brightness(0) invert(1)",
+            }}
           />
-
-          <LabelInput
-            label={t("inputs.lastName.label")}
-            name="lastName"
-            type="text"
-            autoComplete="family-name"
-            value={formData.lastName}
-            onChange={handleChange}
-            required
-          />
-
-          <LabelInput
-            label={t("inputs.email.label")}
-            name="email"
-            type="email"
-            autoComplete="email"
-            value={formData.email}
-            onChange={handleChange}
-            required
-          />
-
-          <LabelInput
-            label={t("inputs.password.label")}
-            name="password"
-            type="password"
-            autoComplete="new-password"
-            value={formData.password}
-            onChange={handleChange}
-            required
-          />
-
-          <Button
-            type="submit"
-            fullWidth
-            variant="contained"
-            sx={{ mt: 2, mb: 2 }}
-            disabled={isLoading}
-          >
-            {isLoading ? t("loading") : t("actions.submit")}
-          </Button>
-
-          <Box textAlign="center" sx={{ mt: 1 }}>
-            <MuiLink
-              component={Link}
-              to="/sign-in"
-              variant="body2"
-              sx={{
-                color: "#666",
-                textDecoration: "none",
-                fontSize: "0.9rem",
-                "&:hover": {
-                  textDecoration: "underline",
-                },
-              }}
-            >
-              {t("actions.accountAlreadyExists")}
-            </MuiLink>
-          </Box>
         </Box>
-      </Paper>
-    </Box>
+
+        <Paper
+          elevation={8}
+          sx={{
+            padding: 3,
+            width: "100%",
+            maxWidth: 450,
+            borderRadius: 2,
+            backgroundColor: "white",
+          }}
+        >
+          <Box component="form" onSubmit={handleSubmit}>
+            <LabelInput
+              label={t("inputs.firstName.label")}
+              name="firstName"
+              type="text"
+              autoComplete="given-name"
+              autoFocus
+              value={formData.firstName}
+              onChange={handleChange}
+              required
+            />
+
+            <LabelInput
+              label={t("inputs.lastName.label")}
+              name="lastName"
+              type="text"
+              autoComplete="family-name"
+              value={formData.lastName}
+              onChange={handleChange}
+              required
+            />
+
+            <LabelInput
+              label={t("inputs.email.label")}
+              name="email"
+              type="email"
+              autoComplete="email"
+              value={formData.email}
+              onChange={handleChange}
+              required
+            />
+
+            <LabelInput
+              label={t("inputs.password.label")}
+              name="password"
+              type="password"
+              autoComplete="new-password"
+              value={formData.password}
+              onChange={handleChange}
+              required
+            />
+
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              sx={{ mt: 3, mb: 3 }}
+              disabled={isLoading}
+            >
+              {isLoading ? t("loading") : t("actions.submit")}
+            </Button>
+
+            {/* Divisor */}
+            <Box sx={{ display: "flex", alignItems: "center", my: 3 }}>
+              <Box sx={{ flex: 1, height: 1, backgroundColor: "#e0e0e0" }} />
+              <Typography variant="body2" sx={{ mx: 2, color: "#666" }}>
+                ou
+              </Typography>
+              <Box sx={{ flex: 1, height: 1, backgroundColor: "#e0e0e0" }} />
+            </Box>
+
+            {/* Botão Google */}
+            <GoogleSignupButton
+              onLoadingChange={(loading) => {
+                if (loading) setIsLoading(true);
+              }}
+              disabled={isLoading}
+            />
+
+            <Box textAlign="center" sx={{ mt: 3 }}>
+              <MuiLink
+                component={Link}
+                to="/sign-in"
+                variant="body2"
+                sx={{
+                  color: "#666",
+                  textDecoration: "none",
+                  fontSize: "0.9rem",
+                  "&:hover": {
+                    textDecoration: "underline",
+                  },
+                }}
+              >
+                {t("actions.accountAlreadyExists")}
+              </MuiLink>
+            </Box>
+          </Box>
+        </Paper>
+      </Box>
+    </>
   );
 }
