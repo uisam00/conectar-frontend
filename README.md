@@ -4,9 +4,9 @@ Frontend React baseado no extensive-react-boilerplate, mas usando React Router a
 
 Api de teste prático.
 
-[Documentação completa aqui](/docs/readme.md)
+[Documentação completa aqui](/docs/introduction.md)
 
-Demo: https://conectar-backend-t4fq.onrender.com/docs
+Demo Frontend: https://conectar-frontend-07mc.onrender.com
 
 API (Swagger): https://conectar-backend-t4fq.onrender.com/docs
 

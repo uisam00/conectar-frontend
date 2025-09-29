@@ -2,7 +2,7 @@
 
 ## Demo online
 
-Demo: https://conectar-backend-t4fq.onrender.com/docs
+Demo Frontend: https://conectar-frontend-07mc.onrender.com
 
 Frontend: https://github.com/uisam00/conectar-backend
 
