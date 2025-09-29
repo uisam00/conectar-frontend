@@ -10,7 +10,7 @@ Demo: https://conectar-backend-t4fq.onrender.com/docs
 
 API (Swagger): https://conectar-backend-t4fq.onrender.com/docs
 
-Repo Frontend: https://github.com/uisam00/conectar-frontend
+Repo Backend: https://github.com/uisam00/conectar-backend
 
 ## Usuário de teste
 
