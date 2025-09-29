@@ -6,7 +6,6 @@ import {
   MenuItem,
   Box,
   Typography,
-  Chip,
 } from "@mui/material";
 
 interface StatusSelectFixedProps {

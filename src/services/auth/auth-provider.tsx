@@ -15,12 +15,10 @@ import {
   setTokensInfo as setTokensInfoToStorage,
   clearTokensInfo,
 } from "./auth-tokens-info";
-import { useSessionPersistence } from "@/hooks";
 import { useCurrentUser } from "@/hooks/use-current-user";
 import { useQueryClient } from "@tanstack/react-query";
 
 function AuthProvider(props: PropsWithChildren) {
-  useSessionPersistence();
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const { data: user, isLoading, error } = useCurrentUser();
   const queryClient = useQueryClient();

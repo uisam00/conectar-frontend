@@ -1,0 +1,76 @@
+{
+  "title": "Lista de Clientes",
+  "loading": "Carregando...",
+  "noClientsFound": "Nenhum cliente encontrado",
+  "error": "Erro ao carregar clientes",
+  "tabs": {
+    "basicData": "Dados Básicos"
+  },
+  "filters": {
+    "title": "Filtros",
+    "subtitle": "Filtre e busque itens na página",
+    "searchByName": "Buscar por nome ou CNPJ",
+    "searchByNamePlaceholder": "Digite nome da empresa ou CNPJ",
+    "searchByCnpj": "Buscar por CNPJ específico",
+    "searchByCnpjPlaceholder": "00.000.000/0000-00",
+    "searchByStatus": "Buscar por status",
+    "searchByConectarPlus": "Buscar por conectar+",
+    "selectOption": "Selecione",
+    "status": {
+      "active": "Ativo",
+      "inactive": "Inativo"
+    },
+    "conectarPlus": {
+      "yes": "Sim",
+      "no": "Não"
+    },
+    "buttons": {
+      "clear": "Limpar campos",
+      "filter": "Filtrar"
+    }
+  },
+  "header": {
+    "title": "Clientes",
+    "subtitle": "{{count}} cliente(s) encontrado(s)",
+    "noResults": "Nenhum cliente encontrado",
+    "newButton": "Novo"
+  },
+  "table": {
+    "headers": {
+      "avatar": "",
+      "id": "ID",
+      "razaoSocial": "Razão Social",
+      "cnpj": "CNPJ",
+      "nomeComercial": "Nome Comercial",
+      "plan": "Plano",
+      "conectarPlus": "Conecta Plus",
+      "status": "Status",
+      "actions": "Ações"
+    },
+    "status": {
+      "active": "Ativo",
+      "inactive": "Inativo",
+      "unknown": "Desconhecido"
+    },
+    "conectarPlus": {
+      "yes": "Sim",
+      "no": "Não"
+    },
+    "plan": {
+      "default": "Plano {{id}}"
+    },
+    "actions": {
+      "view": "Visualizar",
+      "edit": "Editar"
+    },
+    "pagination": {
+      "rowsPerPage": "Linhas por página:",
+      "displayedRows": "{{from}}-{{to}} de {{count}}"
+    }
+  },
+  "messages": {
+    "loadError": "Erro ao carregar clientes. Tente novamente.",
+    "noData": "Nenhum cliente encontrado",
+    "loading": "Carregando..."
+  }
+}

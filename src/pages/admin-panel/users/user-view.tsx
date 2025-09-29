@@ -1,4 +1,3 @@
-import React from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import {
   Box,
@@ -6,9 +5,9 @@ import {
   CardContent,
   CardHeader,
   Button,
-  Typography,
   CircularProgress,
   Alert,
+  Typography,
 } from "@mui/material";
 import { ArrowBack, Edit, Delete } from "@mui/icons-material";
 import { useLanguage } from "@/services/i18n";
@@ -20,7 +19,7 @@ import PageLayout from "@/components/layout/page-layout";
 export default function UserViewPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { t } = useLanguage("createUser");
+  const { t } = useLanguage("user-view");
   const userId = id ? parseInt(id) : 0;
 
   const { data: user, isLoading, error } = useUserQuery(userId);
@@ -31,7 +30,7 @@ export default function UserViewPage() {
   };
 
   const handleDelete = () => {
-    if (window.confirm("Tem certeza que deseja excluir este usuário?")) {
+    if (window.confirm(t("confirmDelete.message"))) {
       deleteUserMutation.mutate(userId);
     }
   };
@@ -51,6 +50,9 @@ export default function UserViewPage() {
         }}
       >
         <CircularProgress />
+        <Typography variant="body1" sx={{ ml: 2 }}>
+          {t("loading")}
+        </Typography>
       </Box>
     );
   }
@@ -58,16 +60,14 @@ export default function UserViewPage() {
   if (error) {
     return (
       <Box sx={{ p: 3 }}>
-        <Alert severity="error">
-          Erro ao carregar usuário. Tente novamente.
-        </Alert>
+        <Alert severity="error">{t("loadError")}</Alert>
         <Button
           variant="outlined"
           startIcon={<ArrowBack />}
           onClick={handleBack}
           sx={{ mt: 2 }}
         >
-          Voltar
+          {t("actions.back")}
         </Button>
       </Box>
     );
@@ -76,14 +76,14 @@ export default function UserViewPage() {
   if (!user) {
     return (
       <Box sx={{ p: 3 }}>
-        <Alert severity="warning">Usuário não encontrado.</Alert>
+        <Alert severity="warning">{t("userNotFound")}</Alert>
         <Button
           variant="outlined"
           startIcon={<ArrowBack />}
           onClick={handleBack}
           sx={{ mt: 2 }}
         >
-          Voltar
+          {t("actions.back")}
         </Button>
       </Box>
     );
@@ -93,7 +93,12 @@ export default function UserViewPage() {
     email: user.email,
     firstName: user.firstName,
     lastName: user.lastName,
-    photo: user.photo,
+    photo: user.photo
+      ? {
+          id: user.photo.id.toString(),
+          path: user.photo.path,
+        }
+      : null,
     roleId: user.role?.id || 2,
     statusId: user.status?.id || 1,
     clientRoles:
@@ -106,10 +111,10 @@ export default function UserViewPage() {
   };
 
   return (
-    <PageLayout title="Visualizar Usuário">
+    <PageLayout title={t("title")}>
       <Card>
         <CardHeader
-          title="Informações do Usuário"
+          title={t("card.title")}
           action={
             <Box sx={{ display: "flex", gap: 2 }}>
               <Button
@@ -117,14 +122,14 @@ export default function UserViewPage() {
                 startIcon={<ArrowBack />}
                 onClick={handleBack}
               >
-                Voltar
+                {t("actions.back")}
               </Button>
               <Button
                 variant="contained"
                 startIcon={<Edit />}
                 onClick={handleEdit}
               >
-                Editar
+                {t("actions.edit")}
               </Button>
               <Button
                 variant="outlined"
@@ -136,7 +141,7 @@ export default function UserViewPage() {
                 {deleteUserMutation.isPending ? (
                   <CircularProgress size={20} />
                 ) : (
-                  "Excluir"
+                  t("actions.delete")
                 )}
               </Button>
             </Box>

@@ -1,5 +1,4 @@
-import React from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { Box, Typography, CircularProgress } from "@mui/material";
 import { useLanguage } from "@/services/i18n";
 import { useClientQuery } from "@/hooks/use-client-query";
@@ -10,8 +9,7 @@ import type { UpdateClientDto } from "@/services/api/clients-api";
 
 export default function EditClientPage() {
   const { id } = useParams<{ id: string }>();
-  const navigate = useNavigate();
-  const { t } = useLanguage("clients");
+  const { t } = useLanguage("edit-client");
   const clientId = id ? parseInt(id) : 0;
 
   const { data: client, isLoading, error } = useClientQuery(clientId);
@@ -19,10 +17,6 @@ export default function EditClientPage() {
 
   const handleSubmit = (data: UpdateClientDto) => {
     updateClientMutation.mutate({ id: clientId, data });
-  };
-
-  const handleBack = () => {
-    navigate("/admin/clients");
   };
 
   if (isLoading) {
@@ -37,6 +31,9 @@ export default function EditClientPage() {
           }}
         >
           <CircularProgress />
+          <Typography variant="body1" sx={{ ml: 2 }}>
+            {t("loading")}
+          </Typography>
         </Box>
       </AdminPageLayout>
     );
@@ -47,7 +44,7 @@ export default function EditClientPage() {
       <AdminPageLayout>
         <Box sx={{ p: 3, textAlign: "center" }}>
           <Typography variant="h6" color="error">
-            Cliente não encontrado
+            {t("clientNotFound")}
           </Typography>
         </Box>
       </AdminPageLayout>
@@ -63,7 +60,7 @@ export default function EditClientPage() {
           gutterBottom
           sx={{ mb: 2, color: "primary.main" }}
         >
-          Editar Cliente
+          {t("title")}
         </Typography>
 
         <ClientForm

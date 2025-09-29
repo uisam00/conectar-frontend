@@ -3,7 +3,6 @@ import {
   InputLabel,
   Select,
   MenuItem,
-  Chip,
   OutlinedInput,
   Box,
   CircularProgress,
@@ -11,9 +10,8 @@ import {
   Typography,
 } from "@mui/material";
 import type { SelectChangeEvent } from "@mui/material";
-import { useInfiniteQuery } from "@tanstack/react-query";
-import { getClients } from "@/services/api/clients-api";
 import { useLanguage } from "@/services/i18n";
+import { useClientsPaginatedQuery } from "@/hooks/use-clients-paginated-query";
 
 interface Client {
   id: number;
@@ -40,30 +38,18 @@ export default function ClientSelectWithName({
   const { t } = useLanguage("usersAdminPanel");
 
   const {
-    data: clientsData,
+    data: allClients,
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
-  } = useInfiniteQuery({
-    queryKey: ["clients", "select-with-name"],
-    queryFn: ({ pageParam = 1 }) => getClients({ page: pageParam, limit: 10 }),
-    getNextPageParam: (lastPage, allPages) => {
-      const totalPages = Math.ceil(lastPage.total / 10);
-      return allPages.length < totalPages ? allPages.length + 1 : undefined;
-    },
-    initialPageParam: 1,
-    staleTime: 5 * 60 * 1000, // 5 minutes
-    enabled,
-  });
-
-  const allClients = clientsData?.pages?.flatMap((page) => page.data) || [];
+  } = useClientsPaginatedQuery(enabled);
 
   const handleChange = (event: SelectChangeEvent<number | string>) => {
     const selectedValue = event.target.value;
     if (selectedValue === "" || selectedValue === 0) {
       onChange(null);
     } else {
-      const client = allClients.find(c => c.id === selectedValue);
+      const client = allClients.find((c) => c.id === selectedValue);
       if (client) {
         onChange({ id: client.id, name: client.razaoSocial });
       }
@@ -88,12 +74,10 @@ export default function ClientSelectWithName({
         value={value}
         onChange={handleChange}
         input={
-          <OutlinedInput 
-            label={label} 
+          <OutlinedInput
+            label={label}
             endAdornment={
-              isFetchingNextPage ? (
-                <CircularProgress size={20} />
-              ) : undefined
+              isFetchingNextPage ? <CircularProgress size={20} /> : undefined
             }
           />
         }

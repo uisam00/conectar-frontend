@@ -19,22 +19,36 @@ import ProtectedRoute from "@/components/auth/protected-route";
 import { useAuth } from "@/services/auth";
 
 // Lazy load pages for code splitting
-const HomePage = lazy(() => import("@/pages/home"));
-const SignInPage = lazy(() => import("@/pages/sign-in"));
-const SimpleProfilePage = lazy(() => import("@/pages/simple-profile"));
-const EditProfilePage = lazy(() => import("@/pages/edit-profile"));
-const ForgotPasswordPage = lazy(() => import("@/pages/forgot-password"));
-const ConfirmEmailPage = lazy(() => import("@/pages/confirm-email"));
-const ConfirmNewEmailPage = lazy(() => import("@/pages/confirm-new-email"));
-const ClientsPage = lazy(() => import("@/pages/clients"));
-const CreateClientPage = lazy(() => import("@/pages/create-client"));
-const EditClientPage = lazy(() => import("@/pages/edit-client"));
-const ViewClientPage = lazy(() => import("@/pages/view-client"));
-const UsersPage = lazy(() => import("@/pages/users"));
-const CreateUserPage = lazy(() => import("@/pages/create-user"));
-const UserViewPage = lazy(() => import("@/pages/user-view"));
-const UserEditPage = lazy(() => import("@/pages/user-edit"));
-const AdminDashboardPage = lazy(() => import("@/pages/admin-dashboard"));
+const HomePage = lazy(() => import("@/pages/home/home"));
+const SignInPage = lazy(() => import("@/pages/auth/sign-in"));
+const SimpleProfilePage = lazy(() => import("@/pages/profile/simple-profile"));
+const EditProfilePage = lazy(() => import("@/pages/profile/edit-profile"));
+const ForgotPasswordPage = lazy(() => import("@/pages/auth/forgot-password"));
+const ConfirmEmailPage = lazy(() => import("@/pages/auth/confirm-email"));
+const ConfirmNewEmailPage = lazy(
+  () => import("@/pages/auth/confirm-new-email")
+);
+const ClientsPage = lazy(
+  () => import("@/pages/admin-panel/clients/list-clients")
+);
+const CreateClientPage = lazy(
+  () => import("@/pages/admin-panel/clients/create-client")
+);
+const EditClientPage = lazy(
+  () => import("@/pages/admin-panel/clients/edit-client")
+);
+const ViewClientPage = lazy(
+  () => import("@/pages/admin-panel/clients/view-client")
+);
+const UsersPage = lazy(() => import("@/pages/admin-panel/users/list-users"));
+const CreateUserPage = lazy(
+  () => import("@/pages/admin-panel/users/create-user")
+);
+const UserViewPage = lazy(() => import("@/pages/admin-panel/users/user-view"));
+const UserEditPage = lazy(() => import("@/pages/admin-panel/users/user-edit"));
+const AdminDashboardPage = lazy(
+  () => import("@/pages/admin-panel/admin-dashboard")
+);
 
 // Initialize i18n
 import "@/services/i18n/client";

@@ -6,7 +6,6 @@ export default function useDrawer() {
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
-    // Carregar preferência do localStorage na inicialização
     const savedPreference = localStorage.getItem(DRAWER_STORAGE_KEY);
     if (savedPreference !== null) {
       setIsOpen(JSON.parse(savedPreference));
@@ -16,7 +15,6 @@ export default function useDrawer() {
   const toggleDrawer = () => {
     const newState = !isOpen;
     setIsOpen(newState);
-    // Salvar preferência no localStorage
     localStorage.setItem(DRAWER_STORAGE_KEY, JSON.stringify(newState));
   };
 

@@ -1,0 +1,51 @@
+{
+  "title": "Editar Cliente",
+  "loading": "Carregando...",
+  "clientNotFound": "Cliente não encontrado",
+  "form": {
+    "title": "Dados do Cliente",
+    "name": "Nome",
+    "email": "Email",
+    "cnpj": "CNPJ",
+    "phone": "Telefone",
+    "address": "Endereço",
+    "city": "Cidade",
+    "state": "Estado",
+    "zipCode": "CEP",
+    "status": "Status",
+    "save": "Salvar",
+    "cancel": "Cancelar",
+    "saving": "Salvando...",
+    "success": "Cliente atualizado com sucesso!",
+    "error": "Erro ao atualizar cliente. Tente novamente."
+  },
+  "validation": {
+    "nameRequired": "Nome é obrigatório",
+    "emailRequired": "Email é obrigatório",
+    "emailInvalid": "Email inválido",
+    "cnpjRequired": "CNPJ é obrigatório",
+    "cnpjInvalid": "CNPJ inválido",
+    "phoneRequired": "Telefone é obrigatório",
+    "phoneInvalid": "Telefone inválido",
+    "addressRequired": "Endereço é obrigatório",
+    "cityRequired": "Cidade é obrigatória",
+    "stateRequired": "Estado é obrigatório",
+    "zipCodeRequired": "CEP é obrigatório",
+    "zipCodeInvalid": "CEP inválido"
+  },
+  "status": {
+    "active": "Ativo",
+    "inactive": "Inativo"
+  },
+  "actions": {
+    "save": "Salvar Alterações",
+    "cancel": "Cancelar",
+    "back": "Voltar"
+  },
+  "messages": {
+    "saveSuccess": "Cliente atualizado com sucesso!",
+    "saveError": "Erro ao atualizar cliente. Tente novamente.",
+    "loadError": "Erro ao carregar dados do cliente.",
+    "networkError": "Erro de conexão. Verifique sua internet."
+  }
+}

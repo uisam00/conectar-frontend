@@ -1,0 +1,47 @@
+{
+  "title": "Visualizar Usuário",
+  "loading": "Carregando...",
+  "userNotFound": "Usuário não encontrado",
+  "loadError": "Erro ao carregar usuário. Tente novamente.",
+  "card": {
+    "title": "Informações do Usuário"
+  },
+  "actions": {
+    "back": "Voltar",
+    "edit": "Editar",
+    "delete": "Excluir",
+    "deleting": "Excluindo..."
+  },
+  "confirmDelete": {
+    "title": "Confirmar Exclusão",
+    "message": "Tem certeza que deseja excluir este usuário?",
+    "confirm": "Sim, excluir",
+    "cancel": "Cancelar"
+  },
+  "messages": {
+    "deleteSuccess": "Usuário excluído com sucesso!",
+    "deleteError": "Erro ao excluir usuário. Tente novamente.",
+    "loadError": "Erro ao carregar dados do usuário.",
+    "networkError": "Erro de conexão. Verifique sua internet."
+  },
+  "form": {
+    "readOnly": "Modo de visualização - os campos estão desabilitados",
+    "fields": {
+      "email": "Email",
+      "firstName": "Nome",
+      "lastName": "Sobrenome",
+      "photo": "Foto",
+      "role": "Função",
+      "status": "Status",
+      "clientRoles": "Funções nos Clientes"
+    }
+  },
+  "status": {
+    "active": "Ativo",
+    "inactive": "Inativo"
+  },
+  "roles": {
+    "admin": "Administrador",
+    "user": "Usuário"
+  }
+}

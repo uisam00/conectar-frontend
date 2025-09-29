@@ -4,8 +4,13 @@ import useSnackbar from "./use-snackbar";
 import {
   getErrorTranslationKey,
   getFieldErrorTranslationKey,
+  type ApiError,
 } from "@/services/helpers/error-mapper";
 
+/**
+ * Hook para tratamento de erros da API com tradução automática
+ * @returns Objeto com funções para tratamento de erros
+ */
 export default function useErrorHandler() {
   const { showError, showSuccess } = useSnackbar();
   const { t: tCommon } = useLanguage("common");
@@ -30,15 +35,26 @@ export default function useErrorHandler() {
     [tCommon, tSignIn, tSignUp, tForgotPassword]
   );
 
+  /**
+   * Trata erros da API e exibe mensagem traduzida
+   * @param error - Erro a ser tratado
+   */
   const handleApiError = useCallback(
     (error: unknown) => {
       let errorMessage = tCommon("errors.generic");
 
-      if (error && typeof error === "object") {
+      if (error && typeof error === "object" && error !== null) {
+        // Verifica se é um erro com propriedades
         if (Object.keys(error).length > 0) {
-          const translationKey = getErrorTranslationKey(error);
+          const translationKey = getErrorTranslationKey(error as ApiError);
           errorMessage = translateError(translationKey);
-        } else if (error.message) {
+        } 
+        // Verifica se tem propriedade message
+        else if ("message" in error && typeof error.message === "string") {
+          errorMessage = error.message;
+        }
+        // Verifica se é um Error object
+        else if (error instanceof Error && error.message) {
           errorMessage = error.message;
         }
       } else if (typeof error === "string") {
@@ -50,10 +66,16 @@ export default function useErrorHandler() {
     [showError, translateError, tCommon]
   );
 
+  /**
+   * Trata erros de campo específico e retorna mensagem traduzida
+   * @param error - Erro a ser tratado
+   * @param field - Nome do campo com erro
+   * @returns Mensagem de erro traduzida ou undefined
+   */
   const handleFieldError = useCallback(
     (error: unknown, field: string) => {
-      if (error && typeof error === "object") {
-        const translationKey = getFieldErrorTranslationKey(error, field);
+      if (error && typeof error === "object" && error !== null) {
+        const translationKey = getFieldErrorTranslationKey(error as ApiError, field);
         if (translationKey) {
           return translateError(translationKey);
         }
@@ -63,6 +85,10 @@ export default function useErrorHandler() {
     [translateError]
   );
 
+  /**
+   * Exibe mensagem de sucesso
+   * @param message - Mensagem de sucesso a ser exibida
+   */
   const handleSuccess = useCallback(
     (message: string) => {
       showSuccess(message);

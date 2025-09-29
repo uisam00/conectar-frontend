@@ -10,9 +10,8 @@ import {
   LinearProgress,
 } from "@mui/material";
 import type { SelectChangeEvent } from "@mui/material";
-import { useInfiniteQuery } from "@tanstack/react-query";
-import { getClients } from "@/services/api/clients-api";
 import { useLanguage } from "@/services/i18n";
+import { useClientsPaginatedQuery } from "@/hooks/use-clients-paginated-query";
 
 interface Client {
   id: number;
@@ -39,22 +38,11 @@ export default function ClientSelect({
   const { t } = useLanguage("usersAdminPanel");
 
   const {
-    data: clientsData,
+    data: allClients,
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
-  } = useInfiniteQuery({
-    queryKey: ["clients", "select"],
-    queryFn: ({ pageParam = 1 }) => getClients({ page: pageParam, limit: 10 }),
-    getNextPageParam: (lastPage, allPages) => {
-      const totalPages = Math.ceil(lastPage.total / 10);
-      return allPages.length < totalPages ? allPages.length + 1 : undefined;
-    },
-    initialPageParam: 1,
-    staleTime: 5 * 60 * 1000, // 5 minutes
-  });
-
-  const allClients = clientsData?.pages?.flatMap((page) => page.data) || [];
+  } = useClientsPaginatedQuery(!disabled);
 
   const handleChange = (event: SelectChangeEvent<number | number[]>) => {
     const selectedValue = event.target.value;
@@ -95,7 +83,7 @@ export default function ClientSelect({
       <InputLabel>{label}</InputLabel>
       <Select
         multiple={multiple}
-        value={value}
+        value={value as number | number[]}
         onChange={handleChange}
         input={
           <OutlinedInput

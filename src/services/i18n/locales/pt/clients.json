@@ -1,0 +1,74 @@
+{
+  "title": "Clientes",
+  "editClient": "Editar Cliente",
+  "createClient": "Criar Cliente",
+  "clientNotFound": "Cliente não encontrado",
+  "loading": "Carregando...",
+  "filters": {
+    "button": "Filtros",
+    "activeCount": "filtro(s) ativo(s)",
+    "clear": "Limpar",
+    "apply": "Filtrar",
+    "tabs": {
+      "general": "Busca Geral",
+      "advanced": "Filtros Avançados"
+    },
+    "search": {
+      "label": "Buscar por nome, email ou CNPJ",
+      "placeholder": "Digite para buscar..."
+    },
+    "status": {
+      "label": "Status",
+      "all": "Todos",
+      "active": "Ativo",
+      "inactive": "Inativo"
+    }
+  },
+  "table": {
+    "headers": {
+      "id": "ID",
+      "name": "Nome",
+      "email": "Email",
+      "cnpj": "CNPJ",
+      "status": "Status",
+      "actions": "Ações"
+    },
+    "actions": {
+      "view": "Visualizar",
+      "edit": "Editar",
+      "delete": "Excluir",
+      "confirmDelete": "Tem certeza que deseja excluir este cliente?",
+      "deleteError": "Erro ao excluir cliente. Tente novamente."
+    },
+    "loading": "Carregando...",
+    "error": "Erro ao carregar clientes. Tente novamente.",
+    "noData": "Nenhum cliente encontrado",
+    "pagination": {
+      "rowsPerPage": "Linhas por página:",
+      "displayedRows": "{{from}}-{{to}} de {{count}}"
+    }
+  },
+  "form": {
+    "name": "Nome",
+    "email": "Email",
+    "cnpj": "CNPJ",
+    "phone": "Telefone",
+    "address": "Endereço",
+    "city": "Cidade",
+    "state": "Estado",
+    "zipCode": "CEP",
+    "status": "Status",
+    "save": "Salvar",
+    "cancel": "Cancelar",
+    "saving": "Salvando...",
+    "success": "Cliente salvo com sucesso!",
+    "error": "Erro ao salvar cliente. Tente novamente."
+  },
+  "filterChips": {
+    "search": "Busca: {{value}}",
+    "name": "Nome: {{value}}",
+    "email": "Email: {{value}}",
+    "cnpj": "CNPJ: {{value}}",
+    "status": "Status: {{value}}"
+  }
+}

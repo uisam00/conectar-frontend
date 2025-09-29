@@ -1,5 +1,6 @@
 import { useState, useMemo } from "react";
 import { useSearchParams } from "react-router-dom";
+import { useLanguage } from "@/services/i18n";
 import {
   Box,
   Typography,
@@ -40,9 +41,10 @@ import { IconButton, Tooltip } from "@mui/material";
 
 type Order = "asc" | "desc";
 
-export default function ClientsPage() {
+export default function ListClientsPage() {
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
+  const { t } = useLanguage("list-clients");
 
   const [activeTab, setActiveTab] = useState(0);
   const [filtersExpanded, setFiltersExpanded] = useState(true);
@@ -169,11 +171,11 @@ export default function ClientsPage() {
   const getStatusLabel = (statusId: number) => {
     switch (statusId) {
       case 1:
-        return "Ativo";
+        return t("table.status.active");
       case 2:
-        return "Inativo";
+        return t("table.status.inactive");
       default:
-        return "Desconhecido";
+        return t("table.status.unknown");
     }
   };
 
@@ -214,22 +216,36 @@ export default function ClientsPage() {
       | "nomeComercial"
       | "planId"
       | "conectaPlus"
-      | "statusId";
+      | "statusId"
+      | "actions";
     label: string;
     minWidth?: number;
-    align?: "right";
+    align?: "right" | "center";
   }
 
   const columns: readonly Column[] = [
-    { id: "avatar", label: "", minWidth: 60 },
-    { id: "id", label: "ID", minWidth: 80 },
-    { id: "razaoSocial", label: "Razão Social", minWidth: 200 },
-    { id: "cnpj", label: "CNPJ", minWidth: 150 },
-    { id: "nomeComercial", label: "Nome Comercial", minWidth: 200 },
-    { id: "planId", label: "Plano", minWidth: 150 },
-    { id: "conectaPlus", label: "Conecta Plus", minWidth: 120 },
-    { id: "statusId", label: "Status", minWidth: 120 },
-    { id: "actions", label: "Ações", minWidth: 120, align: "center" },
+    { id: "avatar", label: t("table.headers.avatar"), minWidth: 60 },
+    { id: "id", label: t("table.headers.id"), minWidth: 80 },
+    { id: "razaoSocial", label: t("table.headers.razaoSocial"), minWidth: 200 },
+    { id: "cnpj", label: t("table.headers.cnpj"), minWidth: 150 },
+    {
+      id: "nomeComercial",
+      label: t("table.headers.nomeComercial"),
+      minWidth: 200,
+    },
+    { id: "planId", label: t("table.headers.plan"), minWidth: 150 },
+    {
+      id: "conectaPlus",
+      label: t("table.headers.conectarPlus"),
+      minWidth: 120,
+    },
+    { id: "statusId", label: t("table.headers.status"), minWidth: 120 },
+    {
+      id: "actions",
+      label: t("table.headers.actions"),
+      minWidth: 120,
+      align: "center",
+    },
   ];
 
   return (
@@ -262,7 +278,7 @@ export default function ClientsPage() {
               },
             }}
           >
-            <Tab label="Dados Básicos" />
+            <Tab label={t("tabs.basicData")} />
           </Tabs>
         </Box>
 
@@ -302,7 +318,7 @@ export default function ClientsPage() {
                     fontSize: { xs: "1rem", sm: "1.25rem" },
                   }}
                 >
-                  Filtros
+                  {t("filters.title")}
                 </Typography>
               </Box>
               <Typography
@@ -312,7 +328,7 @@ export default function ClientsPage() {
                   fontSize: { xs: "0.75rem", sm: "0.875rem" },
                 }}
               >
-                Filtre e busque itens na página
+                {t("filters.subtitle")}
               </Typography>
             </Box>
             {filtersExpanded ? <ExpandLess /> : <ExpandMore />}
@@ -329,45 +345,53 @@ export default function ClientsPage() {
                 }}
               >
                 <TextField
-                  label="Buscar por nome ou CNPJ"
+                  label={t("filters.searchByName")}
                   value={filters.name}
                   onChange={(e) => handleFilterChange("name", e.target.value)}
                   size="small"
-                  placeholder="Digite nome da empresa ou CNPJ"
+                  placeholder={t("filters.searchByNamePlaceholder")}
                 />
                 <TextField
-                  label="Buscar por CNPJ específico"
+                  label={t("filters.searchByCnpj")}
                   value={filters.cnpj}
                   onChange={(e) => handleFilterChange("cnpj", e.target.value)}
                   size="small"
-                  placeholder="00.000.000/0000-00"
+                  placeholder={t("filters.searchByCnpjPlaceholder")}
                 />
                 <FormControl size="small">
-                  <InputLabel>Buscar por status</InputLabel>
+                  <InputLabel>{t("filters.searchByStatus")}</InputLabel>
                   <Select
                     value={filters.status}
                     onChange={(e) =>
                       handleFilterChange("status", e.target.value)
                     }
-                    label="Buscar por status"
+                    label={t("filters.searchByStatus")}
                   >
-                    <MenuItem value="">Selecione</MenuItem>
-                    <MenuItem value="ativo">Ativo</MenuItem>
-                    <MenuItem value="inativo">Inativo</MenuItem>
+                    <MenuItem value="">{t("filters.selectOption")}</MenuItem>
+                    <MenuItem value="ativo">
+                      {t("filters.status.active")}
+                    </MenuItem>
+                    <MenuItem value="inativo">
+                      {t("filters.status.inactive")}
+                    </MenuItem>
                   </Select>
                 </FormControl>
                 <FormControl size="small">
-                  <InputLabel>Buscar por conectar+</InputLabel>
+                  <InputLabel>{t("filters.searchByConectarPlus")}</InputLabel>
                   <Select
                     value={filters.conectarPlus}
                     onChange={(e) =>
                       handleFilterChange("conectarPlus", e.target.value)
                     }
-                    label="Buscar por conectar+"
+                    label={t("filters.searchByConectarPlus")}
                   >
-                    <MenuItem value="">Selecione</MenuItem>
-                    <MenuItem value="sim">Sim</MenuItem>
-                    <MenuItem value="nao">Não</MenuItem>
+                    <MenuItem value="">{t("filters.selectOption")}</MenuItem>
+                    <MenuItem value="sim">
+                      {t("filters.conectarPlus.yes")}
+                    </MenuItem>
+                    <MenuItem value="nao">
+                      {t("filters.conectarPlus.no")}
+                    </MenuItem>
                   </Select>
                 </FormControl>
               </Box>
@@ -389,14 +413,14 @@ export default function ClientsPage() {
                     width: { xs: "100%", sm: "auto" },
                   }}
                 >
-                  Limpar campos
+                  {t("filters.buttons.clear")}
                 </Button>
                 <Button
                   variant="contained"
                   onClick={applyFilters}
                   sx={{ width: { xs: "100%", sm: "auto" } }}
                 >
-                  Filtrar
+                  {t("filters.buttons.filter")}
                 </Button>
               </Box>
             </Box>
@@ -415,12 +439,12 @@ export default function ClientsPage() {
         >
           <Box>
             <Typography variant="h6" sx={{ fontWeight: "bold", mb: 0.5 }}>
-              Clientes
+              {t("header.title")}
             </Typography>
             <Typography variant="body2" sx={{ color: "#666" }}>
               {total > 0
-                ? `${total} cliente(s) encontrado(s)`
-                : "Nenhum cliente encontrado"}
+                ? t("header.subtitle", { count: total })
+                : t("header.noResults")}
             </Typography>
           </Box>
           <Button
@@ -433,13 +457,13 @@ export default function ClientsPage() {
               width: { xs: "100%", sm: "auto" },
             }}
           >
-            Novo
+            {t("header.newButton")}
           </Button>
         </Box>
 
         {error && (
           <Alert severity="error" sx={{ mb: 2 }}>
-            {error}
+            {t("messages.loadError")}
           </Alert>
         )}
 
@@ -509,7 +533,7 @@ export default function ClientsPage() {
                       colSpan={columns.length}
                       sx={{ textAlign: "center", py: 4 }}
                     >
-                      Carregando...
+                      {t("messages.loading")}
                     </TableCell>
                   </TableRow>
                 ) : clients.length === 0 ? (
@@ -518,7 +542,7 @@ export default function ClientsPage() {
                       colSpan={columns.length}
                       sx={{ textAlign: "center", py: 4 }}
                     >
-                      Nenhum cliente encontrado
+                      {t("messages.noData")}
                     </TableCell>
                   </TableRow>
                 ) : (
@@ -530,7 +554,10 @@ export default function ClientsPage() {
                       key={client.id}
                     >
                       {columns.map((column) => {
-                        const value = client[column.id];
+                        const value =
+                          column.id === "avatar" || column.id === "actions"
+                            ? null
+                            : client[column.id as keyof typeof client];
                         return (
                           <TableCell
                             key={column.id}
@@ -548,7 +575,7 @@ export default function ClientsPage() {
                                   justifyContent: "center",
                                 }}
                               >
-                                <Tooltip title="Visualizar">
+                                <Tooltip title={t("table.actions.view")}>
                                   <IconButton
                                     size="small"
                                     onClick={() =>
@@ -559,7 +586,7 @@ export default function ClientsPage() {
                                     <Visibility fontSize="small" />
                                   </IconButton>
                                 </Tooltip>
-                                <Tooltip title="Editar">
+                                <Tooltip title={t("table.actions.edit")}>
                                   <IconButton
                                     size="small"
                                     onClick={() =>
@@ -608,21 +635,19 @@ export default function ClientsPage() {
                                 }}
                               />
                             ) : column.id === "planId" ? (
-                              client.plan?.name || `Plano ${value}`
+                              t("table.plan.default", { id: value })
                             ) : column.id === "conectaPlus" ? (
                               <Chip
-                                label={client.plan?.isSpecial ? "Sim" : "Não"}
+                                label={t("table.conectarPlus.no")}
                                 size="small"
-                                color={
-                                  client.plan?.isSpecial ? "warning" : "default"
-                                }
-                                variant={
-                                  client.plan?.isSpecial ? "filled" : "outlined"
-                                }
+                                color="default"
+                                variant="outlined"
                                 sx={{
                                   fontSize: { xs: "0.7rem", sm: "0.75rem" },
                                 }}
                               />
+                            ) : typeof value === "object" ? (
+                              JSON.stringify(value)
                             ) : (
                               value
                             )}
