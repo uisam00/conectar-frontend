@@ -3,6 +3,7 @@
   "createUser": "Criar Usuário",
   "filters": {
     "button": "Filtros",
+    "subtitle": "Filtre e busque usuários na página",
     "activeCount": "filtro(s) ativo(s)",
     "clear": "Limpar",
     "apply": "Filtrar",
