@@ -89,7 +89,7 @@ export default function ResponsiveAppBar() {
             <Link to="/" style={{ textDecoration: "none" }}>
               <img
                 src="/logo.png"
-                alt="Conectar"
+                alt="Conéctar"
                 style={{ height: "32px", width: "auto", cursor: "pointer" }}
               />
             </Link>

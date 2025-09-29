@@ -6,6 +6,7 @@ import axiosInstance from "@/services/api/axios-instance";
 import { AUTH_FORGOT_PASSWORD_URL } from "@/services/api/config";
 import { useSnackbar, useErrorHandler } from "@/hooks";
 import LabelInput from "@/components/form/label-input";
+import { Helmet } from "react-helmet";
 
 export default function ForgotPasswordPage() {
   const { t } = useLanguage("forgot-password");
@@ -31,21 +32,25 @@ export default function ForgotPasswordPage() {
   };
 
   return (
-    <Box
-      sx={{
-        minHeight: "100vh",
-        background: "linear-gradient(135deg, #19AF78 0%, #0F7A5A 100%)",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
-        padding: 2,
-      }}
-    >
+    <>
+      <Helmet>
+        <title>Esqueci Senha | Conéctar</title>
+      </Helmet>
+      <Box
+        sx={{
+          minHeight: "100vh",
+          background: "linear-gradient(135deg, #19AF78 0%, #0F7A5A 100%)",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          padding: 2,
+        }}
+      >
       <Box sx={{ mb: 4 }}>
         <img
           src="/logo.png"
-          alt="Conectar"
+          alt="Conéctar"
           style={{
             height: "80px",
             width: "auto",
@@ -123,5 +128,6 @@ export default function ForgotPasswordPage() {
         </Box>
       </Paper>
     </Box>
+    </>
   );
 }

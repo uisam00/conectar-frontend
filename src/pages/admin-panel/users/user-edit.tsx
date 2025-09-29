@@ -14,6 +14,7 @@ import { useUpdateUser } from "@/hooks/use-update-user";
 import { useDeleteUser } from "@/hooks/use-delete-user";
 import UserForm from "@/components/user-form";
 import PageLayout from "@/components/layout/page-layout";
+import { Helmet } from "react-helmet";
 
 interface UserFormData {
   email: string;
@@ -155,64 +156,69 @@ export default function UserEditPage() {
   };
 
   return (
-    <PageLayout title="Editar Usuário">
-      <Card>
-        <CardHeader
-          action={
-            <Box sx={{ display: "flex", gap: 2 }}>
-              <Button
-                variant="outlined"
-                startIcon={<ArrowBack />}
-                onClick={handleBack}
-                disabled={isFormDisabled}
-              >
-                Voltar
-              </Button>
-              <Button
-                variant="contained"
-                startIcon={
-                  isLoadingForm ? (
-                    <CircularProgress size={20} color="inherit" />
-                  ) : (
-                    <Save />
-                  )
-                }
-                onClick={() => {
-                  // O formulário será submetido pelo UserForm
-                  const form = document.querySelector("form");
-                  if (form) {
-                    form.requestSubmit();
+    <>
+      <Helmet>
+        <title>Editar Usuário | Conéctar</title>
+      </Helmet>
+      <PageLayout title="Editar Usuário">
+        <Card>
+          <CardHeader
+            action={
+              <Box sx={{ display: "flex", gap: 2 }}>
+                <Button
+                  variant="outlined"
+                  startIcon={<ArrowBack />}
+                  onClick={handleBack}
+                  disabled={isFormDisabled}
+                >
+                  Voltar
+                </Button>
+                <Button
+                  variant="contained"
+                  startIcon={
+                    isLoadingForm ? (
+                      <CircularProgress size={20} color="inherit" />
+                    ) : (
+                      <Save />
+                    )
                   }
-                }}
-                disabled={isFormDisabled}
-              >
-                {isLoadingForm ? "Salvando..." : "Salvar"}
-              </Button>
-              <Button
-                variant="outlined"
-                color="error"
-                startIcon={<Delete />}
-                onClick={handleDelete}
-                disabled={isFormDisabled || deleteUserMutation.isPending}
-              >
-                {deleteUserMutation.isPending ? (
-                  <CircularProgress size={20} />
-                ) : (
-                  "Excluir"
-                )}
-              </Button>
-            </Box>
-          }
-        />
-        <CardContent>
-          <UserForm
-            initialData={formData}
-            onSubmit={handleSave}
-            isLoading={isFormDisabled}
-            showPassword={true}
+                  onClick={() => {
+                    // O formulário será submetido pelo UserForm
+                    const form = document.querySelector("form");
+                    if (form) {
+                      form.requestSubmit();
+                    }
+                  }}
+                  disabled={isFormDisabled}
+                >
+                  {isLoadingForm ? "Salvando..." : "Salvar"}
+                </Button>
+                <Button
+                  variant="outlined"
+                  color="error"
+                  startIcon={<Delete />}
+                  onClick={handleDelete}
+                  disabled={isFormDisabled || deleteUserMutation.isPending}
+                >
+                  {deleteUserMutation.isPending ? (
+                    <CircularProgress size={20} />
+                  ) : (
+                    "Excluir"
+                  )}
+                </Button>
+              </Box>
+            }
           />
-        </CardContent>
-      </Card>
-    </PageLayout>
+          <CardContent>
+            <UserForm
+              initialData={formData}
+              onSubmit={handleSave}
+              isLoading={isFormDisabled}
+              showPassword={true}
+            />
+          </CardContent>
+        </Card>
+      </PageLayout>
+    </>
   );
 }

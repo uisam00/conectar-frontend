@@ -15,6 +15,7 @@ import { useUserQuery } from "@/hooks/use-user-query";
 import { useDeleteUser } from "@/hooks/use-delete-user";
 import UserForm from "@/components/user-form";
 import PageLayout from "@/components/layout/page-layout";
+import { Helmet } from "react-helmet";
 
 export default function UserViewPage() {
   const { id } = useParams<{ id: string }>();
@@ -111,51 +112,56 @@ export default function UserViewPage() {
   };
 
   return (
-    <PageLayout title={t("title")}>
-      <Card>
-        <CardHeader
-          title={t("card.title")}
-          action={
-            <Box sx={{ display: "flex", gap: 2 }}>
-              <Button
-                variant="outlined"
-                startIcon={<ArrowBack />}
-                onClick={handleBack}
-              >
-                {t("actions.back")}
-              </Button>
-              <Button
-                variant="contained"
-                startIcon={<Edit />}
-                onClick={handleEdit}
-              >
-                {t("actions.edit")}
-              </Button>
-              <Button
-                variant="outlined"
-                color="error"
-                startIcon={<Delete />}
-                onClick={handleDelete}
-                disabled={deleteUserMutation.isPending}
-              >
-                {deleteUserMutation.isPending ? (
-                  <CircularProgress size={20} />
-                ) : (
-                  t("actions.delete")
-                )}
-              </Button>
-            </Box>
-          }
-        />
-        <CardContent>
-          <UserForm
-            initialData={formData}
-            onSubmit={() => {}} // Não faz nada na visualização
-            isReadOnly={true}
-            showPassword={false}
+    <>
+      <Helmet>
+        <title>Visualizar Usuário | Conéctar</title>
+      </Helmet>
+      <PageLayout title={t("title")}>
+        <Card>
+          <CardHeader
+            title={t("card.title")}
+            action={
+              <Box sx={{ display: "flex", gap: 2 }}>
+                <Button
+                  variant="outlined"
+                  startIcon={<ArrowBack />}
+                  onClick={handleBack}
+                >
+                  {t("actions.back")}
+                </Button>
+                <Button
+                  variant="contained"
+                  startIcon={<Edit />}
+                  onClick={handleEdit}
+                >
+                  {t("actions.edit")}
+                </Button>
+                <Button
+                  variant="outlined"
+                  color="error"
+                  startIcon={<Delete />}
+                  onClick={handleDelete}
+                  disabled={deleteUserMutation.isPending}
+                >
+                  {deleteUserMutation.isPending ? (
+                    <CircularProgress size={20} />
+                  ) : (
+                    t("actions.delete")
+                  )}
+                </Button>
+              </Box>
+            }
           />
-        </CardContent>
-      </Card>
-    </PageLayout>
+          <CardContent>
+            <UserForm
+              initialData={formData}
+              onSubmit={() => {}} // Não faz nada na visualização
+              isReadOnly={true}
+              showPassword={false}
+            />
+          </CardContent>
+        </Card>
+      </PageLayout>
+    </>
   );
 }

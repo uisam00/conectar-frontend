@@ -17,6 +17,7 @@ import axiosInstance from "@/services/api/axios-instance";
 import { AUTH_LOGIN_URL } from "@/services/api/config";
 import { useErrorHandler } from "@/hooks";
 import LabelInput from "@/components/form/label-input";
+import { Helmet } from "react-helmet";
 
 export default function SignInPage() {
   const { t } = useLanguage("sign-in");
@@ -60,143 +61,148 @@ export default function SignInPage() {
   };
 
   return (
-    <Box
-      sx={{
-        minHeight: "100vh",
-        backgroundColor: "primary.main",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
-        padding: 2,
-      }}
-    >
-      <Box sx={{ mb: 4 }}>
-        <img
-          src="/logo.png"
-          alt="Conectar"
-          style={{
-            height: "80px",
-            width: "auto",
-            filter: "brightness(0) invert(1)",
-          }}
-        />
-      </Box>
-
-      <Paper
-        elevation={8}
+    <>
+      <Helmet>
+        <title>Entrar | Conéctar</title>
+      </Helmet>
+      <Box
         sx={{
-          padding: 3,
-          width: "100%",
-          maxWidth: 450,
-          borderRadius: 2,
-          backgroundColor: "white",
+          minHeight: "100vh",
+          backgroundColor: "primary.main",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          padding: 2,
         }}
       >
-        <Box component="form" onSubmit={handleSubmit} autoComplete="on">
-          <LabelInput
-            label={t("inputs.email.label")}
-            name="email"
-            type="email"
-            autoComplete="email"
-            id="email"
-            autoFocus
-            value={formData.email}
-            onChange={handleChange}
-            required
+        <Box sx={{ mb: 4 }}>
+          <img
+            src="/logo.png"
+            alt="Conéctar"
+            style={{
+              height: "80px",
+              width: "auto",
+              filter: "brightness(0) invert(1)",
+            }}
           />
+        </Box>
 
-          <Box sx={{ mb: 2 }}>
-            <Typography variant="body2" sx={{ mb: 0.5, color: "#333" }}>
-              {t("inputs.password.label")}
-            </Typography>
-            <Box
-              sx={{
-                display: "flex",
-                alignItems: "stretch",
-                gap: 0,
-                width: "100%",
-              }}
-            >
-              <TextField
-                name="password"
-                type={showPassword ? "text" : "password"}
-                autoComplete="current-password"
-                id="password"
-                fullWidth
-                value={formData.password}
-                onChange={handleChange}
-                required
+        <Paper
+          elevation={8}
+          sx={{
+            padding: 3,
+            width: "100%",
+            maxWidth: 450,
+            borderRadius: 2,
+            backgroundColor: "white",
+          }}
+        >
+          <Box component="form" onSubmit={handleSubmit} autoComplete="on">
+            <LabelInput
+              label={t("inputs.email.label")}
+              name="email"
+              type="email"
+              autoComplete="email"
+              id="email"
+              autoFocus
+              value={formData.email}
+              onChange={handleChange}
+              required
+            />
+
+            <Box sx={{ mb: 2 }}>
+              <Typography variant="body2" sx={{ mb: 0.5, color: "#333" }}>
+                {t("inputs.password.label")}
+              </Typography>
+              <Box
                 sx={{
-                  "& .MuiOutlinedInput-root": {
-                    borderRadius: 3,
-                    borderTopRightRadius: 0,
-                    borderBottomRightRadius: 0,
-                    height: 48,
-                    "& fieldset": {
-                      borderRight: "none",
-                    },
-                    "&:hover fieldset": {
-                      borderRight: "none",
-                    },
-                    "&.Mui-focused fieldset": {
-                      borderRight: "none",
-                    },
-                  },
+                  display: "flex",
+                  alignItems: "stretch",
+                  gap: 0,
+                  width: "100%",
                 }}
-              />
-              <IconButton
-                aria-label="toggle password visibility"
-                onClick={() => setShowPassword(!showPassword)}
+              >
+                <TextField
+                  name="password"
+                  type={showPassword ? "text" : "password"}
+                  autoComplete="current-password"
+                  id="password"
+                  fullWidth
+                  value={formData.password}
+                  onChange={handleChange}
+                  required
+                  sx={{
+                    "& .MuiOutlinedInput-root": {
+                      borderRadius: 3,
+                      borderTopRightRadius: 0,
+                      borderBottomRightRadius: 0,
+                      height: 48,
+                      "& fieldset": {
+                        borderRight: "none",
+                      },
+                      "&:hover fieldset": {
+                        borderRight: "none",
+                      },
+                      "&.Mui-focused fieldset": {
+                        borderRight: "none",
+                      },
+                    },
+                  }}
+                />
+                <IconButton
+                  aria-label="toggle password visibility"
+                  onClick={() => setShowPassword(!showPassword)}
+                  sx={{
+                    color: "primary.main",
+                    backgroundColor: "primary.light",
+                    borderRadius: 3,
+                    borderTopLeftRadius: 0,
+                    borderBottomLeftRadius: 0,
+                    height: 48,
+                    width: 48,
+                    minWidth: 48,
+                    alignSelf: "stretch",
+                    "&:hover": {
+                      backgroundColor: "primary.dark",
+                    },
+                  }}
+                >
+                  {showPassword ? <VisibilityOff /> : <Visibility />}
+                </IconButton>
+              </Box>
+            </Box>
+
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              sx={{ mt: 2, mb: 2 }}
+              disabled={isLoading}
+            >
+              {isLoading ? t("loading") : t("actions.submit")}
+            </Button>
+
+            <Box textAlign="center" sx={{ mt: 1 }}>
+              <MuiLink
+                component={Link}
+                to="/forgot-password"
+                variant="body2"
                 sx={{
-                  color: "primary.main",
-                  backgroundColor: "primary.light",
-                  borderRadius: 3,
-                  borderTopLeftRadius: 0,
-                  borderBottomLeftRadius: 0,
-                  height: 48,
-                  width: 48,
-                  minWidth: 48,
-                  alignSelf: "stretch",
+                  color: "#666",
+                  textDecoration: "none",
+                  fontSize: "0.9rem",
                   "&:hover": {
-                    backgroundColor: "primary.dark",
+                    textDecoration: "underline",
                   },
                 }}
               >
-                {showPassword ? <VisibilityOff /> : <Visibility />}
-              </IconButton>
+                {t("actions.forgotPassword")}
+              </MuiLink>
             </Box>
           </Box>
-
-          <Button
-            type="submit"
-            fullWidth
-            variant="contained"
-            sx={{ mt: 2, mb: 2 }}
-            disabled={isLoading}
-          >
-            {isLoading ? t("loading") : t("actions.submit")}
-          </Button>
-
-          <Box textAlign="center" sx={{ mt: 1 }}>
-            <MuiLink
-              component={Link}
-              to="/forgot-password"
-              variant="body2"
-              sx={{
-                color: "#666",
-                textDecoration: "none",
-                fontSize: "0.9rem",
-                "&:hover": {
-                  textDecoration: "underline",
-                },
-              }}
-            >
-              {t("actions.forgotPassword")}
-            </MuiLink>
-          </Box>
-        </Box>
-      </Paper>
-    </Box>
+        </Paper>
+      </Box>
+    </>
   );
 }

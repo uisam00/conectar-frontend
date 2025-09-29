@@ -18,6 +18,7 @@ import * as yup from "yup";
 import { useAuth } from "@/services/auth";
 import { useQueryClient } from "@tanstack/react-query";
 import { useLanguage } from "@/services/i18n";
+import { Helmet } from "react-helmet";
 import { useSnackbar } from "@/hooks";
 import { FILES_UPLOAD_URL, AUTH_UPDATE_URL } from "@/services/api/config";
 import axiosInstance from "@/services/api/axios-instance";
@@ -572,9 +573,14 @@ function FormChangePassword() {
 // Componente Principal
 export default function EditProfilePage() {
   return (
-    <PageLayout title="Editar Perfil">
-      <FormBasicInfo />
-      <FormChangePassword />
-    </PageLayout>
+    <>
+      <Helmet>
+        <title>Editar Perfil | Conéctar</title>
+      </Helmet>
+      <PageLayout title="Editar Perfil">
+        <FormBasicInfo />
+        <FormChangePassword />
+      </PageLayout>
+    </>
   );
 }

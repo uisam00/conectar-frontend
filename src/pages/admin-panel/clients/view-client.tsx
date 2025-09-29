@@ -18,6 +18,7 @@ import {
   Paper,
 } from "@mui/material";
 import { ArrowBack, Edit, Delete, Business, Person } from "@mui/icons-material";
+import { Helmet } from "react-helmet";
 import { useClientQuery } from "@/hooks/use-client-query";
 import { useClientUsersQuery } from "@/hooks/use-client-users-query";
 import { useDeleteClient } from "@/hooks/use-delete-client";
@@ -82,7 +83,11 @@ export default function ViewClientPage() {
   // Dados dos usuários vêm da API através do hook useClientUsersQuery
 
   return (
-    <AdminPageLayout>
+    <>
+      <Helmet>
+        <title>Visualizar Instituição | Conéctar</title>
+      </Helmet>
+      <AdminPageLayout>
       <Box sx={{ p: 3, maxWidth: 1200, mx: "auto" }}>
         <Box
           sx={{
@@ -277,5 +282,6 @@ export default function ViewClientPage() {
         </Card>
       </Box>
     </AdminPageLayout>
+    </>
   );
 }

@@ -3,6 +3,7 @@ import { useCreateClient } from "@/hooks/use-create-client";
 import ClientForm from "@/components/client-form";
 import AdminPageLayout from "@/components/layout/admin-page-layout";
 import type { CreateClientDto } from "@/services/api/clients-api";
+import { Helmet } from "react-helmet";
 
 export default function CreateClientPage() {
   const createClientMutation = useCreateClient();
@@ -12,7 +13,11 @@ export default function CreateClientPage() {
   };
 
   return (
-    <AdminPageLayout>
+    <>
+      <Helmet>
+        <title>Criar Instituição | Conéctar</title>
+      </Helmet>
+      <AdminPageLayout>
       <Box sx={{ p: 3, maxWidth: 800, mx: "auto" }}>
         <Typography
           variant="h4"
@@ -29,5 +34,6 @@ export default function CreateClientPage() {
         />
       </Box>
     </AdminPageLayout>
+    </>
   );
 }

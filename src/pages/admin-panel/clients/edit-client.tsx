@@ -6,6 +6,7 @@ import { useUpdateClient } from "@/hooks/use-update-client";
 import ClientForm from "@/components/client-form";
 import AdminPageLayout from "@/components/layout/admin-page-layout";
 import type { UpdateClientDto } from "@/services/api/clients-api";
+import { Helmet } from "react-helmet";
 
 export default function EditClientPage() {
   const { id } = useParams<{ id: string }>();
@@ -52,23 +53,28 @@ export default function EditClientPage() {
   }
 
   return (
-    <AdminPageLayout>
-      <Box sx={{ p: 3, maxWidth: 800, mx: "auto" }}>
-        <Typography
-          variant="h4"
-          component="h1"
-          gutterBottom
-          sx={{ mb: 2, color: "primary.main" }}
-        >
-          {t("title")}
-        </Typography>
+    <>
+      <Helmet>
+        <title>Editar Instituição | Conéctar</title>
+      </Helmet>
+      <AdminPageLayout>
+        <Box sx={{ p: 3, maxWidth: 800, mx: "auto" }}>
+          <Typography
+            variant="h4"
+            component="h1"
+            gutterBottom
+            sx={{ mb: 2, color: "primary.main" }}
+          >
+            {t("title")}
+          </Typography>
 
-        <ClientForm
-          initialData={client}
-          onSubmit={handleSubmit}
-          isLoading={updateClientMutation.isPending}
-        />
-      </Box>
-    </AdminPageLayout>
+          <ClientForm
+            initialData={client}
+            onSubmit={handleSubmit}
+            isLoading={updateClientMutation.isPending}
+          />
+        </Box>
+      </AdminPageLayout>
+    </>
   );
 }

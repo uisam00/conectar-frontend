@@ -18,6 +18,7 @@ import {
 } from "@mui/material";
 import { useForm, FormProvider } from "react-hook-form";
 import { useDropzone } from "react-dropzone";
+import { Helmet } from "react-helmet";
 import { useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import useSnackbar from "@/hooks/use-snackbar";
@@ -238,7 +239,11 @@ export default function CreateUserPage() {
   };
 
   return (
-    <Box sx={{ p: 3, maxWidth: 800, mx: "auto" }}>
+    <>
+      <Helmet>
+        <title>Criar Usuário | Conéctar</title>
+      </Helmet>
+      <Box sx={{ p: 3, maxWidth: 800, mx: "auto" }}>
       <Typography
         variant="h4"
         component="h1"
@@ -388,5 +393,6 @@ export default function CreateUserPage() {
         </Card>
       </FormProvider>
     </Box>
+    </>
   );
 }

@@ -12,6 +12,7 @@ import {
 import { CheckCircle, Error, Email } from "@mui/icons-material";
 import { authApi } from "@/services/api/auth";
 import { useLanguage } from "@/services/i18n";
+import { Helmet } from "react-helmet";
 
 type ConfirmationStatus = "loading" | "success" | "error";
 
@@ -126,7 +127,11 @@ export default function ConfirmEmailPage() {
   };
 
   return (
-    <Container maxWidth="sm" sx={{ mt: 8 }}>
+    <>
+      <Helmet>
+        <title>Confirmar Email | Conéctar</title>
+      </Helmet>
+      <Container maxWidth="sm" sx={{ mt: 8 }}>
       <Paper
         elevation={3}
         sx={{
@@ -147,5 +152,6 @@ export default function ConfirmEmailPage() {
         {renderContent()}
       </Paper>
     </Container>
+    </>
   );
 }

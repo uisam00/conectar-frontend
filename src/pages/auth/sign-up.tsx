@@ -60,7 +60,7 @@ export default function SignUpPage() {
       <Box sx={{ mb: 4 }}>
         <img
           src="/logo.png"
-          alt="Conectar"
+          alt="Conéctar"
           style={{
             height: "80px",
             width: "auto",
