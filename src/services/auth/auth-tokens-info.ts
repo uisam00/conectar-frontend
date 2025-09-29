@@ -42,7 +42,7 @@ export function setTokensInfo(tokensInfo: TokensInfo | null): void {
   const expires = new Date(tokensInfo.tokenExpires * 1000);
   const cookieOptions = {
     expires,
-    secure: process.env.NODE_ENV === 'production', // Only secure in production
+    secure: import.meta.env.PROD, // Only secure in production
     sameSite: 'lax' as const, // CSRF protection
     path: '/', // Available for entire site
   };

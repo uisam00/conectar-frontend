@@ -6,7 +6,6 @@ import {
   IconButton,
   Menu,
   MenuItem,
-  Avatar,
   FormControl,
   Select,
   Typography,

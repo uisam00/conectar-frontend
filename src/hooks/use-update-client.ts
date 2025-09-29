@@ -22,7 +22,7 @@ export function useUpdateClient() {
   return useMutation({
     mutationFn: ({ id, data }: { id: number; data: UpdateClientData }) =>
       updateClient(id, data),
-    onSuccess: (data, { id }) => {
+    onSuccess: (_, { id }) => {
       // Resetar todas as queries relacionadas a clientes
       queryClient.invalidateQueries({ queryKey: ["client", id] });
       queryClient.invalidateQueries({ queryKey: ["clients"] });

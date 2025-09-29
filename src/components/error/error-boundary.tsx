@@ -1,4 +1,4 @@
-import React, { Component, ReactNode } from "react";
+import React, { Component, type ReactNode } from "react";
 import { Box, Typography, Button, Alert } from "@mui/material";
 
 interface Props {
@@ -48,7 +48,7 @@ class ErrorBoundary extends Component<Props, State> {
             <Typography variant="body2" color="text.secondary">
               Não foi possível carregar esta página. Tente recarregar a página.
             </Typography>
-            {process.env.NODE_ENV === "development" && this.state.error && (
+            {import.meta.env.DEV && this.state.error && (
               <Typography variant="caption" display="block" sx={{ mt: 1 }}>
                 Erro: {this.state.error.message}
               </Typography>

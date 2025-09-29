@@ -9,14 +9,13 @@ import {
   Avatar,
   IconButton,
   Typography,
-  CircularProgress,
 } from "@mui/material";
 import { useForm, FormProvider } from "react-hook-form";
 import { useDropzone } from "react-dropzone";
 import { useLanguage } from "@/services/i18n";
 import axiosInstance from "@/services/api/axios-instance";
 import type { FileType } from "@/types/api";
-import { Person, ClearOutlined } from "@mui/icons-material";
+import { ClearOutlined } from "@mui/icons-material";
 import ClientRoleSelector from "@/components/form/client-role-selector";
 
 const FILES_UPLOAD_URL = "/v1/files/upload";

@@ -8,13 +8,16 @@ interface UpdateUserData {
   firstName?: string;
   lastName?: string;
   photo?: {
-    id: string;
+    id: number;
+    path: string;
   };
   role?: {
     id: number;
+    name: string;
   };
   status?: {
     id: number;
+    name: string;
   };
   clientRoles?: Array<{
     clientId: number;

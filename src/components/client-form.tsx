@@ -6,20 +6,12 @@ import {
   CardHeader,
   TextField,
   Button,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
   Avatar,
   IconButton,
-  Typography,
   CircularProgress,
 } from "@mui/material";
 import { useForm, FormProvider } from "react-hook-form";
 import { useDropzone } from "react-dropzone";
-import { useQueryClient } from "@tanstack/react-query";
-import useSnackbar from "@/hooks/use-snackbar";
-import { useLanguage } from "@/services/i18n";
 import axiosInstance from "@/services/api/axios-instance";
 import type {
   CreateClientDto,
@@ -192,7 +184,6 @@ export default function ClientForm({
   isLoading = false,
   isReadOnly = false,
 }: ClientFormProps) {
-  const { t } = useLanguage("clients");
   const [isUploading, setIsUploading] = useState(false);
 
   const loading = isUploading || isLoading;

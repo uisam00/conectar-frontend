@@ -10,7 +10,7 @@ import {
   Button,
   Alert,
 } from "@mui/material";
-import { Business, Add, Clear, CheckCircle, Person } from "@mui/icons-material";
+import { Business, Add, Clear } from "@mui/icons-material";
 import ClientRoleModal from "./client-role-modal";
 
 interface ClientRoleAssignment {

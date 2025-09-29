@@ -1,4 +1,3 @@
-import React from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import {
   Box,
@@ -19,21 +18,22 @@ import {
   Paper,
 } from "@mui/material";
 import { ArrowBack, Edit, Delete, Business, Person } from "@mui/icons-material";
-import { useLanguage } from "@/services/i18n";
 import { useClientQuery } from "@/hooks/use-client-query";
 import { useClientUsersQuery } from "@/hooks/use-client-users-query";
 import { useDeleteClient } from "@/hooks/use-delete-client";
-import ClientForm from "@/components/client-form";
 import AdminPageLayout from "@/components/layout/admin-page-layout";
 
 export default function ViewClientPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { t } = useLanguage("clients");
   const clientId = id ? parseInt(id) : 0;
 
   const { data: client, isLoading, error } = useClientQuery(clientId);
-  const { data: clientUsers, isLoading: isLoadingUsers, error: usersError } = useClientUsersQuery(clientId);
+  const {
+    data: clientUsers,
+    isLoading: isLoadingUsers,
+    error: usersError,
+  } = useClientUsersQuery(clientId);
   const deleteClientMutation = useDeleteClient();
 
   const handleEdit = () => {
@@ -177,8 +177,8 @@ export default function ViewClientPage() {
           <CardHeader
             title="Usuários do Cliente"
             subheader={
-              isLoadingUsers 
-                ? "Carregando usuários..." 
+              isLoadingUsers
+                ? "Carregando usuários..."
                 : `${clientUsers?.data?.length || 0} usuário(s) associado(s)`
             }
             avatar={<Person />}
@@ -216,10 +216,16 @@ export default function ViewClientPage() {
                     {clientUsers.data.map((user) => (
                       <TableRow key={user.id}>
                         <TableCell>
-                          <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                          <Box
+                            sx={{
+                              display: "flex",
+                              alignItems: "center",
+                              gap: 1,
+                            }}
+                          >
                             {user.photo?.path ? (
-                              <Avatar 
-                                src={user.photo.path} 
+                              <Avatar
+                                src={user.photo.path}
                                 sx={{ width: 32, height: 32 }}
                               />
                             ) : (
@@ -236,16 +242,16 @@ export default function ViewClientPage() {
                         </TableCell>
                         <TableCell>{user.email}</TableCell>
                         <TableCell>
-                          <Chip 
-                            label={user.role?.name || "N/A"} 
-                            color="primary" 
-                            size="small" 
+                          <Chip
+                            label={user.role?.name || "N/A"}
+                            color="primary"
+                            size="small"
                           />
                         </TableCell>
                         <TableCell>
-                          <Chip 
-                            label={user.clientRole?.name || "N/A"} 
-                            color="secondary" 
+                          <Chip
+                            label={user.clientRole?.name || "N/A"}
+                            color="secondary"
                             size="small"
                             title={user.clientRole?.description}
                           />
@@ -253,7 +259,11 @@ export default function ViewClientPage() {
                         <TableCell>
                           <Chip
                             label={user.status?.name || "N/A"}
-                            color={user.status?.name === "active" ? "success" : "error"}
+                            color={
+                              user.status?.name === "active"
+                                ? "success"
+                                : "error"
+                            }
                             size="small"
                           />
                         </TableCell>

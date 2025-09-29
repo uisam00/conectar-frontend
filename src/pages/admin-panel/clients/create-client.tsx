@@ -1,17 +1,14 @@
-import React from "react";
 import { Box, Typography } from "@mui/material";
-import { useLanguage } from "@/services/i18n";
 import { useCreateClient } from "@/hooks/use-create-client";
 import ClientForm from "@/components/client-form";
 import AdminPageLayout from "@/components/layout/admin-page-layout";
 import type { CreateClientDto } from "@/services/api/clients-api";
 
 export default function CreateClientPage() {
-  const { t } = useLanguage("clients");
   const createClientMutation = useCreateClient();
 
-  const handleSubmit = (data: CreateClientDto) => {
-    createClientMutation.mutate(data);
+  const handleSubmit = (data: CreateClientDto | any) => {
+    createClientMutation.mutate(data as CreateClientDto);
   };
 
   return (

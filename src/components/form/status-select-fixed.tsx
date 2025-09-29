@@ -1,4 +1,3 @@
-import React from "react";
 import {
   FormControl,
   InputLabel,
@@ -29,7 +28,7 @@ export default function StatusSelectFixed({
   error = false,
   helperText,
 }: StatusSelectFixedProps) {
-  const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+  const handleSelectChange = (event: any) => {
     const selectedValue = Number(event.target.value);
     onChange(selectedValue);
   };

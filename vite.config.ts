@@ -19,10 +19,6 @@ export default defineConfig({
           mui: ['@mui/material', '@mui/icons-material'],
           router: ['react-router-dom'],
           query: ['@tanstack/react-query'],
-          // Page chunks
-          auth: ['./src/pages/sign-in', './src/pages/forgot-password'],
-          profile: ['./src/pages/simple-profile', './src/pages/edit-profile'],
-          clients: ['./src/pages/clients'],
         },
       },
     },

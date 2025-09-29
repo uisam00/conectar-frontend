@@ -7,14 +7,7 @@ import {
   Grid,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import {
-  People,
-  Settings,
-  Analytics,
-  Security,
-  AdminPanelSettings,
-  Person,
-} from "@mui/icons-material";
+import { People, Person } from "@mui/icons-material";
 import PageLayout from "@/components/layout/page-layout";
 
 export default function AdminDashboardPage() {
@@ -45,7 +38,7 @@ export default function AdminDashboardPage() {
 
       <Grid container spacing={3}>
         {adminFeatures.map((feature, index) => (
-          <Grid item xs={12} sm={6} md={4} key={index}>
+          <Grid size={{ xs: 12, sm: 6, md: 4 }} key={index}>
             <Card
               sx={{
                 height: "100%",

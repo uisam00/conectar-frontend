@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import {
   Dialog,
   DialogTitle,
@@ -15,22 +15,10 @@ import {
   CircularProgress,
   Divider,
 } from "@mui/material";
-import { Add, Business, Person } from "@mui/icons-material";
+import { Add, Business } from "@mui/icons-material";
 import { useQuery } from "@tanstack/react-query";
 import { getClientRoles } from "@/services/api/client-roles";
 import ClientSelectWithName from "./client-select-with-name";
-
-interface ClientRole {
-  id: number;
-  name: string;
-  description: string;
-  permissions: {
-    canManageUsers: boolean;
-    canViewReports: boolean;
-    canManageClient: boolean;
-    canManageSettings: boolean;
-  };
-}
 
 interface ClientRoleAssignment {
   clientId: number;
