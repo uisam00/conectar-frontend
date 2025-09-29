@@ -6,12 +6,12 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
+    "start": "npx serve -s dist -l 3000",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "preview": "vite preview",
-    "start": "vite preview"
+    "preview": "vite preview"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",
@@ -38,6 +38,7 @@
     "react-router-dom": "^7.9.2",
     "react-toastify": "^11.0.5",
     "react-virtuoso": "^4.14.1",
+    "serve": "^14.2.4",
     "yup": "^1.7.1"
   },
   "devDependencies": {
