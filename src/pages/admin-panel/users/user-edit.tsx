@@ -158,7 +158,7 @@ export default function UserEditPage() {
         clientId: client.id,
         clientRoleId: client.clientRoleId,
         clientName: client.razaoSocial,
-        roleName: client.roleName || "Usuário",
+        roleName: client.clientRole?.name || client.roleName || "Usuário",
       })) || [],
   };
 

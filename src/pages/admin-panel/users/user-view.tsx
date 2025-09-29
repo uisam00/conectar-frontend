@@ -34,7 +34,7 @@ export default function UserViewPage() {
   const deleteUserMutation = useDeleteUser();
 
   const handleEdit = () => {
-    navigate(`/admin/users/edit/${userId}`);
+    navigate(`/admin/users/${userId}/edit`);
   };
 
   const handleDelete = () => {
@@ -284,7 +284,10 @@ export default function UserViewPage() {
                             sx={{ fontSize: { xs: "0.75rem", sm: "0.875rem" } }}
                           >
                             <Chip
-                              label={`Role ID: ${client.clientRoleId}`}
+                              label={
+                                client.clientRole?.name ||
+                                `Role ID: ${client.clientRoleId}`
+                              }
                               color="secondary"
                               size="small"
                             />

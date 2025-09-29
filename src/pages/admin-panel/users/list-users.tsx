@@ -223,11 +223,11 @@ export default function UsersPage() {
 
   // Funções de manipulação dos botões de ação
   const handleViewUser = (userId: number) => {
-    navigate(`/admin/users/view/${userId}`);
+    navigate(`/admin/users/${userId}`);
   };
 
   const handleEditUser = (userId: number) => {
-    navigate(`/admin/users/edit/${userId}`);
+    navigate(`/admin/users/${userId}/edit`);
   };
 
   const handleDeleteUser = (userId: number) => {

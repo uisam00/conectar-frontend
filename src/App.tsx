@@ -154,8 +154,9 @@ function AppContent() {
                 </ProtectedRoute>
               }
             />
+            {/* user view and edit routes without /view */}
             <Route
-              path="/admin/users/view/:id"
+              path="/admin/users/:id"
               element={
                 <ProtectedRoute requiredRole="admin">
                   <UserViewPage />
@@ -163,7 +164,7 @@ function AppContent() {
               }
             />
             <Route
-              path="/admin/users/edit/:id"
+              path="/admin/users/:id/edit"
               element={
                 <ProtectedRoute requiredRole="admin">
                   <UserEditPage />
