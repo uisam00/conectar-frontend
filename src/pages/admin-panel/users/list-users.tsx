@@ -139,10 +139,10 @@ export default function UsersPage() {
 
   const handleApplyFilters = () => {
     setAppliedFilters(filters);
-    setPage(0);
+    // Não resetar página - manter página atual
     updateURL({
       ...filters,
-      page: 0,
+      page: page,
       limit: rowsPerPage,
       sortBy: orderBy,
       sortOrder: order,
@@ -163,10 +163,10 @@ export default function UsersPage() {
     };
     setFilters(clearedFilters);
     setAppliedFilters(clearedFilters);
-    setPage(0);
+    // Não resetar página - manter página atual
     updateURL({
       ...clearedFilters,
-      page: 0,
+      page: page,
       limit: rowsPerPage,
       sortBy: orderBy,
       sortOrder: order,
@@ -297,10 +297,10 @@ export default function UsersPage() {
     const newFilters = { ...appliedFilters, [key]: "" };
     setFilters(newFilters);
     setAppliedFilters(newFilters);
-    setPage(0);
+    // Não resetar página - manter página atual
     updateURL({
       ...newFilters,
-      page: 0,
+      page: page,
       limit: rowsPerPage,
       sortBy: orderBy,
       sortOrder: order,
@@ -347,62 +347,15 @@ export default function UsersPage() {
             </Button>
           </Box>
 
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              flexWrap: "wrap",
-              gap: 2,
-            }}
-          >
-            <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-              <Button
-                variant="outlined"
-                startIcon={<Search />}
-                onClick={() => setFiltersExpanded(!filtersExpanded)}
-                sx={{
-                  borderColor: "primary.main",
-                  color: "primary.main",
-                  "&:hover": {
-                    backgroundColor: "rgba(76, 175, 80, 0.04)",
-                  },
-                }}
-              >
-                {t("filters.button")}
-                {filtersExpanded ? <ExpandLess /> : <ExpandMore />}
-              </Button>
-              {getActiveFiltersCount() > 0 && (
-                <Chip
-                  label={`${getActiveFiltersCount()} ${t("filters.activeCount")}`}
-                  color="primary"
-                  size="small"
-                />
-              )}
-            </Box>
-            <Box sx={{ display: "flex", gap: 1, flexWrap: "wrap" }}>
-              <Button
-                variant="outlined"
-                onClick={handleClearFilters}
-                sx={{
-                  borderColor: "#f44336",
-                  color: "#f44336",
-                  "&:hover": {
-                    borderColor: "#d32f2f",
-                    backgroundColor: "rgba(244, 67, 54, 0.04)",
-                  },
-                }}
-              >
-                {t("filters.clear")}
-              </Button>
-              <Button variant="contained" onClick={handleApplyFilters}>
-                {t("filters.apply")}
-              </Button>
-            </Box>
-          </Box>
-
+          {/* Filtros Ativos - Mantendo a funcionalidade destacada */}
           {getActiveFiltersCount() > 0 && (
-            <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
+            <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1, mb: 2 }}>
+              <Chip
+                label={`${getActiveFiltersCount()} ${t("filters.activeCount")}`}
+                color="primary"
+                size="small"
+                sx={{ fontWeight: "bold" }}
+              />
               {getFilterChips().map((chip) => (
                 <Chip
                   key={chip.key}
@@ -416,101 +369,195 @@ export default function UsersPage() {
             </Box>
           )}
 
-          <Collapse in={filtersExpanded}>
-            <Paper sx={{ p: 2, mb: 2 }}>
-              <Tabs
-                value={activeTab}
-                onChange={(_e, newValue) => setActiveTab(newValue)}
-                sx={{ mb: 2 }}
+          {/* Card de Filtros - Igual ao da página de clientes */}
+          <Paper
+            sx={{
+              mb: { xs: 2, sm: 3 },
+              borderRadius: 1,
+              border: "1px solid #e0e0e0",
+              overflow: "hidden",
+            }}
+          >
+            <Box
+              sx={{
+                padding: { xs: 1.5, sm: 2 },
+                borderBottom: "1px solid #e0e0e0",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                cursor: "pointer",
+              }}
+              onClick={() => setFiltersExpanded(!filtersExpanded)}
+            >
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 1,
+                  flexDirection: { xs: "column", sm: "row" },
+                }}
               >
-                <Tab label={t("filters.tabs.general")} />
-                <Tab label={t("filters.tabs.advanced")} />
-              </Tabs>
-
-              {activeTab === 0 && (
-                <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-                  <TextField
-                    label={t("filters.search.label")}
-                    value={filters.search}
-                    onChange={(e) =>
-                      handleFilterChange("search", e.target.value)
-                    }
-                    fullWidth
-                    placeholder={t("filters.search.placeholder")}
-                  />
-                </Box>
-              )}
-
-              {activeTab === 1 && (
-                <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-                  <Box
+                <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                  <Search sx={{ color: "#666" }} />
+                  <Typography
+                    variant="h6"
                     sx={{
-                      display: "grid",
-                      gridTemplateColumns: {
-                        xs: "1fr",
-                        sm: "1fr 1fr",
-                        md: "1fr 1fr 1fr",
-                      },
-                      gap: 2,
+                      fontWeight: "bold",
+                      fontSize: { xs: "1rem", sm: "1.25rem" },
                     }}
                   >
-                    <FormControl fullWidth>
-                      <InputLabel>{t("filters.role.label")}</InputLabel>
-                      <Select
-                        value={filters.roleId}
-                        onChange={(e) =>
-                          handleFilterChange("roleId", e.target.value)
-                        }
-                        label={t("filters.role.label")}
-                      >
-                        <MenuItem value="1">{t("filters.role.admin")}</MenuItem>
-                        <MenuItem value="2">{t("filters.role.user")}</MenuItem>
-                      </Select>
-                    </FormControl>
-                    <FormControl fullWidth>
-                      <InputLabel>{t("filters.status.label")}</InputLabel>
-                      <Select
-                        value={filters.statusId}
-                        onChange={(e) =>
-                          handleFilterChange("statusId", e.target.value)
-                        }
-                        label={t("filters.status.label")}
-                      >
-                        <MenuItem value="1">
-                          {t("filters.status.active")}
-                        </MenuItem>
-                        <MenuItem value="2">
-                          {t("filters.status.inactive")}
-                        </MenuItem>
-                      </Select>
-                    </FormControl>
-                    <ClientSelect
-                      value={filters.clientId ? parseInt(filters.clientId) : ""}
-                      onChange={(value) =>
-                        handleFilterChange("clientId", value.toString())
+                    {t("filters.button")}
+                  </Typography>
+                </Box>
+                <Typography
+                  variant="body2"
+                  sx={{
+                    color: "#666",
+                    fontSize: { xs: "0.75rem", sm: "0.875rem" },
+                  }}
+                >
+                  {t("filters.subtitle")}
+                </Typography>
+              </Box>
+              {filtersExpanded ? <ExpandLess /> : <ExpandMore />}
+            </Box>
+
+            <Collapse in={filtersExpanded}>
+              <Box sx={{ padding: { xs: 1.5, sm: 2 } }}>
+                <Tabs
+                  value={activeTab}
+                  onChange={(_e, newValue) => setActiveTab(newValue)}
+                  sx={{ mb: 2 }}
+                >
+                  <Tab label={t("filters.tabs.general")} />
+                  <Tab label={t("filters.tabs.advanced")} />
+                </Tabs>
+
+                {activeTab === 0 && (
+                  <Box
+                    sx={{ display: "flex", flexDirection: "column", gap: 2 }}
+                  >
+                    <TextField
+                      label={t("filters.search.label")}
+                      value={filters.search}
+                      onChange={(e) =>
+                        handleFilterChange("search", e.target.value)
                       }
-                      label={t("filters.client.label")}
-                    />
-                    <ClientRoleSelect
-                      value={
-                        filters.clientRoleId
-                          ? parseInt(filters.clientRoleId)
-                          : ""
-                      }
-                      onChange={(value) =>
-                        handleFilterChange(
-                          "clientRoleId",
-                          value === 0 ? "" : value.toString()
-                        )
-                      }
-                      label="Role do Cliente"
-                      enabled={filtersExpanded}
+                      fullWidth
+                      placeholder={t("filters.search.placeholder")}
                     />
                   </Box>
+                )}
+
+                {activeTab === 1 && (
+                  <Box
+                    sx={{ display: "flex", flexDirection: "column", gap: 2 }}
+                  >
+                    <Box
+                      sx={{
+                        display: "grid",
+                        gridTemplateColumns: {
+                          xs: "1fr",
+                          sm: "1fr 1fr",
+                          md: "1fr 1fr 1fr",
+                        },
+                        gap: 2,
+                      }}
+                    >
+                      <FormControl fullWidth>
+                        <InputLabel>{t("filters.role.label")}</InputLabel>
+                        <Select
+                          value={filters.roleId}
+                          onChange={(e) =>
+                            handleFilterChange("roleId", e.target.value)
+                          }
+                          label={t("filters.role.label")}
+                        >
+                          <MenuItem value="1">
+                            {t("filters.role.admin")}
+                          </MenuItem>
+                          <MenuItem value="2">
+                            {t("filters.role.user")}
+                          </MenuItem>
+                        </Select>
+                      </FormControl>
+                      <FormControl fullWidth>
+                        <InputLabel>{t("filters.status.label")}</InputLabel>
+                        <Select
+                          value={filters.statusId}
+                          onChange={(e) =>
+                            handleFilterChange("statusId", e.target.value)
+                          }
+                          label={t("filters.status.label")}
+                        >
+                          <MenuItem value="1">
+                            {t("filters.status.active")}
+                          </MenuItem>
+                          <MenuItem value="2">
+                            {t("filters.status.inactive")}
+                          </MenuItem>
+                        </Select>
+                      </FormControl>
+                      <ClientSelect
+                        value={
+                          filters.clientId ? parseInt(filters.clientId) : ""
+                        }
+                        onChange={(value) =>
+                          handleFilterChange("clientId", value.toString())
+                        }
+                        label={t("filters.client.label")}
+                      />
+                      <ClientRoleSelect
+                        value={
+                          filters.clientRoleId
+                            ? parseInt(filters.clientRoleId)
+                            : ""
+                        }
+                        onChange={(value) =>
+                          handleFilterChange(
+                            "clientRoleId",
+                            value === 0 ? "" : value.toString()
+                          )
+                        }
+                        label="Role do Cliente"
+                        enabled={filtersExpanded}
+                      />
+                    </Box>
+                  </Box>
+                )}
+
+                {/* Botões de Filtrar e Limpar - Dentro do card */}
+                <Box
+                  sx={{
+                    display: "flex",
+                    justifyContent: "flex-end",
+                    gap: 1,
+                    flexDirection: { xs: "column", sm: "row" },
+                    mt: 2,
+                  }}
+                >
+                  <Button
+                    variant="outlined"
+                    onClick={handleClearFilters}
+                    sx={{
+                      color: "primary.main",
+                      borderColor: "primary.main",
+                      width: { xs: "100%", sm: "auto" },
+                    }}
+                  >
+                    {t("filters.clear")}
+                  </Button>
+                  <Button
+                    variant="contained"
+                    onClick={handleApplyFilters}
+                    sx={{ width: { xs: "100%", sm: "auto" } }}
+                  >
+                    {t("filters.apply")}
+                  </Button>
                 </Box>
-              )}
-            </Paper>
-          </Collapse>
+              </Box>
+            </Collapse>
+          </Paper>
 
           <Paper sx={{ width: "100%", overflow: "hidden" }}>
             <TableContainer sx={{ maxHeight: 600 }}>
@@ -527,9 +574,7 @@ export default function UsersPage() {
                         fontSize: { xs: "0.75rem", sm: "0.875rem" },
                         padding: { xs: "8px 4px", sm: "16px" },
                       }}
-                    >
-                      {t("table.headers.avatar")}
-                    </TableCell>
+                    ></TableCell>
                     <TableCell
                       key="id"
                       align="left"
@@ -745,7 +790,14 @@ export default function UsersPage() {
                     </TableRow>
                   ) : (
                     usersData?.data?.map((user) => (
-                      <TableRow key={user.id} hover>
+                      <TableRow
+                        key={user.id}
+                        hover
+                        onDoubleClick={() =>
+                          navigate(`/admin/users/view/${user.id}`)
+                        }
+                        sx={{ cursor: "pointer" }}
+                      >
                         <TableCell align="center">
                           <Avatar
                             src={user.photo?.path}

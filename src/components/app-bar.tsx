@@ -81,7 +81,13 @@ export default function ResponsiveAppBar() {
                 color="inherit"
                 aria-label="menu"
                 onClick={toggleDrawer}
-                sx={{ mr: 1 }}
+                sx={{
+                  mr: 1,
+                  color: "white",
+                  "&:hover": {
+                    backgroundColor: "rgba(255, 255, 255, 0.1)",
+                  },
+                }}
               >
                 <MenuIcon />
               </IconButton>

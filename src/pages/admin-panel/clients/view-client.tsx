@@ -88,27 +88,48 @@ export default function ViewClientPage() {
         <title>Visualizar Instituição | Conéctar</title>
       </Helmet>
       <AdminPageLayout>
-        <Box sx={{ p: 3, maxWidth: 1200, mx: "auto" }}>
+        <Box
+          sx={{
+            p: { xs: 2, sm: 3 },
+            maxWidth: 1200,
+            mx: "auto",
+            width: "100%",
+          }}
+        >
           <Box
             sx={{
               display: "flex",
+              flexDirection: { xs: "column", sm: "row" },
               justifyContent: "space-between",
-              alignItems: "center",
+              alignItems: { xs: "flex-start", sm: "center" },
               mb: 3,
+              gap: { xs: 2, sm: 0 },
             }}
           >
             <Typography
               variant="h4"
               component="h1"
-              sx={{ color: "primary.main" }}
+              sx={{
+                color: "primary.main",
+                fontSize: { xs: "1.5rem", sm: "2rem" },
+              }}
             >
               Visualizar Cliente
             </Typography>
-            <Box sx={{ display: "flex", gap: 2 }}>
+            <Box
+              sx={{
+                display: "flex",
+                gap: 2,
+                flexDirection: { xs: "column", sm: "row" },
+                width: { xs: "100%", sm: "auto" },
+              }}
+            >
               <Button
                 variant="outlined"
                 startIcon={<ArrowBack />}
                 onClick={handleBack}
+                fullWidth={true}
+                sx={{ width: { xs: "100%", sm: "auto" } }}
               >
                 Voltar
               </Button>
@@ -116,6 +137,8 @@ export default function ViewClientPage() {
                 variant="contained"
                 startIcon={<Edit />}
                 onClick={handleEdit}
+                fullWidth={true}
+                sx={{ width: { xs: "100%", sm: "auto" } }}
               >
                 Editar
               </Button>
@@ -125,6 +148,8 @@ export default function ViewClientPage() {
                 startIcon={<Delete />}
                 onClick={handleDelete}
                 disabled={deleteClientMutation.isPending}
+                fullWidth={true}
+                sx={{ width: { xs: "100%", sm: "auto" } }}
               >
                 {deleteClientMutation.isPending ? (
                   <CircularProgress size={20} />
@@ -135,9 +160,16 @@ export default function ViewClientPage() {
             </Box>
           </Box>
 
-          <Box sx={{ display: "flex", gap: 3, mb: 4 }}>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: { xs: "column", lg: "row" },
+              gap: 3,
+              mb: 4,
+            }}
+          >
             {/* Informações do Cliente */}
-            <Card sx={{ flex: 1 }}>
+            <Card sx={{ flex: 1, minWidth: 0 }}>
               <CardHeader
                 avatar={
                   <Avatar
@@ -209,12 +241,20 @@ export default function ViewClientPage() {
                   </Typography>
                 </Box>
               ) : (
-                <TableContainer component={Paper}>
+                <TableContainer
+                  component={Paper}
+                  sx={{
+                    overflowX: "auto",
+                    "& .MuiTable-root": {
+                      minWidth: 300,
+                    },
+                  }}
+                >
                   <Table>
                     <TableHead>
                       <TableRow>
-                        <TableCell>Nome</TableCell>
-                        <TableCell>Email</TableCell>
+                        <TableCell sx={{ fontWeight: "bold" }}>Nome</TableCell>
+                        <TableCell sx={{ fontWeight: "bold" }}>Email</TableCell>
                         <TableCell>Role do Sistema</TableCell>
                         <TableCell>Role do Cliente</TableCell>
                         <TableCell>Status</TableCell>
@@ -223,7 +263,9 @@ export default function ViewClientPage() {
                     <TableBody>
                       {clientUsers.data.map((user) => (
                         <TableRow key={user.id}>
-                          <TableCell>
+                          <TableCell
+                            sx={{ fontSize: { xs: "0.75rem", sm: "0.875rem" } }}
+                          >
                             <Box
                               sx={{
                                 display: "flex",
@@ -248,15 +290,23 @@ export default function ViewClientPage() {
                               </Box>
                             </Box>
                           </TableCell>
-                          <TableCell>{user.email}</TableCell>
-                          <TableCell>
+                          <TableCell
+                            sx={{ fontSize: { xs: "0.75rem", sm: "0.875rem" } }}
+                          >
+                            {user.email}
+                          </TableCell>
+                          <TableCell
+                            sx={{ fontSize: { xs: "0.75rem", sm: "0.875rem" } }}
+                          >
                             <Chip
                               label={user.role?.name || "N/A"}
                               color="primary"
                               size="small"
                             />
                           </TableCell>
-                          <TableCell>
+                          <TableCell
+                            sx={{ fontSize: { xs: "0.75rem", sm: "0.875rem" } }}
+                          >
                             <Chip
                               label={user.clientRole?.name || "N/A"}
                               color="secondary"
@@ -264,7 +314,9 @@ export default function ViewClientPage() {
                               title={user.clientRole?.description}
                             />
                           </TableCell>
-                          <TableCell>
+                          <TableCell
+                            sx={{ fontSize: { xs: "0.75rem", sm: "0.875rem" } }}
+                          >
                             <Chip
                               label={user.status?.name || "N/A"}
                               color={

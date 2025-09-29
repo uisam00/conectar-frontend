@@ -250,7 +250,14 @@ export default function ClientForm({
                 isReadOnly={isReadOnly}
               />
 
-              <Box sx={{ width: "100%", display: "flex", gap: 2 }}>
+              <Box
+                sx={{
+                  width: "100%",
+                  display: "flex",
+                  flexDirection: { xs: "column", sm: "row" },
+                  gap: 2,
+                }}
+              >
                 <TextField
                   {...methods.register("razaoSocial")}
                   label="Razão Social"
@@ -270,7 +277,14 @@ export default function ClientForm({
                 />
               </Box>
 
-              <Box sx={{ width: "100%", display: "flex", gap: 2 }}>
+              <Box
+                sx={{
+                  width: "100%",
+                  display: "flex",
+                  flexDirection: { xs: "column", sm: "row" },
+                  gap: 2,
+                }}
+              >
                 <TextField
                   {...methods.register("nomeComercial")}
                   label="Nome Comercial"

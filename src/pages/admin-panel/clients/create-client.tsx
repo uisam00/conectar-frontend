@@ -18,12 +18,23 @@ export default function CreateClientPage() {
         <title>Criar Instituição | Conéctar</title>
       </Helmet>
       <AdminPageLayout>
-        <Box sx={{ p: 3, maxWidth: 800, mx: "auto" }}>
+        <Box
+          sx={{
+            p: { xs: 2, sm: 3 },
+            maxWidth: 800,
+            mx: "auto",
+            width: "100%",
+          }}
+        >
           <Typography
             variant="h4"
             component="h1"
             gutterBottom
-            sx={{ mb: 2, color: "primary.main" }}
+            sx={{
+              mb: 2,
+              color: "primary.main",
+              fontSize: { xs: "1.5rem", sm: "2rem" },
+            }}
           >
             Criar Cliente
           </Typography>

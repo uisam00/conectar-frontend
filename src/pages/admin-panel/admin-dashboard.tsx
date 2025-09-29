@@ -7,7 +7,7 @@ import {
   Grid,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import { People, Person } from "@mui/icons-material";
+import { Business, Person } from "@mui/icons-material";
 import { Helmet } from "react-helmet";
 import PageLayout from "@/components/layout/page-layout";
 
@@ -18,7 +18,7 @@ export default function AdminDashboardPage() {
     {
       title: "Gerenciar Clientes",
       description: "Visualize, edite e gerencie todos os clientes do sistema",
-      icon: <People sx={{ fontSize: 40, color: "primary.main" }} />,
+      icon: <Business sx={{ fontSize: 40, color: "primary.main" }} />,
       path: "/admin/clients",
       available: true,
     },
@@ -60,7 +60,7 @@ export default function AdminDashboardPage() {
                 <CardContent sx={{ flexGrow: 1, textAlign: "center" }}>
                   <Box sx={{ mb: 2 }}>{feature.icon}</Box>
 
-                  <Typography variant="h6" gutterBottom>
+                  <Typography variant="h6" gutterBottom color="primary.main">
                     {feature.title}
                   </Typography>
 

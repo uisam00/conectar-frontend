@@ -241,12 +241,23 @@ export default function CreateUserPage() {
       <Helmet>
         <title>Criar Usuário | Conéctar</title>
       </Helmet>
-      <Box sx={{ p: 3, maxWidth: 800, mx: "auto" }}>
+      <Box
+        sx={{
+          p: { xs: 2, sm: 3 },
+          maxWidth: 1200,
+          mx: "auto",
+          width: "100%",
+        }}
+      >
         <Typography
           variant="h4"
           component="h1"
           gutterBottom
-          sx={{ mb: 2, color: "primary.main" }}
+          sx={{
+            mb: 3,
+            color: "primary.main",
+            fontSize: { xs: "1.5rem", sm: "2rem" },
+          }}
         >
           {t("title")}
         </Typography>
@@ -260,6 +271,7 @@ export default function CreateUserPage() {
                 variant: "h6",
                 fontWeight: "bold",
                 color: "primary.main",
+                fontSize: { xs: "1.1rem", sm: "1.25rem" },
               }}
             />
             <Divider />
@@ -280,7 +292,14 @@ export default function CreateUserPage() {
                     disabled={isLoading}
                   />
 
-                  <Box sx={{ width: "100%", display: "flex", gap: 2 }}>
+                  <Box
+                    sx={{
+                      width: "100%",
+                      display: "flex",
+                      flexDirection: { xs: "column", sm: "row" },
+                      gap: 2,
+                    }}
+                  >
                     <TextField
                       {...methods.register("firstName")}
                       label={t("form.firstName")}
@@ -300,7 +319,14 @@ export default function CreateUserPage() {
                     />
                   </Box>
 
-                  <Box sx={{ width: "100%", display: "flex", gap: 2 }}>
+                  <Box
+                    sx={{
+                      width: "100%",
+                      display: "flex",
+                      flexDirection: { xs: "column", sm: "row" },
+                      gap: 2,
+                    }}
+                  >
                     <TextField
                       {...methods.register("email")}
                       label={t("form.email")}
@@ -322,7 +348,14 @@ export default function CreateUserPage() {
                     />
                   </Box>
 
-                  <Box sx={{ width: "100%", display: "flex", gap: 2 }}>
+                  <Box
+                    sx={{
+                      width: "100%",
+                      display: "flex",
+                      flexDirection: { xs: "column", sm: "row" },
+                      gap: 2,
+                    }}
+                  >
                     <FormControl
                       fullWidth
                       disabled={isLoading}
@@ -351,18 +384,21 @@ export default function CreateUserPage() {
                     />
                   </Box>
 
-                  <ClientRoleSelector
-                    value={watch("clientRoles")}
-                    onChange={handleClientRoleChange}
-                    disabled={isLoading}
-                  />
+                  <Box sx={{ width: "100%" }}>
+                    <ClientRoleSelector
+                      value={watch("clientRoles")}
+                      onChange={handleClientRoleChange}
+                      disabled={isLoading}
+                    />
+                  </Box>
 
                   <Box
                     sx={{
                       display: "flex",
+                      flexDirection: { xs: "column", sm: "row" },
                       gap: 2,
                       width: "100%",
-                      maxWidth: 400,
+                      maxWidth: { xs: "100%", sm: 400 },
                     }}
                   >
                     <Button

@@ -32,7 +32,6 @@ import {
   ExpandMore,
   Visibility,
   Edit,
-  Add,
 } from "@mui/icons-material";
 import { Avatar } from "@mui/material";
 import AdminPageLayout from "@/components/layout/admin-page-layout";
@@ -83,17 +82,64 @@ export default function ListClientsPage() {
   ) => {
     const params = new URLSearchParams();
 
+    // Apenas adicionar filtros que têm valor
     if (newFilters.name) params.set("name", newFilters.name);
     if (newFilters.cnpj) params.set("cnpj", newFilters.cnpj);
     if (newFilters.status) params.set("status", newFilters.status);
     if (newFilters.conectarPlus)
       params.set("conectarPlus", newFilters.conectarPlus);
-    if (newPage >= 0) params.set("page", newPage.toString());
+
+    // Apenas adicionar página se não for 0
+    if (newPage > 0) params.set("page", newPage.toString());
+
+    // Apenas adicionar limit se não for o padrão (10)
     if (newRowsPerPage !== 10) params.set("limit", newRowsPerPage.toString());
-    if (newOrderBy) params.set("sortBy", newOrderBy);
-    if (newOrder !== "asc") params.set("order", newOrder);
+
+    // Apenas adicionar ordenação se houver coluna selecionada
+    if (newOrderBy) {
+      params.set("sortBy", newOrderBy);
+      if (newOrder !== "asc") params.set("order", newOrder);
+    }
 
     setSearchParams(params);
+  };
+
+  // Funções para filtros ativos
+  const getActiveFiltersCount = () => {
+    return Object.values(appliedFilters).filter((value) => value !== "").length;
+  };
+
+  const getFilterChips = () => {
+    const chips = [];
+    if (appliedFilters.name)
+      chips.push({
+        label: `Nome: ${appliedFilters.name}`,
+        key: "name",
+      });
+    if (appliedFilters.cnpj)
+      chips.push({
+        label: `CNPJ: ${appliedFilters.cnpj}`,
+        key: "cnpj",
+      });
+    if (appliedFilters.status)
+      chips.push({
+        label: `Status: ${appliedFilters.status}`,
+        key: "status",
+      });
+    if (appliedFilters.conectarPlus)
+      chips.push({
+        label: `Conectar+: ${appliedFilters.conectarPlus}`,
+        key: "conectarPlus",
+      });
+    return chips;
+  };
+
+  const removeFilterChip = (key: string) => {
+    const newFilters = { ...appliedFilters, [key]: "" };
+    setFilters(newFilters);
+    setAppliedFilters(newFilters);
+    // Não resetar página - manter página atual
+    updateURL(newFilters, page, rowsPerPage, order, orderBy);
   };
 
   // Mapear filtros da UI para filtros da API
@@ -137,8 +183,8 @@ export default function ListClientsPage() {
   const applyFilters = () => {
     setAppliedFilters(filters);
     setHasSearched(true);
-    setPage(0);
-    updateURL(filters, 0, rowsPerPage, order, orderBy);
+    // Não resetar página - manter página atual
+    updateURL(filters, page, rowsPerPage, order, orderBy);
   };
 
   const clearFilters = () => {
@@ -150,9 +196,9 @@ export default function ListClientsPage() {
     };
     setFilters(emptyFilters);
     setAppliedFilters(emptyFilters);
-    setPage(0);
     setHasSearched(true); // Aplicar busca vazia para limpar resultados
-    updateURL(emptyFilters, 0, rowsPerPage, order, orderBy);
+    // Não resetar página - manter página atual
+    updateURL(emptyFilters, page, rowsPerPage, order, orderBy);
   };
 
   const handleChangePage = (_event: unknown, newPage: number) => {
@@ -286,6 +332,28 @@ export default function ListClientsPage() {
               <Tab label={t("tabs.basicData")} />
             </Tabs>
           </Box>
+
+          {/* Filtros Ativos - Nova funcionalidade */}
+          {getActiveFiltersCount() > 0 && (
+            <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1, mb: 2 }}>
+              <Chip
+                label={`${getActiveFiltersCount()} filtro(s) ativo(s)`}
+                color="primary"
+                size="small"
+                sx={{ fontWeight: "bold" }}
+              />
+              {getFilterChips().map((chip) => (
+                <Chip
+                  key={chip.key}
+                  label={chip.label}
+                  onDelete={() => removeFilterChip(chip.key)}
+                  color="primary"
+                  variant="outlined"
+                  size="small"
+                />
+              ))}
+            </Box>
+          )}
 
           <Paper
             sx={{
@@ -454,7 +522,6 @@ export default function ListClientsPage() {
             </Box>
             <Button
               variant="outlined"
-              startIcon={<Add />}
               onClick={() => navigate("/admin/clients/create")}
               sx={{
                 color: "#666",
@@ -559,6 +626,10 @@ export default function ListClientsPage() {
                         role="checkbox"
                         tabIndex={-1}
                         key={client.id}
+                        onDoubleClick={() =>
+                          navigate(`/admin/clients/${client.id}`)
+                        }
+                        sx={{ cursor: "pointer" }}
                       >
                         {columns.map((column) => {
                           const value =
@@ -588,7 +659,6 @@ export default function ListClientsPage() {
                                       onClick={() =>
                                         navigate(`/admin/clients/${client.id}`)
                                       }
-                                      sx={{ color: "primary.main" }}
                                     >
                                       <Visibility fontSize="small" />
                                     </IconButton>
@@ -601,7 +671,6 @@ export default function ListClientsPage() {
                                           `/admin/clients/${client.id}/edit`
                                         )
                                       }
-                                      sx={{ color: "secondary.main" }}
                                     >
                                       <Edit fontSize="small" />
                                     </IconButton>

@@ -49,22 +49,24 @@ export default function SimpleProfilePage() {
       <PageLayout title={t("title")}>
         <Card sx={{ mb: 3 }}>
           <CardHeader
-            title={
-              <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                <Person color="primary" />
-                <Typography variant="h6">{t("userInformation")}</Typography>
-              </Box>
-            }
-            action={
-              <Button
-                variant="contained"
-                startIcon={<Edit />}
-                onClick={() => navigate("/profile/edit")}
-              >
-                {t("editProfile")}
-              </Button>
-            }
+            avatar={<Person sx={{ color: "primary.main" }} />}
+            title={t("userInformation")}
+            titleTypographyProps={{
+              variant: "h6",
+              fontWeight: "bold",
+              color: "primary.main",
+            }}
           />
+          <Box sx={{ px: 2, pb: 2 }}>
+            <Button
+              variant="contained"
+              startIcon={<Edit />}
+              onClick={() => navigate("/profile/edit")}
+              sx={{ width: { xs: "100%", sm: "auto" } }}
+            >
+              {t("editProfile")}
+            </Button>
+          </Box>
           <Divider />
           <CardContent>
             <Box
