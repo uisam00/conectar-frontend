@@ -31,11 +31,14 @@ const axiosInstance: AxiosInstance = axios.create({
 axiosInstance.interceptors.request.use(
   (config: any) => {
     const tokens = getTokensInfo();
-    if (tokens?.token) {
-      config.headers = {
-        ...config.headers,
-        Authorization: `Bearer ${tokens.token}`,
-      };
+    if (tokens) {
+      const isExpired = Date.now() >= tokens.tokenExpires * 1000;
+      if (!isExpired && tokens.token) {
+        config.headers = {
+          ...config.headers,
+          Authorization: `Bearer ${tokens.token}`,
+        };
+      }
     }
     return config;
   },
@@ -56,7 +59,7 @@ axiosInstance.interceptors.response.use(
         return new Promise((resolve, reject) => {
           failedQueue.push({ resolve, reject });
         }).then((token) => {
-          if (originalRequest.headers) {
+          if (originalRequest.headers && token) {
             originalRequest.headers.Authorization = `Bearer ${token}`;
           }
           return axiosInstance(originalRequest);
@@ -82,12 +85,12 @@ axiosInstance.interceptors.response.use(
           }
         });
 
-        const { token, refreshToken } = response.data;
+        const { token, refreshToken, tokenExpires } = (response.data as any);
         
         setTokensInfo({
           token,
-          refreshToken,
-          tokenExpires: Math.floor(Date.now() / 1000) + 3600,
+          refreshToken: refreshToken || tokens.refreshToken,
+          tokenExpires: tokenExpires || Math.floor(Date.now() / 1000) + 3600,
         });
 
         processQueue(null, token);

@@ -10,21 +10,15 @@ export function getTokensInfo(): TokensInfo | null {
   const refreshToken = Cookies.get(REFRESH_TOKEN_KEY);
   const tokenExpires = Cookies.get(TOKEN_EXPIRES_KEY);
 
-  if (!token || !refreshToken || !tokenExpires) {
+  if (!refreshToken || !tokenExpires) {
     return null;
   }
 
   const expiresTimestamp = parseInt(tokenExpires, 10);
-  
-  // Check if token is expired
-  if (Date.now() >= expiresTimestamp * 1000) {
-    // Clear expired tokens
-    setTokensInfo(null);
-    return null;
-  }
 
+  // Sempre retornamos os valores presentes para que o interceptor possa decidir
   return {
-    token,
+    token: token || "",
     refreshToken,
     tokenExpires: expiresTimestamp,
   };
@@ -32,9 +26,9 @@ export function getTokensInfo(): TokensInfo | null {
 
 export function setTokensInfo(tokensInfo: TokensInfo | null): void {
   if (!tokensInfo) {
-    Cookies.remove(TOKEN_KEY);
-    Cookies.remove(REFRESH_TOKEN_KEY);
-    Cookies.remove(TOKEN_EXPIRES_KEY);
+    Cookies.remove(TOKEN_KEY, { path: '/' });
+    Cookies.remove(REFRESH_TOKEN_KEY, { path: '/' });
+    Cookies.remove(TOKEN_EXPIRES_KEY, { path: '/' });
     return;
   }
 
