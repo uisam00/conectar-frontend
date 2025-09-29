@@ -17,6 +17,7 @@ import axiosInstance from "@/services/api/axios-instance";
 import { AUTH_LOGIN_URL } from "@/services/api/config";
 import { useErrorHandler } from "@/hooks";
 import LabelInput from "@/components/form/label-input";
+import GoogleLoginButton from "@/components/auth/google-login-button";
 import { Helmet } from "react-helmet";
 
 export default function SignInPage() {
@@ -182,6 +183,23 @@ export default function SignInPage() {
             >
               {isLoading ? t("loading") : t("actions.submit")}
             </Button>
+
+            {/* Divisor */}
+            <Box sx={{ display: "flex", alignItems: "center", my: 2 }}>
+              <Box sx={{ flex: 1, height: 1, backgroundColor: "#e0e0e0" }} />
+              <Typography variant="body2" sx={{ mx: 2, color: "#666" }}>
+                ou
+              </Typography>
+              <Box sx={{ flex: 1, height: 1, backgroundColor: "#e0e0e0" }} />
+            </Box>
+
+            {/* Botão Google */}
+            <GoogleLoginButton
+              onLoadingChange={(loading) => {
+                if (loading) setIsLoading(true);
+              }}
+              disabled={isLoading}
+            />
 
             <Box textAlign="center" sx={{ mt: 1 }}>
               <MuiLink

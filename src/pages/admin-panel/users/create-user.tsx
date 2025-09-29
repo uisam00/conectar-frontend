@@ -244,155 +244,160 @@ export default function CreateUserPage() {
         <title>Criar Usuário | Conéctar</title>
       </Helmet>
       <Box sx={{ p: 3, maxWidth: 800, mx: "auto" }}>
-      <Typography
-        variant="h4"
-        component="h1"
-        gutterBottom
-        sx={{ mb: 2, color: "primary.main" }}
-      >
-        {t("title")}
-      </Typography>
+        <Typography
+          variant="h4"
+          component="h1"
+          gutterBottom
+          sx={{ mb: 2, color: "primary.main" }}
+        >
+          {t("title")}
+        </Typography>
 
-      <FormProvider {...methods}>
-        <Card>
-          <CardHeader
-            avatar={<Person sx={{ color: "primary.main" }} />}
-            title={t("form.title")}
-            titleTypographyProps={{
-              variant: "h6",
-              fontWeight: "bold",
-              color: "primary.main",
-            }}
-          />
-          <Divider />
-          <CardContent>
-            <form onSubmit={onSubmit}>
-              <Box
-                sx={{
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: 3,
-                  alignItems: "center",
-                }}
-              >
-                <AvatarInput
-                  value={photo}
-                  onChange={(file) => setValue("photo", file)}
-                  onLoadingChange={setIsUploading}
-                  disabled={isLoading}
-                />
-
-                <Box sx={{ width: "100%", display: "flex", gap: 2 }}>
-                  <TextField
-                    {...methods.register("firstName")}
-                    label={t("form.firstName")}
-                    fullWidth
-                    disabled={isLoading}
-                    error={!!methods.formState.errors.firstName}
-                    helperText={methods.formState.errors.firstName?.message}
-                  />
-
-                  <TextField
-                    {...methods.register("lastName")}
-                    label={t("form.lastName")}
-                    fullWidth
-                    disabled={isLoading}
-                    error={!!methods.formState.errors.lastName}
-                    helperText={methods.formState.errors.lastName?.message}
-                  />
-                </Box>
-
-                <Box sx={{ width: "100%", display: "flex", gap: 2 }}>
-                  <TextField
-                    {...methods.register("email")}
-                    label={t("form.email")}
-                    type="email"
-                    fullWidth
-                    disabled={isLoading}
-                    error={!!methods.formState.errors.email}
-                    helperText={methods.formState.errors.email?.message}
-                  />
-
-                  <TextField
-                    {...methods.register("password")}
-                    label={t("form.password")}
-                    type="password"
-                    fullWidth
-                    disabled={isLoading}
-                    error={!!methods.formState.errors.password}
-                    helperText={methods.formState.errors.password?.message}
-                  />
-                </Box>
-
-                <Box sx={{ width: "100%", display: "flex", gap: 2 }}>
-                  <FormControl
-                    fullWidth
-                    disabled={isLoading}
-                    error={!!methods.formState.errors.roleId}
-                  >
-                    <InputLabel>Função do Sistema</InputLabel>
-                    <Select
-                      {...methods.register("roleId")}
-                      value={watch("roleId") || 2}
-                      onChange={(e) =>
-                        setValue("roleId", Number(e.target.value))
-                      }
-                      label="Função do Sistema"
-                    >
-                      <MenuItem value={1}>Administrador</MenuItem>
-                      <MenuItem value={2}>Usuário</MenuItem>
-                    </Select>
-                  </FormControl>
-
-                  <StatusSelectFixed
-                    value={watch("statusId") || 1}
-                    onChange={(statusId) => setValue("statusId", statusId)}
-                    disabled={isLoading}
-                    error={!!methods.formState.errors.statusId}
-                    helperText={methods.formState.errors.statusId?.message}
-                  />
-                </Box>
-
-                <ClientRoleSelector
-                  value={watch("clientRoles")}
-                  onChange={handleClientRoleChange}
-                  disabled={isLoading}
-                />
-
+        <FormProvider {...methods}>
+          <Card>
+            <CardHeader
+              avatar={<Person sx={{ color: "primary.main" }} />}
+              title={t("form.title")}
+              titleTypographyProps={{
+                variant: "h6",
+                fontWeight: "bold",
+                color: "primary.main",
+              }}
+            />
+            <Divider />
+            <CardContent>
+              <form onSubmit={onSubmit}>
                 <Box
-                  sx={{ display: "flex", gap: 2, width: "100%", maxWidth: 400 }}
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: 3,
+                    alignItems: "center",
+                  }}
                 >
-                  <Button
-                    type="button"
-                    variant="outlined"
-                    fullWidth
+                  <AvatarInput
+                    value={photo}
+                    onChange={(file) => setValue("photo", file)}
+                    onLoadingChange={setIsUploading}
                     disabled={isLoading}
-                    onClick={() => navigate("/admin/users")}
-                  >
-                    {t("form.cancel")}
-                  </Button>
-                  <Button
-                    type="submit"
-                    variant="contained"
-                    fullWidth
-                    startIcon={
-                      isLoading ? (
-                        <CircularProgress size={20} color="inherit" />
-                      ) : (
-                        <Add />
-                      )
-                    }
+                  />
+
+                  <Box sx={{ width: "100%", display: "flex", gap: 2 }}>
+                    <TextField
+                      {...methods.register("firstName")}
+                      label={t("form.firstName")}
+                      fullWidth
+                      disabled={isLoading}
+                      error={!!methods.formState.errors.firstName}
+                      helperText={methods.formState.errors.firstName?.message}
+                    />
+
+                    <TextField
+                      {...methods.register("lastName")}
+                      label={t("form.lastName")}
+                      fullWidth
+                      disabled={isLoading}
+                      error={!!methods.formState.errors.lastName}
+                      helperText={methods.formState.errors.lastName?.message}
+                    />
+                  </Box>
+
+                  <Box sx={{ width: "100%", display: "flex", gap: 2 }}>
+                    <TextField
+                      {...methods.register("email")}
+                      label={t("form.email")}
+                      type="email"
+                      fullWidth
+                      disabled={isLoading}
+                      error={!!methods.formState.errors.email}
+                      helperText={methods.formState.errors.email?.message}
+                    />
+
+                    <TextField
+                      {...methods.register("password")}
+                      label={t("form.password")}
+                      type="password"
+                      fullWidth
+                      disabled={isLoading}
+                      error={!!methods.formState.errors.password}
+                      helperText={methods.formState.errors.password?.message}
+                    />
+                  </Box>
+
+                  <Box sx={{ width: "100%", display: "flex", gap: 2 }}>
+                    <FormControl
+                      fullWidth
+                      disabled={isLoading}
+                      error={!!methods.formState.errors.roleId}
+                    >
+                      <InputLabel>Função do Sistema</InputLabel>
+                      <Select
+                        {...methods.register("roleId")}
+                        value={watch("roleId") || 2}
+                        onChange={(e) =>
+                          setValue("roleId", Number(e.target.value))
+                        }
+                        label="Função do Sistema"
+                      >
+                        <MenuItem value={1}>Administrador</MenuItem>
+                        <MenuItem value={2}>Usuário</MenuItem>
+                      </Select>
+                    </FormControl>
+
+                    <StatusSelectFixed
+                      value={watch("statusId") || 1}
+                      onChange={(statusId) => setValue("statusId", statusId)}
+                      disabled={isLoading}
+                      error={!!methods.formState.errors.statusId}
+                      helperText={methods.formState.errors.statusId?.message}
+                    />
+                  </Box>
+
+                  <ClientRoleSelector
+                    value={watch("clientRoles")}
+                    onChange={handleClientRoleChange}
                     disabled={isLoading}
+                  />
+
+                  <Box
+                    sx={{
+                      display: "flex",
+                      gap: 2,
+                      width: "100%",
+                      maxWidth: 400,
+                    }}
                   >
-                    {t("form.create")}
-                  </Button>
+                    <Button
+                      type="button"
+                      variant="outlined"
+                      fullWidth
+                      disabled={isLoading}
+                      onClick={() => navigate("/admin/users")}
+                    >
+                      {t("form.cancel")}
+                    </Button>
+                    <Button
+                      type="submit"
+                      variant="contained"
+                      fullWidth
+                      startIcon={
+                        isLoading ? (
+                          <CircularProgress size={20} color="inherit" />
+                        ) : (
+                          <Add />
+                        )
+                      }
+                      disabled={isLoading}
+                    >
+                      {t("form.create")}
+                    </Button>
+                  </Box>
                 </Box>
-              </Box>
-            </form>
-          </CardContent>
-        </Card>
-      </FormProvider>
-    </Box>
+              </form>
+            </CardContent>
+          </Card>
+        </FormProvider>
+      </Box>
     </>
   );
 }

@@ -18,22 +18,22 @@ export default function CreateClientPage() {
         <title>Criar Instituição | Conéctar</title>
       </Helmet>
       <AdminPageLayout>
-      <Box sx={{ p: 3, maxWidth: 800, mx: "auto" }}>
-        <Typography
-          variant="h4"
-          component="h1"
-          gutterBottom
-          sx={{ mb: 2, color: "primary.main" }}
-        >
-          Criar Cliente
-        </Typography>
+        <Box sx={{ p: 3, maxWidth: 800, mx: "auto" }}>
+          <Typography
+            variant="h4"
+            component="h1"
+            gutterBottom
+            sx={{ mb: 2, color: "primary.main" }}
+          >
+            Criar Cliente
+          </Typography>
 
-        <ClientForm
-          onSubmit={handleSubmit}
-          isLoading={createClientMutation.isPending}
-        />
-      </Box>
-    </AdminPageLayout>
+          <ClientForm
+            onSubmit={handleSubmit}
+            isLoading={createClientMutation.isPending}
+          />
+        </Box>
+      </AdminPageLayout>
     </>
   );
 }

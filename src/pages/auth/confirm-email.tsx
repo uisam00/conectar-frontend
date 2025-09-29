@@ -132,26 +132,26 @@ export default function ConfirmEmailPage() {
         <title>Confirmar Email | Conéctar</title>
       </Helmet>
       <Container maxWidth="sm" sx={{ mt: 8 }}>
-      <Paper
-        elevation={3}
-        sx={{
-          p: 4,
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          gap: 3,
-        }}
-      >
-        <Box display="flex" alignItems="center" gap={2} mb={2}>
-          <Email sx={{ fontSize: 40, color: "primary.main" }} />
-          <Typography variant="h4" component="h1" textAlign="center">
-            {t("emailConfirmation.title")}
-          </Typography>
-        </Box>
+        <Paper
+          elevation={3}
+          sx={{
+            p: 4,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            gap: 3,
+          }}
+        >
+          <Box display="flex" alignItems="center" gap={2} mb={2}>
+            <Email sx={{ fontSize: 40, color: "primary.main" }} />
+            <Typography variant="h4" component="h1" textAlign="center">
+              {t("emailConfirmation.title")}
+            </Typography>
+          </Box>
 
-        {renderContent()}
-      </Paper>
-    </Container>
+          {renderContent()}
+        </Paper>
+      </Container>
     </>
   );
 }

@@ -35,6 +35,8 @@
     "react-dropzone": "^14.3.8",
     "react-helmet": "^6.1.0",
     "react-hook-form": "^7.63.0",
+    "@google-cloud/local-auth": "^2.1.0",
+    "google-auth-library": "^9.14.1",
     "react-i18next": "^16.0.0",
     "react-router-dom": "^7.9.2",
     "react-toastify": "^11.0.5",
