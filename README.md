@@ -1,7 +1,5 @@
 # Conéctar Frontend
 
-Api de teste prático.
-
 [Documentação completa aqui](/docs/introduction.md)
 
 Demo Frontend: https://conectar-frontend-07mc.onrender.com
