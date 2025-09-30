@@ -1,7 +1,5 @@
 # Conéctar Frontend
 
-Frontend React baseado no extensive-react-boilerplate, mas usando React Router ao invés do Next.js.
-
 Api de teste prático.
 
 [Documentação completa aqui](/docs/introduction.md)
