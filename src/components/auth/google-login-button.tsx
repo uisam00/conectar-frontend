@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useCallback } from "react";
 import { Box, Typography, CircularProgress } from "@mui/material";
 import { useGoogleAuth } from "@/hooks/use-google-auth";
 
@@ -15,11 +15,18 @@ export default function GoogleLoginButton({
   const { isLoading, isGoogleLoaded, renderGoogleLoginButton } =
     useGoogleAuth();
 
+  const handleLoadingChange = useCallback(
+    (loading: boolean) => {
+      if (onLoadingChange) {
+        onLoadingChange(loading);
+      }
+    },
+    [onLoadingChange]
+  );
+
   useEffect(() => {
-    if (onLoadingChange) {
-      onLoadingChange(isLoading);
-    }
-  }, [isLoading, onLoadingChange]);
+    handleLoadingChange(isLoading);
+  }, [isLoading, handleLoadingChange]);
 
   useEffect(() => {
     if (isGoogleLoaded && buttonRef.current && !disabled) {

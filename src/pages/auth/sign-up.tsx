@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { Paper, Box, Link as MuiLink, Button, Typography } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
 import { useLanguage } from "@/services/i18n";
@@ -148,9 +148,9 @@ export default function SignUpPage() {
 
             {/* Botão Google */}
             <GoogleSignupButton
-              onLoadingChange={(loading) => {
+              onLoadingChange={useCallback((loading: boolean) => {
                 if (loading) setIsLoading(true);
-              }}
+              }, [])}
               disabled={isLoading}
             />
 

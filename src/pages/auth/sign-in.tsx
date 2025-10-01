@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import {
   Paper,
   Box,
@@ -195,9 +195,9 @@ export default function SignInPage() {
 
             {/* Botão Google */}
             <GoogleLoginButton
-              onLoadingChange={(loading) => {
+              onLoadingChange={useCallback((loading: boolean) => {
                 if (loading) setIsLoading(true);
-              }}
+              }, [])}
               disabled={isLoading}
             />
 
