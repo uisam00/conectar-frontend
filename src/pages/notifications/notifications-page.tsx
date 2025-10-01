@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Helmet } from "react-helmet";
 import {
   Box,
   Card,
@@ -150,7 +151,6 @@ export default function NotificationsPage() {
 
   return (
     <>
-      {" "}
       <Helmet>
         <title>Administração | Conéctar</title>
       </Helmet>
