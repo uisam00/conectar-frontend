@@ -8,14 +8,22 @@ API (Swagger): https://conectar-api.wachannel.com.br/docs
 
 Repo Backend: https://github.com/uisam00/conectar-backend
 
-## Usuário de teste
+## Usuários de teste
 
 Use as credenciais abaixo para acessar o sistema em desenvolvimento:
-
+**Admin**
 ```json
 {
   "email": "fulano@example.com",
   "password": "Senha!123"
+}
+```
+
+**User**
+```json
+{
+  "email": "jao@example.com",
+  "password": "Teste123!"
 }
 ```
 
