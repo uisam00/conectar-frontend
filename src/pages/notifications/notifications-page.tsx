@@ -152,7 +152,7 @@ export default function NotificationsPage() {
   return (
     <>
       <Helmet>
-        <title>Administração | Conéctar</title>
+        <title>Notificações | Conéctar</title>
       </Helmet>
       <Box p={3}>
         <Box
