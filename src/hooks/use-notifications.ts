@@ -24,11 +24,12 @@ export function useInfiniteNotifications(params: QueryNotificationDto = {}) {
   return useInfiniteQuery({
     queryKey: ["notifications", "infinite", params],
     queryFn: ({ pageParam = 1 }) =>
-      getNotifications({ ...params, page: pageParam }),
-    getNextPageParam: (lastPage, allPages) => {
+      getNotifications({ ...params, page: pageParam as number }),
+    getNextPageParam: (lastPage: any, allPages) => {
       const totalPages = Math.ceil(lastPage.total / (params.limit || 10));
       return allPages.length < totalPages ? allPages.length + 1 : undefined;
     },
+    initialPageParam: 1,
     staleTime: 30 * 1000, // 30 seconds
   });
 }

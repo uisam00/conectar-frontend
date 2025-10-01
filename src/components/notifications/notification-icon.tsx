@@ -17,10 +17,8 @@ import {
   Info as InfoIcon,
 } from "@mui/icons-material";
 import {
-  useUnreadCount,
   useNotifications,
   useMarkAsRead,
-  useUnreadCountFromNotifications,
 } from "@/hooks/use-notifications";
 import { formatDistanceToNow } from "date-fns";
 import { ptBR } from "date-fns/locale";
