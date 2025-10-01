@@ -2,9 +2,11 @@
 
 ## Demo online
 
-Demo Frontend: https://conectar-frontend-07mc.onrender.com
+Demo Frontend: http://conectar-frontend-xi.vercel.app
 
-Frontend: https://github.com/uisam00/conectar-backend
+API (Swagger): https://conectar-api.wachannel.com.br/docs
+
+Repo Backend: https://github.com/uisam00/conectar-backend
 
 ## Funcionalidades
 
