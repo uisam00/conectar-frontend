@@ -11,7 +11,7 @@ import {
   Typography,
   CircularProgress,
 } from "@mui/material";
-import { Help, Notifications, Menu as MenuIcon } from "@mui/icons-material";
+import { Help, Menu as MenuIcon } from "@mui/icons-material";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth, useAuthActions } from "@/services/auth";
@@ -20,6 +20,7 @@ import SideDrawer from "@/components/drawer/side-drawer";
 import useDrawer from "@/hooks/use-drawer";
 import { useClient } from "@/hooks/use-client";
 import UserAvatar from "@/components/user-avatar";
+import NotificationIcon from "@/components/notifications/notification-icon";
 
 export default function ResponsiveAppBar() {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -162,9 +163,7 @@ export default function ResponsiveAppBar() {
                 <IconButton sx={{ color: "white" }}>
                   <Help />
                 </IconButton>
-                <IconButton sx={{ color: "white" }}>
-                  <Notifications />
-                </IconButton>
+                <NotificationIcon />
                 <IconButton
                   size="large"
                   aria-label="account of current user"

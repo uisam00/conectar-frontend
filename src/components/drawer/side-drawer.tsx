@@ -17,6 +17,7 @@ import {
   Person,
   Logout,
   People,
+  Notifications,
 } from "@mui/icons-material";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth, useAuthActions } from "@/services/auth";
@@ -40,6 +41,12 @@ export default function SideDrawer({ open, onToggle }: SideDrawerProps) {
       label: "Home",
       icon: <Home />,
       path: "/",
+      show: true,
+    },
+    {
+      label: "Notificações",
+      icon: <Notifications />,
+      path: "/notifications",
       show: true,
     },
     {

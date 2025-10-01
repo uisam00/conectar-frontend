@@ -50,6 +50,9 @@ const UserEditPage = lazy(() => import("@/pages/admin-panel/users/user-edit"));
 const AdminDashboardPage = lazy(
   () => import("@/pages/admin-panel/admin-dashboard")
 );
+const NotificationsPage = lazy(
+  () => import("@/pages/notifications/notifications-page")
+);
 
 // Initialize i18n
 import "@/services/i18n/client";
@@ -120,6 +123,16 @@ function AppContent() {
               path="/profile/edit"
               element={
                 user ? <EditProfilePage /> : <Navigate to="/sign-in" replace />
+              }
+            />
+            <Route
+              path="/notifications"
+              element={
+                user ? (
+                  <NotificationsPage />
+                ) : (
+                  <Navigate to="/sign-in" replace />
+                )
               }
             />
             <Route
