@@ -149,177 +149,192 @@ export default function NotificationsPage() {
   const total = (infiniteData?.pages[0] as any)?.total || 0;
 
   return (
-    <Box p={3}>
-      <Box
-        display="flex"
-        justifyContent="space-between"
-        alignItems="center"
-        mb={3}
-      >
-        <Typography variant="h4" component="h1">
-          Notificações
-        </Typography>
-      </Box>
+    <>
+      {" "}
+      <Helmet>
+        <title>Administração | Conéctar</title>
+      </Helmet>
+      <Box p={3}>
+        <Box
+          display="flex"
+          justifyContent="space-between"
+          alignItems="center"
+          mb={3}
+        >
+          <Typography variant="h4" component="h1">
+            Notificações
+          </Typography>
+        </Box>
 
-      {total === 0 ? (
-        <Card>
-          <CardContent>
-            <Box textAlign="center" py={4}>
-              <NotificationsIcon
-                sx={{ fontSize: 64, color: "text.secondary", mb: 2 }}
-              />
-              <Typography variant="h6" color="text.secondary">
-                Nenhuma notificação encontrada
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                Você não possui notificações no momento.
-              </Typography>
-            </Box>
-          </CardContent>
-        </Card>
-      ) : (
-        <Box>
-          {notifications.map((notification) => (
-            <Card
-              key={notification.id}
-              sx={{
-                mb: 2,
-                opacity: notification.isRead ? 0.7 : 1,
-                backgroundColor: notification.isRead
-                  ? "background.default"
-                  : "background.paper",
-                border: notification.isRead ? "none" : "1px solid",
-                borderColor: "primary.main",
+        {total === 0 ? (
+          <Card>
+            <CardContent>
+              <Box textAlign="center" py={4}>
+                <NotificationsIcon
+                  sx={{ fontSize: 64, color: "text.secondary", mb: 2 }}
+                />
+                <Typography variant="h6" color="text.secondary">
+                  Nenhuma notificação encontrada
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  Você não possui notificações no momento.
+                </Typography>
+              </Box>
+            </CardContent>
+          </Card>
+        ) : (
+          <Box>
+            {notifications.map((notification) => (
+              <Card
+                key={notification.id}
+                sx={{
+                  mb: 2,
+                  opacity: notification.isRead ? 0.7 : 1,
+                  backgroundColor: notification.isRead
+                    ? "background.default"
+                    : "background.paper",
+                  border: notification.isRead ? "none" : "1px solid",
+                  borderColor: "primary.main",
+                }}
+              >
+                <CardContent>
+                  <Box
+                    display="flex"
+                    alignItems="flex-start"
+                    justifyContent="space-between"
+                  >
+                    <Box display="flex" alignItems="flex-start" flex={1}>
+                      <Box mr={2} mt={0.5}>
+                        {getNotificationIcon(notification.type)}
+                      </Box>
+                      <Box flex={1}>
+                        <Box display="flex" alignItems="center" gap={1} mb={1}>
+                          <Typography variant="h6" component="h3">
+                            {notification.title}
+                          </Typography>
+                          {!notification.isRead && (
+                            <Box
+                              sx={{
+                                width: 6,
+                                height: 6,
+                                borderRadius: "50%",
+                                backgroundColor: "primary.main",
+                                flexShrink: 0,
+                              }}
+                            />
+                          )}
+                          <Chip
+                            label={getNotificationTypeLabel(notification.type)}
+                            size="small"
+                            color={
+                              getNotificationColor(notification.type) as any
+                            }
+                            variant="outlined"
+                          />
+                        </Box>
+                        <Typography
+                          variant="body2"
+                          color="text.secondary"
+                          mb={1}
+                        >
+                          {notification.message}
+                        </Typography>
+                        <Typography variant="caption" color="text.secondary">
+                          {formatDistanceToNow(
+                            new Date(notification.createdAt),
+                            {
+                              addSuffix: true,
+                              locale: ptBR,
+                            }
+                          )}
+                        </Typography>
+                      </Box>
+                    </Box>
+                    <Box display="flex" alignItems="center" gap={1}>
+                      {!notification.isRead && (
+                        <Tooltip title="Marcar como lida">
+                          <IconButton
+                            size="small"
+                            onClick={() => handleMarkAsRead(notification.id)}
+                            disabled={markAsReadMutation.isPending}
+                          >
+                            <CheckCircleIcon color="primary" />
+                          </IconButton>
+                        </Tooltip>
+                      )}
+                      <IconButton
+                        size="small"
+                        onClick={(e) => handleMenuOpen(e, notification.id)}
+                      >
+                        <MoreVertIcon />
+                      </IconButton>
+                    </Box>
+                  </Box>
+                </CardContent>
+              </Card>
+            ))}
+
+            <Menu
+              anchorEl={anchorEl}
+              open={Boolean(anchorEl)}
+              onClose={handleMenuClose}
+              anchorOrigin={{
+                vertical: "bottom",
+                horizontal: "right",
+              }}
+              transformOrigin={{
+                vertical: "top",
+                horizontal: "right",
               }}
             >
-              <CardContent>
-                <Box
-                  display="flex"
-                  alignItems="flex-start"
-                  justifyContent="space-between"
-                >
-                  <Box display="flex" alignItems="flex-start" flex={1}>
-                    <Box mr={2} mt={0.5}>
-                      {getNotificationIcon(notification.type)}
-                    </Box>
-                    <Box flex={1}>
-                      <Box display="flex" alignItems="center" gap={1} mb={1}>
-                        <Typography variant="h6" component="h3">
-                          {notification.title}
-                        </Typography>
-                        {!notification.isRead && (
-                          <Box
-                            sx={{
-                              width: 6,
-                              height: 6,
-                              borderRadius: "50%",
-                              backgroundColor: "primary.main",
-                              flexShrink: 0,
-                            }}
-                          />
-                        )}
-                        <Chip
-                          label={getNotificationTypeLabel(notification.type)}
-                          size="small"
-                          color={getNotificationColor(notification.type) as any}
-                          variant="outlined"
-                        />
-                      </Box>
-                      <Typography variant="body2" color="text.secondary" mb={1}>
-                        {notification.message}
-                      </Typography>
-                      <Typography variant="caption" color="text.secondary">
-                        {formatDistanceToNow(new Date(notification.createdAt), {
-                          addSuffix: true,
-                          locale: ptBR,
-                        })}
-                      </Typography>
-                    </Box>
-                  </Box>
-                  <Box display="flex" alignItems="center" gap={1}>
-                    {!notification.isRead && (
-                      <Tooltip title="Marcar como lida">
-                        <IconButton
-                          size="small"
-                          onClick={() => handleMarkAsRead(notification.id)}
-                          disabled={markAsReadMutation.isPending}
-                        >
-                          <CheckCircleIcon color="primary" />
-                        </IconButton>
-                      </Tooltip>
-                    )}
-                    <IconButton
-                      size="small"
-                      onClick={(e) => handleMenuOpen(e, notification.id)}
+              {selectedNotification && (
+                <>
+                  {!notifications.find((n) => n.id === selectedNotification)
+                    ?.isRead && (
+                    <MenuItem
+                      onClick={() => handleMarkAsRead(selectedNotification)}
+                      disabled={markAsReadMutation.isPending}
                     >
-                      <MoreVertIcon />
-                    </IconButton>
-                  </Box>
-                </Box>
-              </CardContent>
-            </Card>
-          ))}
-
-          <Menu
-            anchorEl={anchorEl}
-            open={Boolean(anchorEl)}
-            onClose={handleMenuClose}
-            anchorOrigin={{
-              vertical: "bottom",
-              horizontal: "right",
-            }}
-            transformOrigin={{
-              vertical: "top",
-              horizontal: "right",
-            }}
-          >
-            {selectedNotification && (
-              <>
-                {!notifications.find((n) => n.id === selectedNotification)
-                  ?.isRead && (
+                      <ListItemIcon>
+                        <CheckCircleIcon />
+                      </ListItemIcon>
+                      <ListItemText>Marcar como lida</ListItemText>
+                    </MenuItem>
+                  )}
                   <MenuItem
-                    onClick={() => handleMarkAsRead(selectedNotification)}
-                    disabled={markAsReadMutation.isPending}
+                    onClick={() => handleDelete(selectedNotification)}
+                    disabled={deleteNotificationMutation.isPending}
+                    sx={{ color: "error.main" }}
                   >
                     <ListItemIcon>
-                      <CheckCircleIcon />
+                      <DeleteIcon color="error" />
                     </ListItemIcon>
-                    <ListItemText>Marcar como lida</ListItemText>
+                    <ListItemText>Excluir</ListItemText>
                   </MenuItem>
-                )}
-                <MenuItem
-                  onClick={() => handleDelete(selectedNotification)}
-                  disabled={deleteNotificationMutation.isPending}
-                  sx={{ color: "error.main" }}
-                >
-                  <ListItemIcon>
-                    <DeleteIcon color="error" />
-                  </ListItemIcon>
-                  <ListItemText>Excluir</ListItemText>
-                </MenuItem>
-              </>
-            )}
-          </Menu>
-        </Box>
-      )}
+                </>
+              )}
+            </Menu>
+          </Box>
+        )}
 
-      {/* Botão de carregar mais */}
-      {hasNextPage && (
-        <Box display="flex" justifyContent="center" mt={3}>
-          <Button
-            variant="outlined"
-            onClick={() => fetchNextPage()}
-            disabled={isFetchingNextPage}
-            startIcon={
-              isFetchingNextPage ? <CircularProgress size={20} /> : null
-            }
-          >
-            {isFetchingNextPage
-              ? "Carregando..."
-              : "Carregar mais notificações"}
-          </Button>
-        </Box>
-      )}
-    </Box>
+        {/* Botão de carregar mais */}
+        {hasNextPage && (
+          <Box display="flex" justifyContent="center" mt={3}>
+            <Button
+              variant="outlined"
+              onClick={() => fetchNextPage()}
+              disabled={isFetchingNextPage}
+              startIcon={
+                isFetchingNextPage ? <CircularProgress size={20} /> : null
+              }
+            >
+              {isFetchingNextPage
+                ? "Carregando..."
+                : "Carregar mais notificações"}
+            </Button>
+          </Box>
+        )}
+      </Box>
+    </>
   );
 }

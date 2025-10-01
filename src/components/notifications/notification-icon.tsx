@@ -12,7 +12,6 @@ import {
 } from "@mui/material";
 import {
   Notifications as NotificationsIcon,
-  MarkEmailRead as MarkEmailReadIcon,
   CheckCircle as CheckCircleIcon,
   Warning as WarningIcon,
   Info as InfoIcon,
@@ -21,7 +20,6 @@ import {
   useUnreadCount,
   useNotifications,
   useMarkAsRead,
-  useMarkAllAsRead,
   useUnreadCountFromNotifications,
 } from "@/hooks/use-notifications";
 import { formatDistanceToNow } from "date-fns";
@@ -39,7 +37,6 @@ export default function NotificationIcon() {
     });
 
   const markAsReadMutation = useMarkAsRead();
-  const markAllAsReadMutation = useMarkAllAsRead();
 
   // Usar a contagem de não lidas diretamente da resposta das notificações
   const unreadCount = notificationsData?.unreadCount || 0;
@@ -69,14 +66,6 @@ export default function NotificationIcon() {
       await markAsReadMutation.mutateAsync(notificationId);
     } catch (error) {
       console.error("Erro ao marcar notificação como lida:", error);
-    }
-  };
-
-  const handleMarkAllAsRead = async () => {
-    try {
-      await markAllAsReadMutation.mutateAsync();
-    } catch (error) {
-      console.error("Erro ao marcar todas as notificações como lidas:", error);
     }
   };
 
@@ -137,16 +126,6 @@ export default function NotificationIcon() {
             mb={2}
           >
             <Typography variant="h6">Notificações</Typography>
-            {unreadCount > 0 && (
-              <Button
-                size="small"
-                startIcon={<MarkEmailReadIcon />}
-                onClick={handleMarkAllAsRead}
-                disabled={markAllAsReadMutation.isPending}
-              >
-                Marcar todas como lidas
-              </Button>
-            )}
           </Box>
 
           <Divider sx={{ mb: 2 }} />
